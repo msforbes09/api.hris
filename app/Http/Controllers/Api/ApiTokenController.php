@@ -33,9 +33,10 @@ class ApiTokenController extends Controller
             $token->delete();
         });
 
-        return ResponseBuilder::asSuccess('User token successfully removed.')
-                  ->withHttpCode(200)
-                  ->build();
+        return ResponseBuilder::asSuccess(200)
+            ->withMessage('User token successfully removed.')
+            ->withHttpCode(200)
+            ->build();
     }
 
     protected function convertUsernameToEmail($credentials)
