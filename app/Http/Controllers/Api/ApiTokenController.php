@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ApiTokenRequest;
+use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ApiTokenController extends Controller
 {
@@ -20,7 +21,10 @@ class ApiTokenController extends Controller
         // Request Token
         $response = $this->requestTokenFromServer($credentials);
 
-        return response()->json([ $response ]);
+        return ResponseBuilder::asSuccess()
+                  ->withData((array) $response)
+                  ->withHttpCode(200)
+                  ->build();
     }
 
     public function removeToken()
@@ -29,7 +33,9 @@ class ApiTokenController extends Controller
             $token->delete();
         });
 
-        return response()->json(['message' => 'User tokens removed successfully.']);
+        return ResponseBuilder::asSuccess('User token successfully removed.')
+                  ->withHttpCode(200)
+                  ->build();
     }
 
     protected function convertUsernameToEmail($credentials)

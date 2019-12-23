@@ -6,6 +6,7 @@ use Laravel\Passport\Passport;
 use Laravel\Passport\RouteRegistrar;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Http\Resources\Json\Resource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Resource::withoutWrapping();
     }
 
     /**
