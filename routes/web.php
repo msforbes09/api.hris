@@ -19,3 +19,13 @@ Route::get('/', function ()
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/routes', function() {
+    $routes = [];
+    foreach (\Route::getRoutes()->getIterator() as $route){
+        if (strpos($route->uri, 'api') !== false && !Str::contains($route->uri, 'telescope')){
+            $routes[] = $route->uri;
+        }
+    }
+    dd($routes);
+});
