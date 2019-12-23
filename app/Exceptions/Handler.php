@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Validation\ValidationException;
+use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -46,6 +48,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof ValidationException)
+        {
+            return ResponseBuilder::asError(422)
+                ->withMessage($exception->getMessage())
+                ->withData((array) $exception->errors())
+                ->withHttpCode(422)
+                ->build();
+        }
+
         return parent::render($request, $exception);
     }
 }
