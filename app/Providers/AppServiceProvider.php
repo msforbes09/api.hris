@@ -26,15 +26,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // DEFAULT STRING LENGTH
         Schema::defaultStringLength(191);
 
+        // PASSPORT
         Passport::routes(function (RouteRegistrar $router)
             {
                 $router->forAccessTokens();
             });
-
         Passport::tokensExpireIn(now()->addDays(1));
-
-
     }
 }
