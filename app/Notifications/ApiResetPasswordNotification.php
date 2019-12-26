@@ -8,11 +8,13 @@ use Illuminate\Notifications\Messages\MailMessage;
 class ApiResetPasswordNotification extends Notification
 {
     public $token;
+    public $email;
     public static $toMailCallback;
 
-    public function __construct($token)
+    public function __construct($token, $email)
     {
         $this->token = $token;
+        $this->email = $email;
     }
 
     public function via($notifiable)
@@ -29,7 +31,7 @@ class ApiResetPasswordNotification extends Notification
         return (new MailMessage)
             ->subject('Reset Password Notification')
             ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url(config('app.ui_url') . 'reset-password/' . $this->token))
+            ->action('Reset Password', url(config('app.ui_url') . 'reset-password/' . $this->email . '/' . $this->token))
             ->line('This password reset link will expire in ' .  config('auth.passwords.users.expire') . ' minutes.')
             ->line('If you did not request a password reset, no further action is required.');
     }
