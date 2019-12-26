@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\User;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Services\ApiTokenService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ApiTokenRequest;
-use GuzzleHttp\Exception\ServerException;
-use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ApiTokenController extends Controller
 {
