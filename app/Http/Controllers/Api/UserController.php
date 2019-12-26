@@ -25,9 +25,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return ResponseBuilder::asSuccess(200)
-            ->withData($this->iUser->allPerPage(request('per_page'))->toArray())
-            ->build();
+        return response()->json($this->iUser->allPerPage(request('per_page')));
     }
 
     /**
@@ -43,7 +41,7 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        return $user;
+        return response()->json($user);
     }
 
     /**
@@ -54,7 +52,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $user;
+        return response()->json($user);
     }
 
     /**
@@ -72,7 +70,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return $user;
+        return response()->json($user);
     }
 
     /**
@@ -83,8 +81,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
-
-        return 'User deleted';
+        if($user->delete())
+        {
+            return response()->json(['User successfully deleted.']);
+        }
     }
 }
