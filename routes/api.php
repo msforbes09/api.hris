@@ -19,4 +19,8 @@ Route::post('/reset-password', 'Api\Auth\ApiResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
     Route::post('/remove-tokens', 'Api\Auth\ApiTokenController@removeToken')->name('removeToken');
+
+    Route::resources([
+        'users' => 'Api\UserController'
+    ]);
 });
