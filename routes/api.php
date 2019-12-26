@@ -1,5 +1,6 @@
 <?php
 
+use App\Contracts\IUser;
 use Illuminate\Http\Request;
 
 /*

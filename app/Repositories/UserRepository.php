@@ -2,13 +2,18 @@
 
 namespace App\Repositories;
 
+use App\User;
 use App\Contracts\IUser;
 
 class UserRepository implements IUser
 {
-    public function all() {}
+    public function allPerPage($per_page) {
+        return User::paginate($per_page);
+    }
 
-    public function getUserbyId($id) {}
+    public function getUserbyId($id) {
+        return User::findOrFail($id);
+    }
 
     public function getUserByUsername($username)
     {

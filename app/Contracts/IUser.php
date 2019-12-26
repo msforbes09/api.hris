@@ -2,11 +2,11 @@
 
 namespace App\Contracts;
 
-class IUser
+interface IUser
 {
-     public function all() {}
+    public function allPerPage($per_page);
 
-    public function getUserbyId($id) {}
+    public function getUserbyId($id);
 
-    public function getUserByUsername($username) {}
+    public function getUserByUsername($username);
 }
