@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ApiTokenRequest;
+use GuzzleHttp\Exception\ServerException;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ApiTokenController extends Controller
@@ -19,12 +20,8 @@ class ApiTokenController extends Controller
         // Check if username or email is used
         $credentials = $this->convertUsernameToEmail((Object) $credentials);
         // Request Token
-        $response = $this->requestTokenFromServer($credentials);
+        return $this->requestTokenFromServer($credentials);
 
-        return ResponseBuilder::asSuccess()
-                  ->withData((array) $response)
-                  ->withHttpCode(200)
-                  ->build();
     }
 
     public function removeToken()
@@ -53,20 +50,42 @@ class ApiTokenController extends Controller
     }
 
     protected function requestTokenFromServer($credentials)
-    {
-        $http = new Client();
+     {
+        try 
+        {
+            $http = new Client();
 
-        $response = $http->post(route('passport.token'), [
-            'form_params' => [
-                'grant_type' => 'password',
-                'client_id' => config('passport.password_grant_id'),
-                'client_secret' => config('passport.password_grant_secret'),
-                'username' => $credentials->username,
-                'password' => $credentials->password,
-                'scope' => ''
-            ],
-        ]);
+            $response = $http->post(route('passport.token'), [
+                'form_params' => [
+                    'grant_type' => 'password',
+                    'client_id' => config('passport.password_grant_id'),
+                    'client_secret' => config('passport.password_grant_secret'),
+                    'username' => $credentials->username,
+                    'password' => $credentials->password,
+                    'scope' => ''
+                ],
+            ]);
 
-        return json_decode($response->getBody());
+             return ResponseBuilder::asSuccess(200)
+                ->withData((array) json_decode($response->getBody()))
+                ->withHttpCode(200)
+                ->build();
+
+        } catch (\Exception $e) 
+        {
+            if($e instanceof ServerException)
+            {
+                return ResponseBuilder::asError(500)
+                    ->withMessage('Server Error. Please contact administrator.')
+                    ->withHttpCode(500)
+                    ->build();    
+            }
+
+            return ResponseBuilder::asError(401)
+                    ->withMessage('Invalid username and password.')
+                    ->withHttpCode(401)
+                    ->build();
+        }
     }
+
 }

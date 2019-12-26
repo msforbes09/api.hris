@@ -17,5 +17,5 @@ Route::post('/forgot-password', 'Api\ApiForgotPasswordController@sendResetLinkEm
 Route::post('/reset-password', 'Api\ApiResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
-    Route::post('/remove-token', 'Api\ApiTokenController@removeToken')->name('removeToken');
+    Route::post('/remove-tokens', 'Api\ApiTokenController@removeToken')->name('removeToken');
 });
