@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::post('/get-token', 'Api\ApiTokenController@getToken')->name('getToken');
 Route::post('/forgot-password', 'Api\ApiForgotPasswordController@sendResetLinkEmail');
+Route::post('/reset-password', 'Api\ApiResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
     Route::post('/remove-token', 'Api\ApiTokenController@removeToken')->name('removeToken');
