@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'email', 'password',
+        'user_type_id', 'name', 'username', 'email', 'password', 'active',
     ];
 
     /**
@@ -30,14 +30,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function user_type()
+    {
+        return $this->hasOne('App\UserType');
+    }
 
     public function sendPasswordResetNotification($token)
     {
