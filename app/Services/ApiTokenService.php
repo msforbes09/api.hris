@@ -11,6 +11,12 @@ class ApiTokenService implements IApiToken
 {
     protected $token;
     protected $error;
+    protected $iUser;
+
+    public function __construct(IUser $iUser)
+    {
+        $this->iUser = $iUser;
+    }
 
     public function getToken($request)
     {
@@ -35,9 +41,9 @@ class ApiTokenService implements IApiToken
 
     protected function getEmail($username)
     {
-        $user = IUser::getUserByUsername($username);
-
-        return $user->email;
+        $user = $this->iUser->getUserByUsername($username);
+        
+        return $user ? $user->email : $username;
     }
 
     protected function getTokenFromServer($credentials)
