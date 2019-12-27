@@ -11,6 +11,15 @@ class ApiResetPasswordController extends Controller
 {
     use ResetsPasswords;
 
+    protected function rules()
+    {
+        return [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ];
+    }
+
      public function sendResetResponse(Request $request, $response)
     {
         return ResponseBuilder::asSuccess(200)
