@@ -10,7 +10,7 @@ class UserRepository extends PaginationQuery implements IUser
 {
     public function __construct()
     {
-        $this->allowedOrderByFilter = ['email', 'username', 'user_type'];
+        $this->allowedOrderByFilter = ['email', 'username', 'user_type', 'name', 'active'];
     }
 
     public function all() {
