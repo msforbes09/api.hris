@@ -16,12 +16,32 @@ class UserRepository extends PaginationQuery implements IUser
     public function all() {
         $paginationQuery = $this->validatePaginationQuery();
 
+        $status = $this->userStatusQuery();
+
         $users = User::select('users.*', 'user_types.name as user_type')
             ->leftJoin('user_types', 'user_types.id', 'users.user_type_id')
+            ->whereIn('users.active', $status)
             ->orderBy($paginationQuery->orderBy, $paginationQuery->order)
             ->paginate($paginationQuery->perPage);
 
         return $users->toArray();
+    }
+
+    protected function userStatusQuery()
+    {
+        $status = request('status');
+
+        switch ($status) {
+            case 'active':
+                return [1];
+                break;
+            case 'inactive':
+                return [0];
+                break;
+            default:
+                return [1,0];
+                break;
+        }
     }
 
     public function getById($id) {
