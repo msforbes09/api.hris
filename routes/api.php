@@ -22,7 +22,7 @@ Route::get('/user-types', 'Api\UserTypeController@index');
 Route::middleware('auth:api')->group(function() {
     Route::post('/remove-tokens', 'Api\Auth\ApiTokenController@removeToken')->name('removeToken');
 
-    Route::resources([
-        'users' => 'Api\UserController'
-    ]);
+    Route::resources(['users' => 'Api\UserController']);
+
+    Route::resources(['modules' => 'Api\ModuleController']);
 });
