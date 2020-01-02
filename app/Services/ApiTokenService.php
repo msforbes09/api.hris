@@ -9,6 +9,7 @@ use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ApiTokenService implements IApiToken
 {
+    protected $user;
     protected $token;
     protected $error;
     protected $iUser;
@@ -28,9 +29,9 @@ class ApiTokenService implements IApiToken
        {
             $credentials->username = $this->getEmail($credentials->username);
        }
-        // Request Token
-        return $this->getTokenFromServer($credentials) ?
-            $this->sendTokenResponse($this->token) :
+        // Return generated Token
+        return $this->generateTokenData($credentials) ?
+            $this->sendTokenResponse($this->token, $this->user) :
             $this->sendTokenFailResponse($this->error);
     }
 
@@ -41,12 +42,12 @@ class ApiTokenService implements IApiToken
 
     protected function getEmail($username)
     {
-        $user = $this->iUser->getUserByUsername($username);
+        $this->user = $this->iUser->getUserByUsername($username);
         
-        return $user ? $user->email : $username;
+        return $this->user ? $this->user->email : $username;
     }
 
-    protected function getTokenFromServer($credentials)
+    protected function generateTokenData($credentials)
     {
         try {
             $http = new Client();
@@ -62,7 +63,12 @@ class ApiTokenService implements IApiToken
                 ],
             ]);
 
+            $this->user = $this->isEmail($credentials->username) ? 
+                $this->iUser->getUserByEmail($credentials->username) :
+                $this->iUser->getUserByUsername($credentials->username);
+
             $this->token = json_decode($response->getbody());
+            $this->token->user = $this->iUser->getUserWithType($this->user->id);
 
             return true;
         } catch (\Exception $e) {
