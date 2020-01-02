@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 interface IUser
 {
-    public function allPerPage($per_page);
+    public function all();
 
     public function getUserbyId($id);
 
