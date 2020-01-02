@@ -39,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
 
         // SERVICES, REPOSITORIES, CONTRACTS BINDING
         $this->app->bind('App\Contracts\IUser', 'App\Repositories\UserRepository');
+        $this->app->bind('App\Contracts\IUserType', 'App\Repositories\UserTypeRepository');
         $this->app->bind('App\Contracts\IApiToken', 'App\Services\ApiTokenService');
     }
 }
