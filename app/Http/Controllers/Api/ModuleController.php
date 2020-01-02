@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\IModule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ModuleRequest;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ModuleController extends Controller
@@ -36,9 +37,15 @@ class ModuleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ModuleRequest $request)
     {
-        //
+        $validatedRequest = $request->validated();
+        
+        $newModule = $this->iModule->store($validatedRequest);
+        
+        return ResponseBuilder::asSuccess(200)
+            ->withData($newModule)
+            ->build();
     }
 
     /**

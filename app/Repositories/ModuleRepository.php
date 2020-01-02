@@ -29,8 +29,16 @@ class ModuleRepository extends PaginationQuery implements IModule
         throw new \Exception('Method getById() is not implemented.');
     }
 
+    public function store($request)
+    {
+        $newModule = Module::create($request);
+
+        return $newModule;
+    }
+
     public function destroy()
     {
         throw new \Exception('Method destroy() is not implemented.');
     }
+
 }

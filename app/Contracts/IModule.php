@@ -8,5 +8,7 @@ interface IModule
 
     public function getById();
 
+    public function store($request);
+
     public function destroy();
 }
