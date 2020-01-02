@@ -17,9 +17,9 @@ class UserTypeController extends Controller
         $this->iUserType = $iUserType;
     }
 
-    public function getAll()
+    public function index()
     {
-        $userTypes = $this->iUserType->getAll();
+        $userTypes = $this->iUserType->all();
 
         return ResponseBuilder::asSuccess(200)
             ->withData($userTypes)

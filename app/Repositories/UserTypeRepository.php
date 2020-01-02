@@ -7,7 +7,7 @@ use App\Contracts\IUserType;
 
 class UserTypeRepository implements IUserType 
 {
-    public function getAll()
+    public function all()
     {
         return UserType::all()->toArray();
     }
