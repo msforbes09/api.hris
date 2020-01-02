@@ -7,10 +7,42 @@ use App\Contracts\IUser;
 
 class UserRepository implements IUser
 {
-    public function allPerPage($per_page) {
-        return User::with('user_type')
-            ->paginate($per_page)
-            ->toArray();
+    public function all() {
+        $paginationQuery = $this->validatePaginationQuery();
+
+        $users = User::select('users.*', 'user_types.name as user_type')
+            ->leftJoin('user_types', 'user_types.id', 'users.user_type_id')
+            ->orderBy($paginationQuery->orderBy, $paginationQuery->order)
+            ->paginate($paginationQuery->per_page);
+
+        return $users->toArray();
+    }
+
+    protected function validatePaginationQuery()
+    {
+        $per_page = is_numeric(request('per_page')) ? request('per_page') : 10;
+        $orderBy = $this->filterOrderby(request('order_by'));
+        $order = $this->filterOrder(request('order'));
+
+        return (Object) [
+            'per_page' => $per_page,
+            'orderBy' => $orderBy,
+            'order' => $order
+        ];
+    }
+
+    protected function filterOrderby($orderBy)
+    {
+        $allowed = ['email', 'username', 'user_type'];
+
+        return in_array($orderBy, $allowed) ? $orderBy : $allowed[0];
+    }
+
+    public function filterOrder($order)
+    {
+        $allowed = ['asc', 'desc'];
+
+        return in_array($order, $allowed) ? $order : $allowed[0];
     }
 
     public function getUserbyId($id) {
