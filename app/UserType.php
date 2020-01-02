@@ -12,4 +12,9 @@ class UserType extends Model
     {
         return $this->hasMany('App\Users');
     }
+
+    public function module_actions()
+    {
+        return $this->belongsToMany('App\ModuleAction', 'accesses', 'user_type_id', 'module_action_id');
+    }
 }
