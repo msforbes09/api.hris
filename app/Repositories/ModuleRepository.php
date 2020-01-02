@@ -10,11 +10,6 @@ class ModuleRepository extends PaginationQuery implements IModule
 {
     public function __construct()
     {
-        $this->setAllowedOrderByFilter();
-    }
-
-    protected function setAllowedOrderByFilter()
-    {
         $this->allowedOrderByFilter = ['code', 'name'];
     }
 
