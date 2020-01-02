@@ -4,45 +4,24 @@ namespace App\Repositories;
 
 use App\User;
 use App\Contracts\IUser;
+use App\Contracts\PaginationQuery;
 
-class UserRepository implements IUser
+class UserRepository extends PaginationQuery implements IUser
 {
+    public function __construct()
+    {
+        $this->allowedOrderByFilter = ['email', 'username', 'user_type'];
+    }
+
     public function all() {
         $paginationQuery = $this->validatePaginationQuery();
 
         $users = User::select('users.*', 'user_types.name as user_type')
             ->leftJoin('user_types', 'user_types.id', 'users.user_type_id')
             ->orderBy($paginationQuery->orderBy, $paginationQuery->order)
-            ->paginate($paginationQuery->per_page);
+            ->paginate($paginationQuery->perPage);
 
         return $users->toArray();
-    }
-
-    protected function validatePaginationQuery()
-    {
-        $per_page = is_numeric(request('per_page')) ? request('per_page') : 10;
-        $orderBy = $this->filterOrderby(request('order_by'));
-        $order = $this->filterOrder(request('order'));
-
-        return (Object) [
-            'per_page' => $per_page,
-            'orderBy' => $orderBy,
-            'order' => $order
-        ];
-    }
-
-    protected function filterOrderby($orderBy)
-    {
-        $allowed = ['email', 'username', 'user_type'];
-
-        return in_array($orderBy, $allowed) ? $orderBy : $allowed[0];
-    }
-
-    public function filterOrder($order)
-    {
-        $allowed = ['asc', 'desc'];
-
-        return in_array($order, $allowed) ? $order : $allowed[0];
     }
 
     public function getUserbyId($id) {
