@@ -24,9 +24,11 @@ class ModuleRepository extends PaginationQuery implements IModule
     }
 
 
-    public function getById()
+    public function getById($id)
     {
-        throw new \Exception('Method getById() is not implemented.');
+        $module = Module::findOrFail($id);
+
+        return $module;
     }
 
     public function store($request)
@@ -36,9 +38,27 @@ class ModuleRepository extends PaginationQuery implements IModule
         return $newModule;
     }
 
-    public function destroy()
+    public function update($request, $id)
     {
-        throw new \Exception('Method destroy() is not implemented.');
+        $updatedModule = Module::findOrFail($id);
+
+        $updatedModule->fill($request);
+
+        $updatedModule->save();
+
+        return $updatedModule;
+    }
+
+    public function destroy($id)
+    {
+        $module = Module::findOrFail($id);
+
+        if($module->delete())
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }

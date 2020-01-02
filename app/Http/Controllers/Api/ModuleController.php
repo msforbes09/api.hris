@@ -56,7 +56,11 @@ class ModuleController extends Controller
      */
     public function show($id)
     {
-        //
+        $module = $this->iModule->getById($id);
+        
+        return ResponseBuilder::asSuccess(200)
+            ->withData($module)
+            ->build();
     }
 
     /**
@@ -66,9 +70,15 @@ class ModuleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ModuleRequest $request, $id)
     {
-        //
+        $validatedRequest = $request->validated();
+        
+        $updatedModule = $this->iModule->update($validatedRequest, $id);
+        
+        return ResponseBuilder::asSuccess(200)
+            ->withData($updatedModule)
+            ->build();
     }
 
     /**
@@ -79,6 +89,11 @@ class ModuleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($this->iModule->destroy($id))
+        {
+            return ResponseBuilder::asSuccess(200)
+                ->withMessage('Module successfully deleted.')
+                ->build();
+        }
     }
 }

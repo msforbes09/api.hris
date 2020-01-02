@@ -6,9 +6,11 @@ interface IModule
 {
     public function all();
 
-    public function getById();
+    public function getById($id);
 
     public function store($request);
 
-    public function destroy();
+    public function update($request, $id);
+
+    public function destroy($id);
 }
