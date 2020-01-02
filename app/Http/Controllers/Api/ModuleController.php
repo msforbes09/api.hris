@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\IModule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ModuleController extends Controller
 {
@@ -23,6 +24,10 @@ class ModuleController extends Controller
     public function index()
     {
         $modules = $this->iModule->all();
+
+        return ResponseBuilder::asSuccess(200)
+            ->withData($modules)
+            ->build();
     }
 
     /**
