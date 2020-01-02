@@ -42,7 +42,7 @@ class ApiTokenService implements IApiToken
 
     protected function getEmail($username)
     {
-        $this->user = $this->iUser->getUserByUsername($username);
+        $this->user = $this->iUser->getByUsername($username);
         
         return $this->user ? $this->user->email : $username;
     }
@@ -64,11 +64,11 @@ class ApiTokenService implements IApiToken
             ]);
 
             $this->user = $this->isEmail($credentials->username) ? 
-                $this->iUser->getUserByEmail($credentials->username) :
-                $this->iUser->getUserByUsername($credentials->username);
+                $this->iUser->getByEmail($credentials->username) :
+                $this->iUser->getByUsername($credentials->username);
 
             $this->token = json_decode($response->getbody());
-            $this->token->user = $this->iUser->getUserWithType($this->user->id);
+            $this->token->user = $this->iUser->getWithUserType($this->user->id);
 
             return true;
         } catch (\Exception $e) {

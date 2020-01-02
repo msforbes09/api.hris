@@ -6,13 +6,13 @@ interface IUser
 {
     public function all();
 
-    public function getUserbyId($id);
+    public function getById($id);
 
-    public function getUserByUsername($username);
+    public function getByUsername($username);
 
-    public function getUserByEmail($email);
+    public function getByEmail($email);
 
-    public function getUserWithType($id);
+    public function getWithUserType($id);
 
     public function store($request);
 

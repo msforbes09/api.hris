@@ -24,25 +24,25 @@ class UserRepository extends PaginationQuery implements IUser
         return $users->toArray();
     }
 
-    public function getUserbyId($id) {
+    public function getById($id) {
         return User::findOrFail($id);
     }
 
-    public function getUserByUsername($username)
+    public function getByUsername($username)
     {
         $user = User::where('username', $username)->first();
 
         return $user;
     }
 
-    public function getUserByEmail($email)
+    public function getByEmail($email)
     {
         $user = User::where('email', $email)->first();
 
         return $user;
     }
 
-    public function getUserWithType($id)
+    public function getWithUserType($id)
     {
         $user = User::with('user_type')->findOrFail($id);
 

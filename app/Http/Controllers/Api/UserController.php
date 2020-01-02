@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->iUser->getUserbyId($id);
+        $user = $this->iUser->getById($id);
 
         return ResponseBuilder::asSuccess(200)
             ->withData($user)
