@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\User;
 use App\Contracts\IUser;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -25,7 +24,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json($this->iUser->allPerPage(request('per_page')));
+        $usersPePage = $this->iUser->allPerPage(request('per_page'));
+
+        return ResponseBuilder::asSuccess(200)
+            ->withData($usersPePage)
+            ->build();
     }
 
     /**
@@ -36,12 +39,13 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $data = $request->validated();
-        $data['active'] = 1;
+        $validatedRequest = $request->validated();
 
-        $user = User::create($data);
-
-        return response()->json($user);
+        $newUser = $this->iUser->store($validatedRequest);
+        
+        return ResponseBuilder::asSuccess(200)
+            ->withData($newUser)
+            ->build();
     }
 
     /**
@@ -50,9 +54,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($id)
     {
-        return response()->json($user);
+        $user = $this->iUser->getUserbyId($id);
+
+        return ResponseBuilder::asSuccess(200)
+            ->withData($user)
+            ->build();
     }
 
     /**
@@ -62,15 +70,15 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, User $user)
+    public function update(UserRequest $request, $id)
     {
-        $data = $request->validated();
+        $validatedRequest = $request->validated();
 
-        $user->fill($data);
+        $updatedUser = $this->iUser->update($validatedRequest, $id);
 
-        $user->save();
-
-        return response()->json($user);
+        return ResponseBuilder::asSuccess(200)
+            ->withData($updatedUser)
+            ->build();
     }
 
     /**
@@ -79,11 +87,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        if($user->delete())
+        if($this->iUser->destroy($id))
         {
-            return response()->json(['User successfully deleted.']);
+            return ResponseBuilder::asSuccess(200)
+                ->withMessage('User successfully deleted.')
+                ->build();
         }
     }
 }
