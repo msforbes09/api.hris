@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $usersPePage = $this->iUser->allPerPage(request('per_page'));
+        $usersPePage = $this->iUser->all();
 
         return ResponseBuilder::asSuccess(200)
             ->withData($usersPePage)
