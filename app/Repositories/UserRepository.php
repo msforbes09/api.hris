@@ -14,17 +14,37 @@ class UserRepository extends PaginationQuery implements IUser
     }
 
     public function all() {
-        $paginationQuery = $this->validatePaginationQuery();
+        $paginationQuery = $this->getPaginationParams();
 
         $status = $this->userStatusQuery();
+        $search = request('search') ?? '';
 
-        $users = User::select('users.*', 'user_types.name as user_type')
-            ->leftJoin('user_types', 'user_types.id', 'users.user_type_id')
-            ->whereIn('users.active', $status)
-            ->orderBy($paginationQuery->orderBy, $paginationQuery->order)
-            ->paginate($paginationQuery->perPage);
+        $query = $this->userQuery($status, $search);
+
+        $users = $this->getPaginatedQuery($query, $paginationQuery);       
 
         return $users->toArray();
+    }
+
+    protected function getPaginatedQuery($query, $paginationQuery)
+    {
+        return $query->orderBy($paginationQuery->orderBy, $paginationQuery->order)
+            ->paginate($paginationQuery->perPage);
+    }
+
+    protected function userQuery($status, $search)
+    {
+        $query = User::select('users.*', 'user_types.name as user_type')
+            ->leftJoin('user_types', 'user_types.id', 'users.user_type_id')
+            ->whereIn('users.active', $status)
+            ->where(function($query) use ($search){
+                $query->where('users.name', 'like', '%' . $search . '%')
+                    ->orWhere('users.username', 'like', '%' . $search . '%')
+                    ->orWhere('users.email', 'like', '%' . $search . '%')
+                    ->orWhere('user_types.name', $search);
+            });
+        
+        return $query;
     }
 
     protected function userStatusQuery()
