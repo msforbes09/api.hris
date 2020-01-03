@@ -23,7 +23,6 @@ class ModuleRepository extends PaginationQuery implements IModule
         return $modules->toArray();
     }
 
-
     public function getById($id)
     {
         $module = Module::findOrFail($id);

@@ -22,7 +22,7 @@ class ModuleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($moduleId)
     {
         $modules = $this->iModule->all();
 
