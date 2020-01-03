@@ -60,5 +60,4 @@ class ModuleRepository extends PaginationQuery implements IModule
 
         return false;
     }
-
 }
