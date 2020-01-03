@@ -20,6 +20,7 @@ Route::post('/reset-password', 'Api\Auth\ApiResetPasswordController@reset');
 Route::get('/user-types', 'Api\UserTypeController@index');
 
 Route::middleware('auth:api')->group(function() {
+    Route::get('/auth-user', 'Api\Auth\ApiTokenController@authenticatedUser');
     Route::post('/remove-tokens', 'Api\Auth\ApiTokenController@removeToken')->name('removeToken');
 
     Route::resources(
