@@ -15,7 +15,7 @@ class ModuleRepository extends PaginationQuery implements IModule
 
     public function all()
     {
-        $paginationQuery = PaginationQuery::validatePaginationQuery();
+        $paginationQuery = $this->getPaginationParams();
 
         $modules = Module::orderBy($paginationQuery->orderBy, $paginationQuery->order)
             ->paginate($paginationQuery->perPage);
