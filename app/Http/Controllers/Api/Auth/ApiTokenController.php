@@ -17,6 +17,11 @@ class ApiTokenController extends Controller
         $this->apiToken = $apiToken;
     }
 
+    public function authenticatedUser()
+    {
+        return $this->apiToken->user();
+    }
+
     public function getToken(ApiTokenRequest $request)
     {   
         return $this->apiToken->getToken($request);

@@ -5,6 +5,7 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use App\Contracts\IUser;
 use App\Contracts\IApiToken;
+use Illuminate\Support\Facades\Auth;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ApiTokenService implements IApiToken
@@ -17,6 +18,17 @@ class ApiTokenService implements IApiToken
     public function __construct(IUser $iUser)
     {
         $this->iUser = $iUser;
+    }
+
+    public function user()
+    {
+        $user =  Auth::user();
+        $user->user_type;
+
+        return ResponseBuilder::asSuccess(200)
+            ->withMessage('You are logged in.')
+            ->withData(['user' => $user])
+            ->build();
     }
 
     public function getToken($request)
@@ -63,12 +75,12 @@ class ApiTokenService implements IApiToken
                 ],
             ]);
 
-            $this->user = $this->isEmail($credentials->username) ? 
-                $this->iUser->getByEmail($credentials->username) :
-                $this->iUser->getByUsername($credentials->username);
+            // $this->user = $this->isEmail($credentials->username) ? 
+            //  $this->iUser->getByEmail($credentials->username) :
+            //  $this->iUser->getByUsername($credentials->username);
 
             $this->token = json_decode($response->getbody());
-            $this->token->user = $this->iUser->getWithUserType($this->user->id);
+            // $this->token->user = $this->iUser->getWithUserType($this->user->id);
 
             return true;
         } catch (\Exception $e) {
@@ -81,6 +93,7 @@ class ApiTokenService implements IApiToken
     protected function sendTokenResponse($data)
     {
         return ResponseBuilder::asSuccess(200)
+            ->withMessage('Successfulyy logged in.')
             ->withData((array) $data)
             ->withHttpCode(200)
             ->build();
