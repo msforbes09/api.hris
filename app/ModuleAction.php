@@ -8,7 +8,7 @@ class ModuleAction extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['code', 'name'];
+    protected $fillable = ['module_id', 'code', 'name'];
 
     public function module()
     {
