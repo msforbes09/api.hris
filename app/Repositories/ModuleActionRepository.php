@@ -2,32 +2,35 @@
 
 namespace App\Repositories;
 
+use App\ModuleAction;
 use App\Contracts\IModuleAction;
 
-class ModuleAction implements IModuleAction
+class ModuleActionRepository implements IModuleAction
 {
     public function all($moduleId)
     {
-        $moduleActions = ModuleAction::where('module_id', $module_id)->get();
+        $moduleActions = ModuleAction::where('module_id', $moduleId)->get();
 
         return $moduleActions->toArray();
     }
 
-    public function getById($id)
+    public function getById($moduleId, $id)
     {
         $moduleAction = ModuleAction::findOrFail($id);
         
         return $moduleAction;
     }
 
-    public function store($request)
+    public function store($request, $moduleId)
     {
+        $request['module_id'] = $moduleId;
+
         $moduleAction = ModuleAction::create($request);
 
         return $moduleAction;
     }
 
-    public function update($request, $id)
+    public function update($request, $moduleId, $id)
     {
         $moduleAction = ModuleAction::findOrFail($id);
 
@@ -38,7 +41,7 @@ class ModuleAction implements IModuleAction
         return $moduleAction;
     }
 
-    public function destroy($id)
+    public function destroy($moduleId, $id)
     {
         $moduleAction = ModuleAction::findOrFail($id);
 
