@@ -10,7 +10,7 @@ class Module extends Model
 
     protected $fillable = ['code', 'name'];
 
-    public function module_actions()
+    public function moduleActions()
     {
         return $this->hasMany('App\ModuleAction');
     }
