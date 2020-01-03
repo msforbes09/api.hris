@@ -6,7 +6,7 @@ class PaginationQuery
 {
     public $allowedOrderByFilter = ['id'];
 
-    public function validatePaginationQuery()
+    public function getPaginationParams()
     {
         $perPage = is_numeric(request('per_page')) ? request('per_page') : 10;
         $orderBy = $this->filterOrderby(request('order_by'));
