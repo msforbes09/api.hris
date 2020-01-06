@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
 
         if($exception instanceof ModelNotFoundException)
         {
-            abort(403, 'Not authorized.');
+            abort(403, 'This action is unauthorized.');
         }
 
         return parent::render($request, $exception);
