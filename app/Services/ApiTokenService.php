@@ -26,7 +26,7 @@ class ApiTokenService implements IApiToken
         $user->user_type;
 
         return ResponseBuilder::asSuccess(200)
-            ->withMessage(__('auth.success', ['name' => $this->user->name]))
+            ->withMessage(__('auth.success', ['name' => $user->name]))
             ->withData(['user' => $user])
             ->build();
     }
