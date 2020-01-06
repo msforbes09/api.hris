@@ -9,6 +9,16 @@ class UserTypeRepository implements IUserType
 {
     public function all()
     {
-        return UserType::all()->toArray();
+        return ['all' => UserType::all()->toArray()];
+    }
+
+    public function getById($id)
+    {
+        return UserType::findOrFail($id);
+    }
+
+    public function access($userType, $access)
+    {
+        $userType->module_actions()->sync($access);
     }
 }
