@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -55,6 +56,11 @@ class Handler extends ExceptionHandler
                 ->withData((array) $exception->errors())
                 ->withHttpCode(422)
                 ->build();
+        }
+
+        if($exception instanceof ModelNotFoundException)
+        {
+            abort(403, 'Not authorized.');
         }
 
         return parent::render($request, $exception);
