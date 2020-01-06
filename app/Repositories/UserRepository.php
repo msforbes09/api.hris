@@ -19,20 +19,15 @@ class UserRepository extends PaginationQuery implements IUser
         $status = $this->userStatusQuery();
         $search = request('search') ?? '';
 
-        $query = $this->userQuery($status, $search);
+        $query = $this->allQuery($status, $search);
 
-        $users = $this->getPaginatedQuery($query, $paginationQuery);       
+        $users = $query->orderBy($paginationQuery->orderBy, $paginationQuery->order)
+            ->paginate($paginationQuery->perPage);       
 
         return $users->toArray();
     }
 
-    protected function getPaginatedQuery($query, $paginationQuery)
-    {
-        return $query->orderBy($paginationQuery->orderBy, $paginationQuery->order)
-            ->paginate($paginationQuery->perPage);
-    }
-
-    protected function userQuery($status, $search)
+    protected function allQuery($status, $search)
     {
         $query = User::select('users.*', 'user_types.name as user_type')
             ->leftJoin('user_types', 'user_types.id', 'users.user_type_id')
