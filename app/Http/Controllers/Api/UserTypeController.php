@@ -25,4 +25,15 @@ class UserTypeController extends Controller
             ->withData($userTypes)
             ->build();
     }
+
+    public function updateAccess($id)
+    {
+        $userType = $this->iUserType->getById($id);
+
+        $this->iUserType->access($userType, request('access'));
+
+        return ResponseBuilder::asSuccess(200)
+            ->withMessage('Accesses updated successfully.')
+            ->build();
+    }
 }
