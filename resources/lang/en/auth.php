@@ -13,6 +13,8 @@ return [
     |
     */
 
+    'received' => 'New authorization token received.',
+    'success' => 'Welcome :name!',
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
