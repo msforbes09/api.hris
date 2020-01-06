@@ -17,13 +17,14 @@ Route::post('/get-token', 'Api\Auth\ApiTokenController@getToken')->name('getToke
 Route::post('/forgot-password', 'Api\Auth\ApiForgotPasswordController@sendResetLinkEmail');
 Route::post('/reset-password', 'Api\Auth\ApiResetPasswordController@reset');
 
-Route::get('/user-types', 'Api\UserTypeController@index');
-
 Route::middleware('auth:api')->group(function() {
     Route::get('/auth-user', 'Api\Auth\ApiTokenController@authenticatedUser');
+    Route::get('/user-types', 'Api\UserTypeController@index');
+
+    Route::post('/user-types/{id}/accesses', 'Api\UserTypeController@updateAccess');
     Route::post('/remove-tokens', 'Api\Auth\ApiTokenController@removeToken')->name('removeToken');
 
-    Route::resources(
+    Route::apiResources(
     [
         'users' => 'Api\UserController',
         'modules' => 'Api\ModuleController',
