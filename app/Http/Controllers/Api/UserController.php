@@ -24,6 +24,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', $this->iUser->model);
+
         $usersPePage = $this->iUser->all();
 
         return ResponseBuilder::asSuccess(200)
@@ -39,6 +41,8 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        $this->authorize('create', $this->iUser->model);
+
         $validatedRequest = $request->validated();
 
         $newUser = $this->iUser->store($validatedRequest);
@@ -58,6 +62,8 @@ class UserController extends Controller
     {
         $user = $this->iUser->getById($id);
 
+        $this->authorize('view', $user);
+
         return ResponseBuilder::asSuccess(200)
             ->withData($user)
             ->build();
@@ -71,14 +77,16 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(UserRequest $request, $id)
-    {
+    {   
+        $this->authorize('update', $this->iUser->getById($id));
+
         $validatedRequest = $request->validated();
 
         $updatedUser = $this->iUser->update($validatedRequest, $id);
 
         return ResponseBuilder::asSuccess(200)
-            ->withData($updatedUser)
-            ->build();
+           ->withData($updatedUser)
+           ->build();
     }
 
     /**
@@ -89,6 +97,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', $this->iUser->getById($id));
+
         if($this->iUser->destroy($id))
         {
             return ResponseBuilder::asSuccess(200)
