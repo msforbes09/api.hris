@@ -5,11 +5,15 @@ namespace App\Repositories;
 use App\User;
 use App\Contracts\IUser;
 use App\Contracts\PaginationQuery;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends PaginationQuery implements IUser
 {
-    public function __construct()
+    public $model;
+
+    public function __construct(User $user)
     {
+        $this->model = $user;
         $this->allowedOrderByFilter = ['email', 'username', 'user_type', 'name', 'active'];
     }
 
@@ -87,6 +91,7 @@ class UserRepository extends PaginationQuery implements IUser
     public function store($request)
     {
         $request['active'] = 1;
+        $request['password'] = Hash::make($request['password']);
 
         $user = User::create($request);
 
