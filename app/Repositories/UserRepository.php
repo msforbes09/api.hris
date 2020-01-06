@@ -100,7 +100,7 @@ class UserRepository extends PaginationQuery implements IUser
 
     public function update($request, $id)
     {
-        $user = $this->getUserbyId($id);
+        $user = $this->getById($id);
 
         $user->fill($request);
 
@@ -111,7 +111,7 @@ class UserRepository extends PaginationQuery implements IUser
 
     public function destroy($id)
     {
-        $user = $this->getUserbyId($id);
+        $user = $this->getById($id);
 
         if($user->delete())
         {
