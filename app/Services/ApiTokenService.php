@@ -26,7 +26,7 @@ class ApiTokenService implements IApiToken
         $user->user_type;
 
         return ResponseBuilder::asSuccess(200)
-            ->withMessage('You are logged in.')
+            ->withMessage(__('auth.success', ['name' => $this->user->name])))
             ->withData(['user' => $user])
             ->build();
     }
@@ -93,7 +93,7 @@ class ApiTokenService implements IApiToken
     protected function sendTokenResponse($data)
     {
         return ResponseBuilder::asSuccess(200)
-            ->withMessage('Successfulyy logged in.')
+            ->withMessage(__('auth.received'))
             ->withData((array) $data)
             ->withHttpCode(200)
             ->build();
@@ -102,7 +102,7 @@ class ApiTokenService implements IApiToken
     protected function sendTokenFailResponse($error)
     {
         return ResponseBuilder::asError($error->getCode())
-            ->withMessage('Invalid username or password.')
+            ->withMessage(__('auth.failed'))
             ->withHttpCode($error->getCode())
             ->build();
     }
