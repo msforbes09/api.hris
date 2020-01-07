@@ -90,7 +90,6 @@ class UserRepository extends PaginationQuery implements IUser
 
     public function store($request)
     {
-        $request['active'] = 1;
         $request['password'] = Hash::make($request['password']);
 
         $user = User::create($request);
