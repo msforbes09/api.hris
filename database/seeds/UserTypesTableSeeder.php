@@ -13,8 +13,9 @@ class UserTypesTableSeeder extends Seeder
     {
         $types = [
             'administrator',
-            'applicant',
-            'recruiter'
+            'manager',
+            'evaluator',
+            'encoder',
         ];
 
         foreach ($types as $type) {
