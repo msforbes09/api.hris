@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'log' => 'User ":name" with id: :id has :action',
+    'log' => 'User ":name" with id: :id, has :action',
     'received' => 'New authorization token received.',
     'success' => 'Welcome :name!',
     'failed' => 'These credentials do not match our records.',
