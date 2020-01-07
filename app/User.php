@@ -4,6 +4,7 @@ namespace App;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ApiResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,5 +39,10 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ApiResetPasswordNotification($token, $this->email));
+    }
+
+    public function sendWelcomeNotification($password)
+    {
+        $this->notify(new WelcomeNotification($this, $password));
     }
 }
