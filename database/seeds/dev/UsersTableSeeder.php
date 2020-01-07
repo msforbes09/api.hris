@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'sriadmin',
             'email' => 'sriwebapp@gmail.com',
             'active' => 1,
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => config('app.default_pass'),
             'remember_token' => Str::random(10),
         ]);
 
@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'isaac',
             'email' => 'isaac.aranas@csic.ph',
             'active' => 1,
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => config('app.default_pass'),
             'remember_token' => Str::random(10),
         ]);
 
@@ -39,7 +39,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'arnel',
             'email' => 'arnel.forbes@csic.ph',
             'active' => 1,
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => config('app.default_pass'),
             'remember_token' => Str::random(10),
         ]);
 
@@ -49,7 +49,7 @@ class UsersTableSeeder extends Seeder
             'username' => 'kenneth',
             'email' => 'kenneth.nava@csic.ph',
             'active' => 1,
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => config('app.default_pass'),
             'remember_token' => Str::random(10),
         ]);
 
