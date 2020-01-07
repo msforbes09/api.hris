@@ -29,7 +29,7 @@ class UserRequest extends FormRequest
             'name' => 'required',
             'username' => 'required|unique:users,username,' . $userId . ',id',
             'email' => 'required|email|unique:users,email,' . $userId . ',id',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'sometimes|required|min:8|confirmed',
             'user_type_id' => 'required'
         ];
     }
