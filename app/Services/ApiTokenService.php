@@ -112,8 +112,8 @@ class ApiTokenService implements IApiToken
         });
 
         Log::info(__('auth.log', [
-                'name' => $this->user->name, 
-                'id' => $this->user->id,
+                'name' => $user->name, 
+                'id' => $user->id,
                 'action' => 'logged out.'
             ]));
 
