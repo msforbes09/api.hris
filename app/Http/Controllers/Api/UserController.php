@@ -94,8 +94,6 @@ class UserController extends Controller
 
         $validatedRequest = $request->validated();
 
-        dd($validatedRequest);
-
         $updatedUser = $this->iUser->update($validatedRequest, $id);
 
         Log::info(__('logging.updated_user', [
