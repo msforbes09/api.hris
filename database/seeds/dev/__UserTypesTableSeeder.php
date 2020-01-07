@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class UserTypesTableSeeder extends Seeder
+class __UserTypesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

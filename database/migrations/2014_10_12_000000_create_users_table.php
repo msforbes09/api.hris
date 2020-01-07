@@ -27,10 +27,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        Schema::table('users', function(Blueprint $table) {
-            $table->foreign('user_type_id')->references('id')->on('user_types');
-        });
     }
 
     /**
