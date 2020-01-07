@@ -106,7 +106,7 @@ class UserRepository extends PaginationQuery implements IUser
 
         if(Arr::has($request, 'password'))
         {
-            $user->password = Hash::make($request['password'])
+            $user->password = Hash::make($request['password']);
         }
 
         $user->save();
