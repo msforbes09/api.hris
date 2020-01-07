@@ -59,7 +59,7 @@ return [
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'HRIS Log',
             'emoji' => ':boom:',
-            'level' => 'error',
+            'level' => env('LOG_LEVEL'),
         ],
 
         'papertrail' => [
