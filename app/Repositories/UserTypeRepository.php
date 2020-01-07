@@ -8,30 +8,11 @@ use App\Contracts\PaginationQuery;
 
 class UserTypeRepository extends PaginationQuery implements IUserType 
 {
-    public function __construct()
-    {
-        $this->allowedOrderByFilter = ['name'];
-    }
-
     public function all()
     {
-        $paginationQuery = $this->getPaginationParams();
+        $userTypes = UserType::all();
 
-        $search = request('search') ?? '';
-
-        $query = $this->allQuery($search);
-
-        $userTypes = $query->orderBy($paginationQuery->orderBy, $paginationQuery->order)
-            ->paginate($paginationQuery->perPage);       
-
-        return $userTypes->toArray();
-    }
-
-    public function allQuery($search)
-    {
-        $userTypes = UserType::where('name', 'like', '%' . $search . '%');
-
-        return $userTypes;
+        return ['user_types' => $userTypes];
     }
 
     public function getById($id)
