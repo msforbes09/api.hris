@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\User;
 use App\Contracts\IUser;
+use Illuminate\Support\Arr;
 use App\Contracts\PaginationQuery;
 use Illuminate\Support\Facades\Hash;
 
@@ -102,6 +103,11 @@ class UserRepository extends PaginationQuery implements IUser
         $user = $this->getById($id);
 
         $user->fill($request);
+
+        if(Arr::has($request, 'password'))
+        {
+            $user->password = Hash::make($request['password'])
+        }
 
         $user->save();
 
