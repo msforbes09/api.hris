@@ -48,6 +48,8 @@ class UserController extends Controller
         $validatedRequest = $request->validated();
 
         $newUser = $this->iUser->store($validatedRequest);
+
+        $newUser->sendWelcomeNotification($validatedRequest['password']);
         
         Log::info(__('logging.created_user', [
             'name' => Auth::user()->name,
@@ -57,6 +59,7 @@ class UserController extends Controller
         ]));
 
         return ResponseBuilder::asSuccess(200)
+            ->withMessage('User successfully created.')
             ->withData($newUser)
             ->build();
     }
@@ -91,6 +94,8 @@ class UserController extends Controller
 
         $validatedRequest = $request->validated();
 
+        dd($validatedRequest);
+
         $updatedUser = $this->iUser->update($validatedRequest, $id);
 
         Log::info(__('logging.updated_user', [
@@ -101,8 +106,9 @@ class UserController extends Controller
         ]));
 
         return ResponseBuilder::asSuccess(200)
-           ->withData($updatedUser)
-           ->build();
+            ->withMessage('User successfully updated.')
+            ->withData($updatedUser)
+            ->build();
     }
 
     /**
