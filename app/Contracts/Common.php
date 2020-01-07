@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Contracts;
 
 use Faker\Factory as Faker;
-use App\Http\Controllers\Controller;
 
-class UserServices extends Controller
+trait Common
 {
     public function getRandomPassword()
     {

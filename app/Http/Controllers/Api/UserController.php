@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Contracts\Common;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
-use App\Services\UserServices;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends UserServices
+class UserController extends Controller
 {
+    use Common;
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +30,7 @@ class UserController extends UserServices
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserRequest $request)
@@ -57,13 +59,18 @@ class UserController extends UserServices
         ]));
 
 
-        return response()->json($newUser);
+        return response()->json([
+            'message' => 'User successfully created.',
+            'data' => [
+                'user' => $newUser
+            ]
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
@@ -80,8 +87,8 @@ class UserController extends UserServices
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Http\Requests\UserRequest  $request
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
     public function update(UserRequest $request, User $user)
@@ -121,10 +128,10 @@ class UserController extends UserServices
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
         abort(403);
     }
