@@ -17,6 +17,10 @@ class CreateUserTypesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
         });
+
+        Schema::table('users', function(Blueprint $table) {
+            $table->foreign('user_type_id')->references('id')->on('user_types');
+        });
     }
 
     /**

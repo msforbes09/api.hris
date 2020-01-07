@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ModuleTableSeeder extends Seeder
+class __ModuleTableSeeder extends Seeder
 {
     protected $modules = [
         ['code'=>'001', 'name' => 'User Module'],
