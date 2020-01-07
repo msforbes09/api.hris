@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Contracts\IUser;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class UserController extends Controller
@@ -47,6 +49,13 @@ class UserController extends Controller
 
         $newUser = $this->iUser->store($validatedRequest);
         
+        Log::info(__('logging.created_user', [
+            'name' => Auth::user()->name,
+            'id' => Auth::user()->id,
+            'created_name' => $newUser->name,
+            'created_id' => $newUser->id,
+        ]));
+
         return ResponseBuilder::asSuccess(200)
             ->withData($newUser)
             ->build();
@@ -84,6 +93,13 @@ class UserController extends Controller
 
         $updatedUser = $this->iUser->update($validatedRequest, $id);
 
+        Log::info(__('logging.updated_user', [
+            'name' => Auth::user()->name,
+            'id' => Auth::user()->id,
+            'updated_name' => $updatedUser->name,
+            'updated_id' => $updatedUser->id,
+        ]));
+
         return ResponseBuilder::asSuccess(200)
            ->withData($updatedUser)
            ->build();
@@ -97,10 +113,19 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('delete', $this->iUser->getById($id));
+        $deletedUser = $this->iUser->getById($id);
+
+        $this->authorize('delete', $deletedUser);
 
         if($this->iUser->destroy($id))
         {
+             Log::info(__('logging.deleted_user', [
+                'name' => Auth::user()->name,
+                'id' => Auth::user()->id,
+                'deleted_name' => $deletedUser->name,
+                'deleted_id' => $deletedUser->id,
+            ]));
+             
             return ResponseBuilder::asSuccess(200)
                 ->withMessage('User successfully deleted.')
                 ->build();
