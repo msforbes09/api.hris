@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+
 use App\Contracts\IUser;
+use Faker\Factory as Faker;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class UserController extends Controller
@@ -47,9 +50,13 @@ class UserController extends Controller
 
         $validatedRequest = $request->validated();
 
+        $password = Faker::create()->password();
+    
+        $validatedRequest['password'] = Hash::make($password);
+
         $newUser = $this->iUser->store($validatedRequest);
 
-        $newUser->sendWelcomeNotification($validatedRequest['password']);
+        $newUser->sendWelcomeNotification($password);
         
         Log::info(__('logging.created_user', [
             'name' => Auth::user()->name,
@@ -93,6 +100,11 @@ class UserController extends Controller
         $this->authorize('update', $this->iUser->getById($id));
 
         $validatedRequest = $request->validated();
+
+         if(Arr::has($validatedRequest, 'password'))
+        {
+            $validatedRequest['password'] = Hash::make($request['password']);
+        }
 
         $updatedUser = $this->iUser->update($validatedRequest, $id);
 
