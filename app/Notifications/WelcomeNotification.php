@@ -46,7 +46,7 @@ class WelcomeNotification extends Notification
     {
         return (new MailMessage)
                     ->subject('Welcome to HRIS')
-                    ->line('Welcome, ' . $this->user->name . '! You can now access you account by clicking the button below.')
+                    ->line('Welcome, ' . $this->user->name . '! You can now access your account by clicking the button below.')
                     ->action('Go to HRIS', url(config('app.ui_url')))
                     ->line('Username: ' . $this->user->email . ' or ' . $this->user->username)
                     ->line('Password: ' . $this->password);
