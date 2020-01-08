@@ -2,38 +2,39 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Contracts\IUserType;
+use App\UserType;
+use App\ModuleAction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class UserTypeController extends Controller
 {
-    protected $iUserType;
-
-    public function __construct(IUserType $iUserType)
-    {
-        $this->iUserType = $iUserType;
-    }
-
     public function index()
     {
-        $userTypes = $this->iUserType->all();
-
-        return ResponseBuilder::asSuccess(200)
-            ->withData($userTypes)
-            ->build();
+        return response()->json([
+            'message' => 'Successfully retrieved user types.',
+            'data' => UserType::with('moduleActions')->get()
+        ]);
     }
 
     public function updateAccess($id)
     {
-        $userType = $this->iUserType->getById($id);
+        $userType = UserType::findOrFail($id);
 
-        $this->iUserType->access($userType, request('access'));
+        $accesses = request('accesses');
 
-        return ResponseBuilder::asSuccess(200)
-            ->withMessage('Accesses updated successfully.')
-            ->build();
+
+        $actions = ModuleAction::all()->filter(function ($module_action) use ($accesses)
+        {
+            return in_array($module_action->id, $accesses);
+        });
+
+
+        $userType->moduleActions()->sync($actions);
+
+
+        return response()->json([
+            'message' => 'Successfully updated accesses for this user type.'
+        ]);
     }
 }

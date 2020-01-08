@@ -20,6 +20,7 @@ Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
 Route::middleware('auth:api')->group(function() {
     Route::get('/auth-user', 'Api\Auth\TokenController@user');
     Route::get('/user-types', 'Api\UserTypeController@index');
+    Route::get('/users/{user}/accesses/', 'Api\UserController@accesses');
 
     Route::post('/user-types/{id}/accesses', 'Api\UserTypeController@updateAccess');
     Route::post('/remove-tokens', 'Api\Auth\TokenController@remove');
@@ -28,6 +29,5 @@ Route::middleware('auth:api')->group(function() {
     [
         'users' => 'Api\UserController',
         'modules' => 'Api\ModuleController',
-        'modules.module_actions' => 'Api\ModuleActionController'
     ]);
 });

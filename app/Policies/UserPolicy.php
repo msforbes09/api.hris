@@ -19,7 +19,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        $actions = $user->user_type->module_actions;
+        $actions = $user->user_type->moduleActions;
 
         return $actions->where('code', 'V-' . $this->module)->count();
     }
@@ -33,7 +33,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        $actions = $user->user_type->module_actions;
+        $actions = $user->user_type->moduleActions;
 
         return $actions->where('code', 'V-' . $this->module)->count() || $user->id === $model->id;
     }
@@ -46,7 +46,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        $actions = $user->user_type->module_actions;
+        $actions = $user->user_type->moduleActions;
 
         return $actions->where('code', 'S-' . $this->module)->count();
     }
@@ -60,7 +60,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        $actions = $user->user_type->module_actions;
+        $actions = $user->user_type->moduleActions;
 
         return $actions->where('code', 'U-' . $this->module)->count() || $user->id == $model->id;
     }
@@ -74,8 +74,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        $actions = $user->user_type->module_actions;
-        
+        $actions = $user->user_type->moduleActions;
+
         return $actions->where('code', 'D-' . $this->module)->count() && $user->id !== $model->id;
     }
 

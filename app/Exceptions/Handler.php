@@ -49,20 +49,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if($exception instanceof ValidationException)
-        {
-            return ResponseBuilder::asError(422)
-                ->withMessage($exception->getMessage())
-                ->withData((array) $exception->errors())
-                ->withHttpCode(422)
-                ->build();
-        }
-
-        if($exception instanceof ModelNotFoundException)
-        {
-            abort(403, 'This action is unauthorized.');
-        }
-
         return parent::render($request, $exception);
     }
 }
