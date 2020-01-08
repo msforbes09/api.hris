@@ -17,9 +17,10 @@ class TokenController extends Controller
 {
     public function user()
     {
-        $user = Auth::user();
-
-
+        return response()->json([
+            'message' => 'Successfully retrieved authenticated user.',
+            'data' => Auth::user()
+        ]);
     }
 
     public function get(TokenRequest $request)
@@ -43,7 +44,7 @@ class TokenController extends Controller
                 'data' => [
                     'password' => __('auth.failed', ['field' => 'password'])
                 ]
-            ]);
+            ], 422);
         }
 
 
@@ -52,7 +53,7 @@ class TokenController extends Controller
             'data' => [
                 'username' => __('auth.failed', ['field' => 'username'])
             ]
-        ]);
+        ], 422);
     }
 
     public function remove(User $user)

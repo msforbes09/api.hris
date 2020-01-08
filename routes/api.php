@@ -18,7 +18,7 @@ Route::post('/forgot-password', 'Api\Auth\ForgotPasswordController@sendResetLink
 Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
-    Route::get('/auth-user', 'Api\Auth\ApiTokenController@authenticatedUser');
+    Route::get('/auth-user', 'Api\Auth\TokenController@user');
     Route::get('/user-types', 'Api\UserTypeController@index');
 
     Route::post('/user-types/{id}/accesses', 'Api\UserTypeController@updateAccess');
