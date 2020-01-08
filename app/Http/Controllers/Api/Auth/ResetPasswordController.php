@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class ResetPasswordController extends Controller
@@ -21,6 +22,8 @@ class ResetPasswordController extends Controller
 
      public function sendResetResponse(Request $request, $response)
     {
+        removeTokens($user);
+
         return response()->json([
             'message' => 'Password reset successfully.'
         ]);
