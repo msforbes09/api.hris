@@ -13,16 +13,16 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/get-token', 'Api\Auth\ApiTokenController@getToken')->name('getToken');
-Route::post('/forgot-password', 'Api\Auth\ApiForgotPasswordController@sendResetLinkEmail');
-Route::post('/reset-password', 'Api\Auth\ApiResetPasswordController@reset');
+Route::post('/get-token', 'Api\Auth\TokenController@get')->name('getToken');
+Route::post('/forgot-password', 'Api\Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
     Route::get('/auth-user', 'Api\Auth\ApiTokenController@authenticatedUser');
     Route::get('/user-types', 'Api\UserTypeController@index');
 
     Route::post('/user-types/{id}/accesses', 'Api\UserTypeController@updateAccess');
-    Route::post('/remove-tokens', 'Api\Auth\ApiTokenController@removeToken')->name('removeToken');
+    Route::post('/remove-tokens', 'Api\Auth\TokenController@remove');
 
     Route::apiResources(
     [
