@@ -19,8 +19,20 @@ class ToolController extends Controller
 
     public function moduleManagement()
     {
+        $modules = Module::with('moduleActions')->get()->map(function($module) {
+            return [
+                'label' => $module->name,
+                'children' => $module->moduleActions->map(function($action)
+                {
+                    return [
+                        'label' => $action->name
+                    ];
+                })
+            ];
+        });
+
         return [
-            'modules' => Module::with('moduleActions')->get()
+            'modules' => $modules
         ];
     }
 }
