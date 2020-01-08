@@ -54,10 +54,7 @@ class TokenController extends Controller
 
     public function remove(User $user)
     {
-       auth()->user()->tokens->each(function($token, $key)
-       {
-            $token->delete();
-       });
+       removeTokens(auth()->user());
 
         appLog('Logged_Out', auth()->user()->id);
 
