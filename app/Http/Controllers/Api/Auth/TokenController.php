@@ -17,9 +17,10 @@ class TokenController extends Controller
 {
     public function user()
     {
-        $user = Auth::user();
-
-
+        return response()->json([
+            'message' => 'Successfully retrieved authenticated user.',
+            'data' => Auth::user()
+        ]);
     }
 
     public function get(TokenRequest $request)
