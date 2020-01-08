@@ -16,9 +16,6 @@ class ModuleController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'message' => 'Successfully retrieved modules.',
-            'data' => Module::with('moduleActions')->get()
-        ]);
+        return Module::with('moduleActions')->get();
     }
 }

@@ -12,139 +12,58 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $this->authorize('viewAny', User::class);
 
-
-        return response()->json([
-            'message' => 'Successfully retrieved users.',
-            'data' => User::with('user_type')->get()
-        ]);
+        return User::with('userType')->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  App\Http\Requests\UserRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(UserRequest $request)
     {
         $this->authorize('create', User::class);
 
-
         $password = getRandomPassword();
 
-        $data = $request->validated();
+        $user = User::create(request()->merge(['password' => bcrypt($password)])->toArray());
 
-        $data['password'] = bcrypt($password);
+        $user->sendWelcomeNotification($password);
 
-
-        $newUser = User::create($data);
-
-
-        $newUser->sendWelcomeNotification($password);
-
-
-        appLog('Create_User', auth()->user()->id, $newUser);
-
+        appLog('Create_User', auth()->user()->id, $user);
 
         return response()->json([
             'message' => 'Successfully created user.',
-            'data' => [
-                'user' => $newUser
-            ]
+            'user' => $user
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  User $user
-     * @return \Illuminate\Http\Response
-     */
     public function show(User $user)
     {
         $this->authorize('view', $user);
 
+        $user->userType->moduleActions;
 
-        $user->user_type;
-
-
-        return response()->json([
-            'message' => 'Successfully retrieved user.',
-            'data' => $user
-        ]);
+        return $user;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  App\Http\Requests\UserRequest  $request
-     * @param  User $user
-     * @return \Illuminate\Http\Response
-     */
     public function update(UserRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
-
-        $data = $request->validated();
-
-        if(Arr::has($data, 'password'))
-        {
-            $data['password'] = bcrypt($data['password']);
-        }
-
-
-        $user->fill($data);
+        $user->fill(request()->toArray());
 
         $user->save();
 
-
         appLog('Updated_User', auth()->user()->id, $user);
-
 
         return response()->json([
             'message' => 'Successfully updated user.',
-            'data' => [
-                'user' => $user
-            ]
+            'user' => $user
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  User $user
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
         abort(403);
-    }
-
-
-    public function accesses(User $user)
-    {
-        $this->authorize('view', $user);
-
-        $accesses = $user->user_type->module_actions;
-
-        $message = $accesses->count()
-                    ? 'Successfully retrieved user accesses.'
-                    : 'No accesses found.';
-
-
-        return response()->json([
-            'message' =>  $message,
-            'data' => $accesses
-        ]);
     }
 }
