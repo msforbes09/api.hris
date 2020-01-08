@@ -18,6 +18,11 @@ Route::post('/forgot-password', 'Api\Auth\ForgotPasswordController@sendResetLink
 Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
+    Route::prefix('tool')->group(function () {
+        Route::get('user-management', 'Api\ToolController@userManagement');
+        Route::get('module-management', 'Api\ToolController@moduleManagement');
+    });
+
     Route::get('/auth-user', 'Api\Auth\TokenController@user');
     Route::get('/user-types', 'Api\UserTypeController@index');
     Route::get('/users/{user}/accesses/', 'Api\UserController@accesses');
