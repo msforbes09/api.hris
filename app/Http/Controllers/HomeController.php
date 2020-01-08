@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,12 +24,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(in_array(request('user'), ['kenneth.nava@csic.ph'])) {}
-            else
-            {
-                return redirect('/');
-            }
-            
+        if(Auth::user()->user_type->name != 'administrator')
+        {
+            Auth::logout();
+        }
+
         return view('home');
     }
 }
