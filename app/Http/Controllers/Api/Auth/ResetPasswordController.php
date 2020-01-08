@@ -20,10 +20,25 @@ class ResetPasswordController extends Controller
         ];
     }
 
+    public function reset(Request $request)
+    {
+        $request->validate($this->rules(), $this->validationErrorMessages());
+
+        $response = $this->broker()->reset(
+            $this->credentials($request), function ($user, $password) {
+                $this->resetPassword($user, $password);
+
+                removeTokens($user);
+            }
+        );
+
+        return $response == Password::PASSWORD_RESET
+                    ? $this->sendResetResponse($request, $response)
+                    : $this->sendResetFailedResponse($request, $response);
+    }
+
      public function sendResetResponse(Request $request, $response)
     {
-        removeTokens($user);
-
         return response()->json([
             'message' => 'Password reset successfully.'
         ]);
