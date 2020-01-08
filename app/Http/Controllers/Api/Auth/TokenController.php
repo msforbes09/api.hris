@@ -43,7 +43,7 @@ class TokenController extends Controller
                 'data' => [
                     'password' => __('auth.failed', ['field' => 'password'])
                 ]
-            ]);
+            ], 422);
         }
 
 
@@ -52,7 +52,7 @@ class TokenController extends Controller
             'data' => [
                 'username' => __('auth.failed', ['field' => 'username'])
             ]
-        ]);
+        ], 422);
     }
 
     public function remove(User $user)
