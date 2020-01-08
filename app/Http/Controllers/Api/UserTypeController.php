@@ -17,21 +17,11 @@ class UserTypeController extends Controller
         ]);
     }
 
-    public function updateAccess($id)
+    public function updateAccess(UserType $userType)
     {
-        $userType = UserType::findOrFail($id);
-
-        $accesses = request('accesses');
-
-
-        $actions = ModuleAction::all()->filter(function ($module_action) use ($accesses)
-        {
-            return in_array($module_action->id, $accesses);
-        });
-
+        $actions = ModuleAction::whereIn('id', request('accesses'))->get();
 
         $userType->moduleActions()->sync($actions);
-
 
         return response()->json([
             'message' => 'Successfully updated accesses for this user type.'
