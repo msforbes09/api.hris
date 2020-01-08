@@ -28,7 +28,7 @@ class ToolController extends Controller
                 {
                     return [
                         'id' => $action->id,
-                        'code' => $module->code,
+                        'code' => $action->code,
                         'label' => $action->name
                     ];
                 })
