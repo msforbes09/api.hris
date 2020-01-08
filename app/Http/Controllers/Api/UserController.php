@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
-use App\Contracts\Common;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -13,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    use Common;
     /**
      * Display a listing of the resource.
      *
@@ -38,7 +36,7 @@ class UserController extends Controller
         $this->authorize('create', User::class);
 
 
-        $password = $this->getRandomPassword();
+        $password = getRandomPassword();
 
         $data = $request->validated();
 
@@ -48,15 +46,10 @@ class UserController extends Controller
         $newUser = User::create($data);
 
 
-        $this->sendWelcome($newUser, $password);
+        $newUser->sendWelcomeNotification($password);
 
 
-        Log::info(__('logging.created_user', [
-            'name' => Auth::user()->name,
-            'id' => Auth::user()->id,
-            'created_name' => $newUser->name,
-            'created_id' => $newUser->id,
-        ]));
+        appLog('Create_User', auth()->user()->id, $newUser);
 
 
         return response()->json([
@@ -77,10 +70,10 @@ class UserController extends Controller
     {
         $this->authorize('view', $user);
 
-        
+
         $user->user_type;
 
-        
+
         return response()->json($user);
     }
 
@@ -97,7 +90,7 @@ class UserController extends Controller
 
 
         $data = $request->validated();
-     
+
         if(Arr::has($data, 'password'))
         {
             $data['password'] = bcrypt($data['password']);
@@ -109,12 +102,7 @@ class UserController extends Controller
         $user->save();
 
 
-        Log::info(__('logging.updated_user', [
-            'name' => Auth::user()->name,
-            'id' => Auth::user()->id,
-            'updated_name' => $user->name,
-            'updated_id' => $user->id,
-        ]));
+        appLog('Updated_User', auth()->user()->id, $user);
 
 
         return response()->json([
@@ -134,5 +122,23 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         abort(403);
+    }
+
+
+    public function accesses(User $user)
+    {
+        $this->authorize('view', $user);
+
+        $accesses = $user->user_type->module_actions;
+
+        $message = $accesses->count()
+                    ? 'Successfully retrieved user accesses.'
+                    : 'No accesses found.';
+
+
+        return response()->json([
+            'message' =>  $message,
+            'data' => $accesses
+        ]);
     }
 }
