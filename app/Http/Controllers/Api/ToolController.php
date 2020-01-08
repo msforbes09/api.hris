@@ -21,10 +21,14 @@ class ToolController extends Controller
     {
         $modules = Module::with('moduleActions')->get()->map(function($module) {
             return [
+                'id' => $module->id,
+                'code' => $module->code,
                 'label' => $module->name,
                 'children' => $module->moduleActions->map(function($action)
                 {
                     return [
+                        'id' => $action->id,
+                        'code' => $module->code,
                         'label' => $action->name
                     ];
                 })
