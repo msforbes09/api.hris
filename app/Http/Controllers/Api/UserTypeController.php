@@ -13,7 +13,7 @@ class UserTypeController extends Controller
     {
         return response()->json([
             'message' => 'Successfully retrieved user types.',
-            'data' => UserType::with('module_actions')->get()
+            'data' => UserType::with('moduleActions')->get()
         ]);
     }
 
@@ -30,9 +30,11 @@ class UserTypeController extends Controller
         });
 
 
-        $userType->module_actions()->sync($actions);
+        $userType->moduleActions()->sync($actions);
 
 
-        return $userType->module_actions;
+        return response()->json([
+            'message' => 'Successfully updated accesses for this user type.'
+        ]);
     }
 }

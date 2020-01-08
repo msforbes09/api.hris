@@ -29,6 +29,5 @@ Route::middleware('auth:api')->group(function() {
     [
         'users' => 'Api\UserController',
         'modules' => 'Api\ModuleController',
-        'modules.module_actions' => 'Api\ModuleActionController'
     ]);
 });

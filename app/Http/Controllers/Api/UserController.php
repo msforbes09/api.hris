@@ -22,7 +22,10 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
 
-        return response()->json(User::with('user_type')->get());
+        return response()->json([
+            'message' => 'Successfully retrieved users.',
+            'data' => User::with('user_type')->get()
+        ]);
     }
 
     /**
@@ -53,7 +56,7 @@ class UserController extends Controller
 
 
         return response()->json([
-            'message' => 'User successfully created.',
+            'message' => 'Successfully created user.',
             'data' => [
                 'user' => $newUser
             ]
@@ -74,7 +77,10 @@ class UserController extends Controller
         $user->user_type;
 
 
-        return response()->json($user);
+        return response()->json([
+            'message' => 'Successfully retrieved user.',
+            'data' => $user
+        ]);
     }
 
     /**
@@ -106,7 +112,7 @@ class UserController extends Controller
 
 
         return response()->json([
-            'message' => 'User successfully updated.',
+            'message' => 'Successfully updated user.',
             'data' => [
                 'user' => $user
             ]
