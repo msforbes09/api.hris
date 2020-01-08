@@ -7,6 +7,7 @@ use App\Contracts\IUser;
 use App\Contracts\IApiToken;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Exception\ServerException;
 use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class ApiTokenService implements IApiToken
@@ -36,12 +37,12 @@ class ApiTokenService implements IApiToken
     {
         // Validate
         $credentials = (Object) $request->validated();
-        // Set User
-       $this->setUser($credentials);
+        //Lookup User
+        if($this->lookUpUser($credentials) === null){
+            return $this->sendTokenFailResponse(__('auth.incorrect'));
+        }
         // Return generated Token
-        return $this->generateTokenData($credentials->password) ?
-            $this->sendTokenResponse($this->token) :
-            $this->sendTokenFailResponse($this->error);
+        return $this->generateTokenData($credentials->password);
     }
 
     protected function isEmail($username)
@@ -49,11 +50,13 @@ class ApiTokenService implements IApiToken
         return filter_var($username, FILTER_VALIDATE_EMAIL);
     }
 
-    protected function setUser($credentials)
+    protected function lookUpUser($credentials)
     {
         $this->user =  $this->isEmail($credentials->username) 
             ? $this->iUser->getByEmail($credentials->username)
             : $this->iUser->getByUsername($credentials->username);
+
+        return $this->user;
     }
 
     protected function generateTokenData($password)
@@ -72,19 +75,20 @@ class ApiTokenService implements IApiToken
                 ],
             ]);
 
-            $this->token = json_decode($response->getbody());
-
             Log::info(__('auth.log', [
                 'name' => $this->user->name, 
                 'id' => $this->user->id,
                 'action' => 'logged in.'
             ]));
 
-            return true;
+            return $this->sendTokenResponse(json_decode($response->getbody()));
         } catch (\Exception $e) {
-            $this->error = $e;
+            if($e instanceof ServerException)
+            {
+                return $this->sendTokenFailResponse(__('auth.oops'));
+            }
 
-            return false;
+            return $this->sendTokenFailResponse(__('auth.incorrect'));
         }
     }
 
@@ -93,15 +97,14 @@ class ApiTokenService implements IApiToken
         return ResponseBuilder::asSuccess(200)
             ->withMessage(__('auth.received'))
             ->withData((array) $data)
-            ->withHttpCode(200)
             ->build();
     }
 
-    protected function sendTokenFailResponse($error)
+    protected function sendTokenFailResponse($message)
     {
-        return ResponseBuilder::asError($error->getCode())
-            ->withMessage(__('auth.failed'))
-            ->withHttpCode($error->getCode())
+        return ResponseBuilder::asError(422)
+            ->withMessage($message)
+            ->withHttpCode(422)
             ->build();
     }
 
@@ -112,8 +115,8 @@ class ApiTokenService implements IApiToken
         });
 
         Log::info(__('auth.log', [
-                'name' => $this->user->name, 
-                'id' => $this->user->id,
+                'name' => $user->name, 
+                'id' => $user->id,
                 'action' => 'logged out.'
             ]));
 

@@ -17,6 +17,8 @@ return [
     'received' => 'New authorization token received.',
     'success' => 'Welcome :name!',
     'failed' => 'These credentials do not match our records.',
+    'incorrect' => 'You have entered an invalid username or password.',
+    'oops' => 'Something went wrong in server. Please try again.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];

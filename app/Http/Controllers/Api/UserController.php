@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Contracts\IUser;
+use App\User;
+use App\Contracts\Common;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
 class UserController extends Controller
 {
-    protected $iUser;
-
-    public function __construct(IUser $iUser)
-    {
-        $this->iUser = $iUser;
-    }
-
+    use Common;
     /**
      * Display a listing of the resource.
      *
@@ -26,31 +21,36 @@ class UserController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', $this->iUser->model);
+        $this->authorize('viewAny', User::class);
 
-        $usersPePage = $this->iUser->all();
 
-        return ResponseBuilder::asSuccess(200)
-            ->withData($usersPePage)
-            ->build();
+        return response()->json(User::with('user_type')->get());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserRequest $request)
     {
-        $this->authorize('create', $this->iUser->model);
+        $this->authorize('create', User::class);
 
-        $validatedRequest = $request->validated();
 
-        $newUser = $this->iUser->store($validatedRequest);
+        $password = $this->getRandomPassword();
 
-        $newUser->sendWelcomeNotification($validatedRequest['password']);
-        
+        $data = $request->validated();
+
+        $data['password'] = bcrypt($password);
+
+
+        $newUser = User::create($data);
+
+
+        $this->sendWelcome($newUser, $password);
+
+
         Log::info(__('logging.created_user', [
             'name' => Auth::user()->name,
             'id' => Auth::user()->id,
@@ -58,81 +58,81 @@ class UserController extends Controller
             'created_id' => $newUser->id,
         ]));
 
-        return ResponseBuilder::asSuccess(200)
-            ->withMessage('User successfully created.')
-            ->withData($newUser)
-            ->build();
+
+        return response()->json([
+            'message' => 'User successfully created.',
+            'data' => [
+                'user' => $newUser
+            ]
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        $user = $this->iUser->getById($id);
-
         $this->authorize('view', $user);
 
-        return ResponseBuilder::asSuccess(200)
-            ->withData($user)
-            ->build();
+        
+        $user->user_type;
+
+        
+        return response()->json($user);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Http\Requests\UserRequest  $request
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, $id)
-    {   
-        $this->authorize('update', $this->iUser->getById($id));
+    public function update(UserRequest $request, User $user)
+    {
+        $this->authorize('update', $user);
 
-        $validatedRequest = $request->validated();
 
-        $updatedUser = $this->iUser->update($validatedRequest, $id);
+        $data = $request->validated();
+     
+        if(Arr::has($data, 'password'))
+        {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+
+        $user->fill($data);
+
+        $user->save();
+
 
         Log::info(__('logging.updated_user', [
             'name' => Auth::user()->name,
             'id' => Auth::user()->id,
-            'updated_name' => $updatedUser->name,
-            'updated_id' => $updatedUser->id,
+            'updated_name' => $user->name,
+            'updated_id' => $user->id,
         ]));
 
-        return ResponseBuilder::asSuccess(200)
-            ->withMessage('User successfully updated.')
-            ->withData($updatedUser)
-            ->build();
+
+        return response()->json([
+            'message' => 'User successfully updated.',
+            'data' => [
+                'user' => $user
+            ]
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $deletedUser = $this->iUser->getById($id);
-
-        $this->authorize('delete', $deletedUser);
-
-        if($this->iUser->destroy($id))
-        {
-             Log::info(__('logging.deleted_user', [
-                'name' => Auth::user()->name,
-                'id' => Auth::user()->id,
-                'deleted_name' => $deletedUser->name,
-                'deleted_id' => $deletedUser->id,
-            ]));
-             
-            return ResponseBuilder::asSuccess(200)
-                ->withMessage('User successfully deleted.')
-                ->build();
-        }
+        abort(403);
     }
 }
