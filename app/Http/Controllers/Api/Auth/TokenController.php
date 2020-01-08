@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\TokenRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 
@@ -19,7 +18,7 @@ class TokenController extends Controller
     {
         return response()->json([
             'message' => 'Successfully retrieved authenticated user.',
-            'data' => Auth::user()
+            'data' => auth()->user()
         ]);
     }
 
@@ -34,14 +33,14 @@ class TokenController extends Controller
 
         if($user != NULL)
         {
-            if(Auth::attempt(['email' => $user->email, 'password' => $data['password']]))
+            if(auth()->attempt(['email' => $user->email, 'password' => $data['password']]))
             {
                 return $this->generate($user->email, $data['password']);
             }
 
             return response()->json([
                 'message' => __('auth.incorrect'),
-                'data' => [
+                'errors' => [
                     'password' => __('auth.failed', ['field' => 'password'])
                 ]
             ], 422);
@@ -50,7 +49,7 @@ class TokenController extends Controller
 
         return response()->json([
             'message' => __('auth.incorrect'),
-            'data' => [
+            'errors' => [
                 'username' => __('auth.failed', ['field' => 'username'])
             ]
         ], 422);
@@ -58,17 +57,13 @@ class TokenController extends Controller
 
     public function remove(User $user)
     {
-       $user->tokens->each(function($token, $key)
+       auth()->user()->tokens->each(function($token, $key)
        {
             $token->delete();
        });
 
 
-        Log::info(__('auth.log', [
-            'name' => $user->name,
-            'id' => $user->id,
-            'action' => 'logged out.'
-        ]));
+        appLog('Logged_Out', auth()->user()->id);
 
 
        return response()->json([
@@ -92,6 +87,9 @@ class TokenController extends Controller
                     'scope' => ''
                 ]
             ]);
+
+
+            appLog('Logged_In', auth()->user()->id);
 
 
             return response()->json([
