@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Api\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
 
-class ApiResetPasswordController extends Controller
+class ResetPasswordController extends Controller
 {
     use ResetsPasswords;
 
@@ -22,16 +21,15 @@ class ApiResetPasswordController extends Controller
 
      public function sendResetResponse(Request $request, $response)
     {
-        return ResponseBuilder::asSuccess(200)
-            ->withMessage('Password reset successful.')
-            ->build();
+        return response()->json([
+            'message' => 'Password reset successfully.'
+        ]);
     }
 
     public function sendResetFailedResponse(Request $request, $response)
     {
-        return ResponseBuilder::asError(401)
-            ->withMessage(trans($response))
-            ->withHttpCode(401)
-            ->build();
+        return response()->json([
+            'message' => trans($response)
+        ], 422);
     }
 }
