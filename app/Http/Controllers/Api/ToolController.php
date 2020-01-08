@@ -12,15 +12,15 @@ class ToolController extends Controller
 {
     public function userManagement()
     {
-        return response()->json([
+        return [
             'user_types' => UserType::all()
-        ]);
+        ];
     }
 
     public function moduleManagement()
     {
-        return response()->json([
+        return [
             'modules' => Module::with('moduleActions')->get()
-        ]);
+        ];
     }
 }

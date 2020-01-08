@@ -11,10 +11,7 @@ class UserTypeController extends Controller
 {
     public function index()
     {
-        return response()->json([
-            'message' => 'Successfully retrieved user types.',
-            'data' => UserType::with('moduleActions')->get()
-        ]);
+       return UserType::with('moduleActions')->get();
     }
 
     public function updateAccess(UserType $userType)

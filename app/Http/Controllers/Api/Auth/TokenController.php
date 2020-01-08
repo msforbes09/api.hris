@@ -16,26 +16,24 @@ class TokenController extends Controller
 {
     public function user()
     {
-        return response()->json([
-            'message' => 'Successfully retrieved authenticated user.',
-            'data' => auth()->user()
-        ]);
+        $user = auth()->user();
+
+        $user->userType->moduleActions;
+
+       return $user;
     }
 
     public function get(TokenRequest $request)
     {
-        $data = $request->validated();
-
-
-        $user = User::where('email', $data['username'])
-                    ->orWhere('username', $data['username'])
+        $user = User::where('email', request('username'))
+                    ->orWhere('username', request('username'))
                     ->first();
 
         if($user != NULL)
         {
-            if(auth()->attempt(['email' => $user->email, 'password' => $data['password']]))
+            if(auth()->attempt(['email' => $user->email, 'password' => request('password')]))
             {
-                return $this->generate($user->email, $data['password']);
+                return $this->generate($user->email, request('password'));
             }
 
             return response()->json([
@@ -45,7 +43,6 @@ class TokenController extends Controller
                 ]
             ], 422);
         }
-
 
         return response()->json([
             'message' => __('auth.incorrect'),
@@ -62,9 +59,7 @@ class TokenController extends Controller
             $token->delete();
        });
 
-
         appLog('Logged_Out', auth()->user()->id);
-
 
        return response()->json([
             'message' => 'User successfully logged out.'
@@ -88,9 +83,7 @@ class TokenController extends Controller
                 ]
             ]);
 
-
             appLog('Logged_In', auth()->user()->id);
-
 
             return response()->json([
                 'message' => __('auth.received'),
