@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClientBranch extends Model
+class ClientPosition extends Model
 {
     public $timestamps = false;
 
