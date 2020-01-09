@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\User;
 use App\Module;
+use App\Company;
 use App\UserType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,13 @@ class ToolController extends Controller
     {
         return [
             'modules' => Module::with('moduleActions')->get()
+        ];
+    }
+
+    public function companyManagement()
+    {
+        return [
+            'companies' => Company::all()
         ];
     }
 }
