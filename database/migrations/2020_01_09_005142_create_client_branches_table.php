@@ -19,7 +19,7 @@ class CreateClientBranchesTable extends Migration
             $table->unsignedBigInteger('client_id');
             $table->string('name');
 
-            $table->unique('code', 'client_id');
+            $table->unique(['code', 'client_id']);
             $table->foreign('client_id')->references('id')->on('clients');
         });
     }
