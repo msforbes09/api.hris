@@ -13,17 +13,13 @@ class __ModuleTableSeeder extends Seeder
     ];
 
     protected $actions = [
-        ['code' => 'V', 'name' => 'view'], 
-        ['code' => 'S', 'name' => 'store'], 
-        ['code' => 'SH', 'name' => 'show'], 
-        ['code' => 'U', 'name' => 'update'], 
+        ['code' => 'V', 'name' => 'view'],
+        ['code' => 'S', 'name' => 'store'],
+        ['code' => 'SH', 'name' => 'show'],
+        ['code' => 'U', 'name' => 'update'],
         ['code' => 'D', 'name' => 'destroy']
     ];
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+
     public function run()
     {
         $this->deleteExisting();
