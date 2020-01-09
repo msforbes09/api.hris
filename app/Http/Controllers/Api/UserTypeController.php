@@ -14,6 +14,13 @@ class UserTypeController extends Controller
        return UserType::with('moduleActions')->get();
     }
 
+    public function show(UserType $userType)
+    {
+        $userType->moduleActions;
+
+        return $userType;
+    }
+
     public function updateAccess(UserType $userType)
     {
         $actions = ModuleAction::whereIn('id', request('accesses'))->get();

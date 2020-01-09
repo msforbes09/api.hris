@@ -29,7 +29,7 @@ class TokenController extends Controller
                     ->orWhere('username', request('username'))
                     ->first();
 
-        if($user != NULL)
+        if($user != NULL && $user->isActive())
         {
             if(auth()->attempt(['email' => $user->email, 'password' => request('password')]))
             {
@@ -54,10 +54,7 @@ class TokenController extends Controller
 
     public function remove(User $user)
     {
-       auth()->user()->tokens->each(function($token, $key)
-       {
-            $token->delete();
-       });
+       removeTokens(auth()->user());
 
         appLog('Logged_Out', auth()->user()->id);
 

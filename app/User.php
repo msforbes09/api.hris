@@ -31,6 +31,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function isActive()
+    {
+        return (bool) $this->active;
+    }
+
     public function userType()
     {
         return $this->belongsTo('App\UserType');

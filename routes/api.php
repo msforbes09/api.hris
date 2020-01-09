@@ -25,7 +25,7 @@ Route::middleware('auth:api')->group(function() {
 
     Route::get('/auth-user', 'Api\Auth\TokenController@user');
     Route::get('/user-types', 'Api\UserTypeController@index');
-    Route::get('/users/{user}/accesses/', 'Api\UserController@accesses');
+    Route::get('/user-types/{userType}', 'Api\UserTypeController@show');
 
     Route::post('/user-types/{userType}/accesses', 'Api\UserTypeController@updateAccess');
     Route::post('/remove-tokens', 'Api\Auth\TokenController@remove');

@@ -24,3 +24,14 @@ if(!function_exists('appLog'))
         }
     }
 }
+
+if (!function_exists('removeTokens'))
+{
+    function removeTokens($user)
+    {
+        $user->tokens->each(function($token, $key)
+       {
+            $token->delete();
+       });
+    }
+}
