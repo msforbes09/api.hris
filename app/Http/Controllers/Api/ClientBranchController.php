@@ -12,11 +12,15 @@ class ClientBranchController extends Controller
 {
     public function index(Client $client)
     {
+        $this->authorize('viewAny', ClientBranch::class);
+
        return $client->branches;
     }
 
     public function store(ClientBranchRequest $request, Client $client)
     {
+        $this->authorize('create', ClientBranch::class);
+
         $branch = $client->branches()->create(request()->toArray());
 
         return response()->json([
@@ -27,11 +31,15 @@ class ClientBranchController extends Controller
 
     public function show(Client $client, ClientBranch $branch)
     {
+        $this->authorize('view', $branch);
+
         return $branch;
     }
 
     public function update(ClientBranchRequest $request, Client $client, ClientBranch $branch)
     {
+        $this->authorize('update', $branch);
+
         $branch->fill(request()->toArray());
 
         $branch->save();

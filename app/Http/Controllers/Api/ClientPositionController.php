@@ -12,11 +12,15 @@ class ClientPositionController extends Controller
 {
     public function index(Client $client)
     {
+        $this->authorize('viewAny', ClientPosition::class);
+
         return $client->positions;
     }
 
     public function store(ClientPositionRequest $request, Client $client)
     {
+        $this->authorize('create', ClientPosition::class);
+
         $position = $client->positions()->create(request()->toArray());
 
         return response()->json([
@@ -25,19 +29,17 @@ class ClientPositionController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Client $client, ClientPosition $position)
     {
+        $this->authorize('view', $position);
+
         return $position;
     }
 
     public function update(ClientPositionRequest $request, Client $client, ClientPosition $position)
     {
+        $this->authorize('update', $position);
+
         $position->fill(request()->toArray());
 
         return response()->json([

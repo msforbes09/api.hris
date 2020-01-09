@@ -40,6 +40,8 @@ class ClientController extends Controller
 
     public function update(ClientRequest $request, Company $company, Client $client)
     {
+        $this->authorize('update', $client);
+
         $client->fill(request()->toArray());
 
         $client->save();
