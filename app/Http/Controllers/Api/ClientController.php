@@ -12,11 +12,15 @@ class ClientController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', Client::class);
+
         return Client::with('branches')->with('positions')->get();
     }
 
     public function store(ClientRequest $request)
     {
+        $this->authorize('create', Client::class);
+
         $client = Client::create(request()->toArray());
 
         return response()->json([
@@ -27,6 +31,8 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
+        $this->authorize('view', $client);
+
         $client->branches;
 
         return $client;
