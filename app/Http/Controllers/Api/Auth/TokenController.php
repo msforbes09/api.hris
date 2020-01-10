@@ -25,9 +25,7 @@ class TokenController extends Controller
 
     public function get(TokenRequest $request)
     {
-        $user = User::where('email', request('username'))
-                    ->orWhere('username', request('username'))
-                    ->first();
+        $user = findUser(request('username'));
 
         if($user != NULL && $user->isActive())
         {
