@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ClientCompanyCode;
+use App\Client;
+use App\Rules\UniqueColumns;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientRequest extends FormRequest
@@ -16,7 +17,12 @@ class ClientRequest extends FormRequest
     {
         return [
             'company_id' => 'required|exists:companies,id',
-            'code' => ['required', new ClientCompanyCode($this->client, request())],
+            'code' => ['required', new UniqueColumns(
+                $this->client ?? new Client, [
+                    ['name' => 'code', 'value' => request('code')],
+                    ['name' => 'company_id', 'value' => request('company_id')]
+                ]
+            )],
             'name' => 'required'
         ];
     }
