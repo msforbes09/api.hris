@@ -39,6 +39,8 @@ class ResetPasswordController extends Controller
 
      public function sendResetResponse(Request $request, $response)
     {
+        appLog('Reset_Password', findUser(request('email'))->id);
+
         return response()->json([
             'message' => 'Password reset successfully.'
         ]);
