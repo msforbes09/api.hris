@@ -58,7 +58,7 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
-    'default_pass' => env('APP_DEFAULT_PASS=', 'password'),
+    'default_pass' => env('APP_DEFAULT_PASS', 'password'),
 
     /*
     |--------------------------------------------------------------------------

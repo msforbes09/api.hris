@@ -18,9 +18,10 @@ Route::post('/forgot-password', 'Api\Auth\ForgotPasswordController@sendResetLink
 Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
 
 Route::middleware('auth:api')->group(function() {
-    Route::prefix('tool')->group(function () {
+    Route::prefix('tools')->group(function () {
         Route::get('user-management', 'Api\ToolController@userManagement');
         Route::get('module-management', 'Api\ToolController@moduleManagement');
+        Route::get('company-management', 'Api\ToolController@companyManagement');
     });
 
     Route::get('/auth-user', 'Api\Auth\TokenController@user');
@@ -34,5 +35,9 @@ Route::middleware('auth:api')->group(function() {
     [
         'users' => 'Api\UserController',
         'modules' => 'Api\ModuleController',
+        'companies' => 'Api\CompanyController',
+        'clients' => 'Api\ClientController',
+        'clients.branches' => 'Api\ClientBranchController',
+        'clients.positions' => 'Api\ClientPositionController',
     ]);
 });

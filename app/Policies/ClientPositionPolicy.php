@@ -5,11 +5,11 @@ namespace App\Policies;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy
+class ClientPositionPolicy
 {
     use HandlesAuthorization;
 
-    protected $module = '001';
+   protected $module = '002';
 
     public function viewAny(User $user)
     {
@@ -19,12 +19,11 @@ class UserPolicy
             || in_array($user->userType->id, [1, 2]);
     }
 
-    public function view(User $user, User $model)
+    public function view(User $user, ClientPosition $model)
     {
         $actions = $user->userType->moduleActions;
 
         return $actions->where('code', 'V-' . $this->module)->count()
-            || $user->id === $model->id
             || in_array($user->userType->id, [1, 2]);
     }
 
@@ -36,21 +35,19 @@ class UserPolicy
             || in_array($user->userType->id, [1, 2]);
     }
 
-    public function update(User $user, User $model)
+    public function update(User $user, ClientPosition $model)
     {
         $actions = $user->userType->moduleActions;
 
         return $actions->where('code', 'U-' . $this->module)->count()
-            || $user->id == $model->id
             || in_array($user->userType->id, [1, 2]);
     }
 
-    public function delete(User $user, User $model)
+    public function delete(User $user, ClientPosition $model)
     {
         $actions = $user->userType->moduleActions;
 
         return $actions->where('code', 'D-' . $this->module)->count()
-            && $user->id !== $model->id
             || in_array($user->userType->id, [1, 2]);
     }
 }

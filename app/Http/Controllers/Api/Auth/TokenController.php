@@ -39,7 +39,7 @@ class TokenController extends Controller
             return response()->json([
                 'message' => __('auth.incorrect'),
                 'errors' => [
-                    'password' => __('auth.failed', ['field' => 'password'])
+                    'password' => [__('auth.failed', ['field' => 'password'])]
                 ]
             ], 422);
         }
@@ -47,7 +47,7 @@ class TokenController extends Controller
         return response()->json([
             'message' => __('auth.incorrect'),
             'errors' => [
-                'username' => __('auth.failed', ['field' => 'username'])
+                'username' => [__('auth.failed', ['field' => 'username'])]
             ]
         ], 422);
     }
