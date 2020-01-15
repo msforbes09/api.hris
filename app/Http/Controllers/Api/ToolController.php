@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Key;
 use App\User;
 use App\Module;
 use App\Company;
@@ -30,5 +31,17 @@ class ToolController extends Controller
         return [
             'companies' => Company::all()
         ];
+    }
+
+    public function keywordManagement()
+    {
+        $keys = Key::all();
+        $allKeys = [];
+
+        foreach ($keys as $key) {
+            $allKeys[$key->name] = $key->keywords;
+        }
+
+        return $allKeys;
     }
 }

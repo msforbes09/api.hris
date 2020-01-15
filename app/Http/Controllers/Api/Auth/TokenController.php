@@ -82,7 +82,7 @@ class TokenController extends Controller
 
             return response()->json([
                 'message' => __('auth.received'),
-                'data' => json_decode($response->getBody())
+                'token' => json_decode($response->getBody())
             ]);
         }
         catch(\Exception $e)
