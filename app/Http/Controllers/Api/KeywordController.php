@@ -15,6 +15,11 @@ class KeywordController extends Controller
         abort(403);
     }
 
+    public function show(Key $key, Keyword $keyword)
+    {
+        return $keyword;
+    }
+
     public function store(KeywordRequest $request, Key $key)
     {
         $keyword = $key->keywords()->create(request()->toArray());
