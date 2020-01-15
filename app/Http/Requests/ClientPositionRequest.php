@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ClientPositionCode;
+use App\ClientPosition;
+use App\Rules\UniqueColumns;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientPositionRequest extends FormRequest
@@ -25,7 +26,12 @@ class ClientPositionRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => ['required', new ClientPositionCode($this->position, request())],
+            'code' => ['required', new UniqueColumns(
+                $this->position ?? new ClientPosition, [
+                    ['name' => 'code', 'value' => request('code')],
+                    ['name' => 'client_id', 'value' => $this->client->id]
+                ]
+            )],
             'name' => 'required'
         ];
     }

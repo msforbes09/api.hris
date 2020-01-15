@@ -25,9 +25,7 @@ class TokenController extends Controller
 
     public function get(TokenRequest $request)
     {
-        $user = User::where('email', request('username'))
-                    ->orWhere('username', request('username'))
-                    ->first();
+        $user = findUser(request('username'));
 
         if($user != NULL && $user->isActive())
         {
@@ -84,7 +82,7 @@ class TokenController extends Controller
 
             return response()->json([
                 'message' => __('auth.received'),
-                'data' => json_decode($response->getBody())
+                'token' => json_decode($response->getBody())
             ]);
         }
         catch(\Exception $e)

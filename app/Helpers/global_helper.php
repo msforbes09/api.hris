@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Log;
 
@@ -33,5 +34,15 @@ if (!function_exists('removeTokens'))
        {
             $token->delete();
        });
+    }
+}
+
+if(!function_exists('findUser()'))
+{
+    function findUser($username)
+    {
+        return User::where('username', $username)
+            ->orWhere('email', $username)
+            ->first();
     }
 }

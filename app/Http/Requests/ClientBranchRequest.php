@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ClientBranchCode;
+use App\ClientBranch;
+use App\Rules\UniqueColumns;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientBranchRequest extends FormRequest
@@ -15,7 +16,12 @@ class ClientBranchRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => ['required', new ClientBranchCode($this->branch, request())],
+            'code' => ['required', new UniqueColumns(
+                $this->branch ?? new ClientBranch, [
+                    ['name' => 'code', 'value' => request('code')],
+                    ['name' => 'client_id', 'value' => $this->client->id]
+                ]
+            )],
             'name' => 'required'
         ];
     }

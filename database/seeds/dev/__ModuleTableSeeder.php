@@ -7,6 +7,7 @@ class __ModuleTableSeeder extends Seeder
     protected $modules = [
         ['code'=>'001', 'name' => 'User Module'],
         ['code'=>'002', 'name' => 'Client Module'],
+        ['code'=>'003', 'name' => 'Keyword Module'],
     ];
 
     protected $actions = [

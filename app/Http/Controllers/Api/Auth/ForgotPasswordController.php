@@ -12,6 +12,8 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkResponse(Request $request, $response)
     {
+        appLog('Forgot_Password', findUser(request('email'))->id);
+
         return response()->json([
             'message' => 'Password reset email sent.'
         ]);
