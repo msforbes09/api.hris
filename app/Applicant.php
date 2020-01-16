@@ -36,4 +36,9 @@ class Applicant extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function families()
+    {
+      return $this->hasMany('App\ApplicantFamily');
+    }
 }

@@ -42,6 +42,7 @@ Route::middleware('auth:api')->group(function() {
         'clients.positions' => 'Api\ClientPositionController',
         'keys' => 'Api\KeyController',
         'keys.keywords' => 'Api\KeywordController',
-        'applicants' => 'Api\ApplicantController'
+        'applicants' => 'Api\ApplicantController',
+        'applicants.families' => 'Api\ApplicantFamilyController'
     ]);
 });
