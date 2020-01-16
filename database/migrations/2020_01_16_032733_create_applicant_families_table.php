@@ -21,7 +21,7 @@ class CreateApplicantFamiliesTable extends Migration
             $table->string('address');
             $table->string('occupation');
             $table->date('birth_date');
-            $table->boolean('living')->default(0);
+            $table->boolean('living');
 
             $table->foreign('applicant_id')->references('id')->on('applicants');
         });

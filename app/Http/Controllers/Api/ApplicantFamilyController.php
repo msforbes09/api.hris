@@ -15,6 +15,11 @@ class ApplicantFamilyController extends Controller
         return $applicant->families;
     }
 
+    public function show()
+    {
+        abort(403);
+    }
+
     public function store(ApplicantFamilyRequest $request, Applicant $applicant)
     {
         $applicantFamily = $applicant->families()->create(request()->toArray());
