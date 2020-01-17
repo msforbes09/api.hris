@@ -51,4 +51,9 @@ class Applicant extends Model
     {
       return $this->hasMany('App\ApplicantEmployment');
     }
+
+    public function applications()
+    {
+      return $this->hasMany('App\Application');
+    }
 }

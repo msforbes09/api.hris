@@ -17,6 +17,14 @@ class ApplicantController extends Controller
 
     public function show(Applicant $applicant)
     {
+        $applicant->families;
+
+        $applicant->educations;
+
+        $applicant->employments;
+
+        $applicant->applications;
+
         return $applicant;
     }
 
