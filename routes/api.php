@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function() {
 
     Route::post('/user-types/{userType}/accesses', 'Api\UserTypeController@updateAccess');
     Route::post('/remove-tokens', 'Api\Auth\TokenController@remove');
+    Route::post('/applicant-check', 'Api\ApplicantController@applicantCheck');
 
     Route::apiResources(
     [

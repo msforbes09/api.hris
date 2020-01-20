@@ -64,4 +64,36 @@ class ApplicantController extends Controller
             'message' => 'Successfully deleted applicant.',
         ];
     }
+
+    public function applicantCheck(Request $request)
+    {
+        $data = request()->validate([
+            'last_name' => 'required',
+            'first_name' => 'required',
+            'middle_name' => ''
+        ]);
+
+        $applicants = Applicant::selectRaw('*,
+            (levenshtein(?, `last_name`) + levenshtein(?, `first_name`) + levenshtein(?, `middle_name`)) as match_diff',
+            [$data['last_name'], $data['first_name'], $data['middle_name']])
+            ->orderBy('match_diff')
+            ->get();
+
+        $exactMatch = Applicant::find($applicants->where('match_diff', 0)->first());
+
+        $otherMatches = $applicants->whereBetween('match_diff', [1, 3])
+            ->slice(0, 3);
+
+        if($exactMatch != null || $otherMatches->count() > 0) {
+            return response()->json([
+                'message' => $exactMatch ? 'Applicant record found.' : 'Applicant record not found. Please check other matches.',
+                'exactMatch' => $exactMatch,
+                'otherMatches' => $otherMatches
+            ]);
+        }
+
+        return [
+            'message' => 'Applicant record doesn\'t exist.'
+        ];
+    }
 }
