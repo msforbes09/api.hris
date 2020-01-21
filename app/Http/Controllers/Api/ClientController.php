@@ -25,11 +25,11 @@ class ClientController extends Controller
         return Client::with('company')->with('branches')->with('positions')->get();
     }
 
-    public function store(ClientRequest $request)
+    public function store(ClientRequest $request, Client $client)
     {
         $this->authorize('create', $this->module);
 
-        $client = Client::create(request()->toArray());
+        $client = Client::create($request->only($client->fillable));
 
         return response()->json([
             'message' => 'Successfully created client.',
@@ -54,9 +54,7 @@ class ClientController extends Controller
     {
         $this->authorize('update', $this->module);
 
-        $client->fill(request()->toArray());
-
-        $client->save();
+        $client->update($request->only($client->fillable));
 
         return response()->json([
             'message' => 'Successfully updated client.',
