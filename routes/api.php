@@ -35,7 +35,6 @@ Route::middleware('auth:api')->group(function() {
     Route::apiResources(
     [
         'users' => 'Api\UserController',
-        'modules' => 'Api\ModuleController',
         'clients' => 'Api\ClientController',
         'clients.branches' => 'Api\ClientBranchController',
         'clients.positions' => 'Api\ClientPositionController',
