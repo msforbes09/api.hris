@@ -10,6 +10,11 @@ class Client extends Model
 
     protected $fillable = ['company_id', 'code', 'name'];
 
+    public function company()
+    {
+        return $this->belongsTo('App\Company');
+    }
+
     public function branches()
     {
         return $this->hasMany('App\ClientBranch');
