@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Module;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -12,16 +13,23 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'user')->first();
+    }
+
     public function index()
     {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('view', $this->module);
 
         return User::with('userType')->get();
     }
 
     public function store(UserRequest $request)
     {
-        $this->authorize('create', User::class);
+        $this->authorize('create', $this->module);
 
         $password = getRandomPassword();
 
@@ -39,7 +47,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $this->authorize('view', $user);
+        $this->authorize('show', $this->module);
 
         $user->userType->moduleActions;
 
@@ -48,7 +56,7 @@ class UserController extends Controller
 
     public function update(UserRequest $request, User $user)
     {
-        $this->authorize('update', $user);
+        $this->authorize('update', $this->module);
 
         $user->fill(request()->toArray());
 
