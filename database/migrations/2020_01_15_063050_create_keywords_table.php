@@ -18,6 +18,7 @@ class CreateKeywordsTable extends Migration
             $table->unsignedBigInteger('key_id');
             $table->string('value');
 
+            $table->unique(['key_id', 'value']);
             $table->foreign('key_id')->references('id')->on('keys');
         });
     }
