@@ -14,6 +14,9 @@ class ModuleTableSeeder extends Seeder
         ['code'=>'keyword', 'name' => 'Keyword Module',
             'actions' => ['view', 'show', 'create', 'update', 'delete']
         ],
+        ['code' => 'client', 'name' => 'Client Module',
+            'actions' => ['view', 'show', 'create', 'update', 'delete']
+        ]
     ];
 
     public function run()
