@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Client;
+use App\Module;
 use App\ClientBranch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,7 @@ class ClientBranchController extends Controller
 
     public function __construct()
     {
-        $this->module = Module::where('code', 'client');
+        $this->module = Module::where('code', 'client')->first();
     }
 
     public function index(Client $client)
