@@ -20,6 +20,8 @@ class KeywordController extends Controller
 
     public function index()
     {
+        $this->authorize('view', $this->module);
+
         return Key::with('keywords')->get();
     }
 
@@ -30,7 +32,6 @@ class KeywordController extends Controller
 
     public function store(KeywordRequest $request)
     {
-
         $this->authorize('create', $this->module);
 
         $key = Key::where('id', request('key'))->first();

@@ -12,7 +12,7 @@ class ModuleTableSeeder extends Seeder
             'actions' => ['view', 'show', 'update']
         ],
         ['code'=>'keyword', 'name' => 'Keyword Module',
-            'actions' => ['show', 'create', 'update', 'delete']
+            'actions' => ['view', 'show', 'create', 'update', 'delete']
         ],
     ];
 
