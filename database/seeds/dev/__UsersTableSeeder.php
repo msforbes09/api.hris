@@ -7,11 +7,6 @@ class __UsersTableSeeder extends Seeder
 {
     protected $users = [
         [
-            'name' => 'SRI Admin',
-            'username' => 'sriadmin',
-            'email' => 'sriwebapp@gmail.com',
-        ],
-        [
             'name' => 'Isaac Aranas',
             'username' => 'isaac',
             'email' => 'isaac.aranas@csic.ph',
@@ -37,7 +32,7 @@ class __UsersTableSeeder extends Seeder
                 'username' => $user['username'],
                 'email' => $user['email'],
                 'active' => 1,
-                'password' => config('app.default_pass'),
+                'password' => bcrypt(config('app.default_pass')),
                 'remember_token' => Str::random(10),
             ]);
         }

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class __UserTypesTableSeeder extends Seeder
+class UserTypesTableSeeder extends Seeder
 {
     protected $types = [
         'sys_admin',

@@ -32,3 +32,5 @@ Route::get('/routes', function() {
     }
     dd($routes);
 });
+
+Route::get('/test', 'TestController@test');
