@@ -27,13 +27,13 @@ class UserController extends Controller
         return User::with('userType')->get();
     }
 
-    public function store(UserRequest $request)
+    public function store(UserRequest $request, User $user)
     {
         $this->authorize('create', $this->module);
 
         $password = getRandomPassword();
 
-        $user = User::create(request()->merge(['password' => bcrypt($password)])->toArray());
+        $user = User::create($request->merge(['password' => bcrypt($password)])->only($user->fillable));
 
         $user->sendWelcomeNotification($password);
 
@@ -58,9 +58,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $this->module);
 
-        $user->fill(request()->toArray());
-
-        $user->save();
+        $user->update($request->only($user->fillable));
 
         appLog('Updated_User', auth()->user()->id, $user);
 
