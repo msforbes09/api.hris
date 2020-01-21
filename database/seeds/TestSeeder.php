@@ -11,10 +11,10 @@ class TestSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(__UserTypesTableSeeder::class);
-        $this->call(__ModuleTableSeeder::class);
+        $this->call(DatabaseSeeder::class);
+        // $this->call(__ModuleTableSeeder::class);
         $this->call(__UsersTableSeeder::class);
-        $this->call(__AccessTableSeeder::class);
+        // $this->call(__AccessTableSeeder::class);
         $this->call(__CompaniesTableSeeder::class);
         $this->call(__ClientTableSeeder::class);
         $this->call(__KeywordsTableSeeder::class);

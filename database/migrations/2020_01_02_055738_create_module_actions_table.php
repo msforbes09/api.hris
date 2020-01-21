@@ -16,13 +16,13 @@ class CreateModuleActionsTable extends Migration
         Schema::create('module_actions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('module_id');
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('name');
-        });
 
-        Schema::table('module_actions', function(Blueprint $table) {
+            $table->unique(['code', 'module_id']);
             $table->foreign('module_id')->references('id')->on('modules');
         });
+
     }
 
     /**
