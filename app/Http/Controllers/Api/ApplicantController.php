@@ -28,7 +28,7 @@ class ApplicantController extends Controller
         return $applicant;
     }
 
-    public function store(ApplicantRequest $request)
+    public function store(ApplicantRequest $request, Applicant $applicant)
     {
         $uniqueCode = ['code' => Str::random(9)];
 
@@ -36,7 +36,7 @@ class ApplicantController extends Controller
             $uniqueCode['code'] = Str::random(9);
         }
 
-        $applicant = Applicant::create(request()->merge($uniqueCode)->toArray());
+        $applicant = Applicant::create($request->merge($uniqueCode)->only($applicant->fillable));
 
         return response()->json([
             'message' => 'Successfully created applicant.',
@@ -46,9 +46,7 @@ class ApplicantController extends Controller
 
     public function update(ApplicantRequest $request, Applicant $applicant)
     {
-        $applicant->fill(request()->toArray());
-
-        $applicant->save();
+        $applicant->update($request->only($applicant->fillable));
 
         return response()->json([
             'message' => 'Successfully updated applicant.',
