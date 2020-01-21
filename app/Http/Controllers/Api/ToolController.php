@@ -32,16 +32,4 @@ class ToolController extends Controller
             'companies' => Company::all()
         ];
     }
-
-    public function keywordManagement()
-    {
-        $keys = Key::all();
-        $allKeys = [];
-
-        foreach ($keys as $key) {
-            $allKeys[$key->name] = $key->keywords;
-        }
-
-        return $allKeys;
-    }
 }

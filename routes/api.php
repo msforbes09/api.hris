@@ -22,7 +22,6 @@ Route::middleware('auth:api')->group(function() {
         Route::get('user-management', 'Api\ToolController@userManagement');
         Route::get('module-management', 'Api\ToolController@moduleManagement');
         Route::get('company-management', 'Api\ToolController@companyManagement');
-        Route::get('keyword-management', 'Api\ToolController@keywordManagement');
     });
 
     Route::get('/auth-user', 'Api\Auth\TokenController@user');
