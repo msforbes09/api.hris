@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function() {
 
     Route::post('/user-types/{userType}/accesses', 'Api\UserTypeController@updateAccess');
     Route::post('/remove-tokens', 'Api\Auth\TokenController@remove');
+    Route::post('/applicant-check', 'Api\ApplicantController@applicantCheck');
 
     Route::apiResources(
     [
@@ -41,6 +42,12 @@ Route::middleware('auth:api')->group(function() {
         'clients.branches' => 'Api\ClientBranchController',
         'clients.positions' => 'Api\ClientPositionController',
         'keys' => 'Api\KeyController',
-        'keys.keywords' => 'Api\KeywordController'
+        'keys.keywords' => 'Api\KeywordController',
+        'applicants' => 'Api\ApplicantController',
+        'applicants.families' => 'Api\ApplicantFamilyController',
+        'applicants.educations' => 'Api\ApplicantEducationController',
+        'applicants.employments' => 'Api\ApplicantEmploymentController',
+        'applicants.applications' => 'Api\ApplicationController',
+        'applications' => 'Api\ApplicationController'
     ]);
 });
