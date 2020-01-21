@@ -39,7 +39,7 @@ class KeywordController extends Controller
         $keyword = $key->keywords()->create($request->only('value'));
 
         return response()->json([
-            'message' => 'Successfuly created key keyword.',
+            'message' => 'Successfuly created keyword.',
             'keyword' => $keyword
         ]);
     }
@@ -51,7 +51,7 @@ class KeywordController extends Controller
         $keyword->update($request->only('value'));
 
         return response()->json([
-            'message' => 'Successfully updated key keyword.',
+            'message' => 'Successfully updated keyword.',
             'keyword' => $keyword
         ]);
     }
@@ -63,7 +63,7 @@ class KeywordController extends Controller
         $keyword->delete();
 
         return [
-            'message' => 'Successfully deleted key keyword.'
+            'message' => 'Successfully deleted keyword.'
         ];
     }
 }
