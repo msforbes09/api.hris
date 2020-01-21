@@ -10,18 +10,25 @@ use App\Http\Requests\ClientBranchRequest;
 
 class ClientBranchController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'client');
+    }
+
     public function index(Client $client)
     {
-        $this->authorize('viewAny', ClientBranch::class);
+        $this->authorize('view', $this->module);
 
        return $client->branches;
     }
 
-    public function store(ClientBranchRequest $request, Client $client)
+    public function store(ClientBranchRequest $request, Client $client, ClientBranch $branch)
     {
-        $this->authorize('create', ClientBranch::class);
+        $this->authorize('create', $this->module);
 
-        $branch = $client->branches()->create(request()->toArray());
+        $branch = $client->branches()->create($request->only($branch->fillable));
 
         return response()->json([
             'message' => 'Successfully created client branch.',
@@ -31,18 +38,16 @@ class ClientBranchController extends Controller
 
     public function show(Client $client, ClientBranch $branch)
     {
-        $this->authorize('view', $branch);
+        $this->authorize('show', $this->module);
 
         return $branch;
     }
 
     public function update(ClientBranchRequest $request, Client $client, ClientBranch $branch)
     {
-        $this->authorize('update', $branch);
+        $this->authorize('update', $this->module);
 
-        $branch->fill(request()->toArray());
-
-        $branch->save();
+        $branch->update($request->only($branch->fillable));
 
         return response()->json([
             'message' => 'Successfuly updated client branch.',
@@ -52,6 +57,12 @@ class ClientBranchController extends Controller
 
     public function destroy(Client $client, ClientBranch $branch)
     {
-        abort(403);
+        $this->authorize('delete', $this->module);
+
+        $branch->delete();
+
+        return [
+            'message' => 'Successfuly deleted client branch.'
+        ];
     }
 }

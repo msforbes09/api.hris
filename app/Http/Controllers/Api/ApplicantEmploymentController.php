@@ -15,9 +15,9 @@ class ApplicantEmploymentController extends Controller
         return $applicant->employments;
     }
 
-    public function store(ApplicantEmploymentRequest $request, Applicant $applicant)
+    public function store(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)
     {
-        $employment = $applicant->employments()->create(request()->toArray());
+        $employment = $applicant->employments()->create($request->only($employment->fillable));
 
         return response()->json([
             'message' => 'Successfuly added to record.',
@@ -27,9 +27,7 @@ class ApplicantEmploymentController extends Controller
 
     public function update(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)
     {
-        $employment->fill(request()->toArray());
-
-        $employment->save();
+        $employment->update($request->only($employment->fillable));
 
         return response()->json([
             'message' => 'Successfuly updated record.',

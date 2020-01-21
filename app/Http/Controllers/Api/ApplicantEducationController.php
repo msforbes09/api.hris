@@ -15,9 +15,9 @@ class ApplicantEducationController extends Controller
         return $applicant->educations;
     }
 
-    public function store(ApplicantEducationRequest $request, Applicant $applicant)
+    public function store(ApplicantEducationRequest $request, Applicant $applicant, ApplicantEducation $education)
     {
-        $education = $applicant->educations()->create(request()->toArray());
+        $education = $applicant->educations()->create($request->only($education->fillable));
 
         return response()->json([
             'message' => 'Successfully added to record.',
@@ -27,9 +27,7 @@ class ApplicantEducationController extends Controller
 
     public function update(ApplicantEducationRequest $request, Applicant $applicant, ApplicantEducation $education)
     {
-        $education->fill(request()->toArray());
-
-        $education->save();
+        $education->update($request->only($education->fillable));
 
         return response()->json([
             'message' => 'Successfully updated record.',

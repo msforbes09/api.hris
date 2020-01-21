@@ -20,9 +20,9 @@ class ApplicantFamilyController extends Controller
         abort(403);
     }
 
-    public function store(ApplicantFamilyRequest $request, Applicant $applicant)
+    public function store(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
     {
-        $applicantFamily = $applicant->families()->create(request()->toArray());
+        $applicantFamily = $applicant->families()->create($request->only($family->fillable));
 
         return response()->json([
             'message' => 'Successfully added to record.',
@@ -32,9 +32,7 @@ class ApplicantFamilyController extends Controller
 
     public function update(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
     {
-        $family->fill(request()->toArray());
-
-        $family->save();
+        $family->update($request()->only($family->fillable));
 
         return response()->json([
             'message' => 'Successfully updated record.',

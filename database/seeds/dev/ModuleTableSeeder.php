@@ -9,11 +9,14 @@ class ModuleTableSeeder extends Seeder
             'actions' => ['view', 'create', 'show', 'update', 'delete']
         ],
         ['code'=>'access', 'name' => 'Access Module',
-            'actions' => []
+            'actions' => ['view', 'show', 'update']
         ],
         ['code'=>'keyword', 'name' => 'Keyword Module',
-            'actions' => []
+            'actions' => ['view', 'show', 'create', 'update', 'delete']
         ],
+        ['code' => 'client', 'name' => 'Client Module',
+            'actions' => ['view', 'show', 'create', 'update', 'delete']
+        ]
     ];
 
     public function run()
