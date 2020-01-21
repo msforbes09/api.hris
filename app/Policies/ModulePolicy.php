@@ -19,7 +19,7 @@ class ModulePolicy
         return $user->userType->moduleActions->where('id', $action->id)->first();
     }
 
-    public function create(User $user)
+    public function create(User $user, Module $module)
     {
         $action = $module->moduleActions->where('code', 'create')->first();
 
@@ -29,7 +29,7 @@ class ModulePolicy
 
     }
 
-    public function show(User $user)
+    public function show(User $user, Module $module)
     {
         $action = $module->moduleActions->where('code', 'show')->first();
 
@@ -39,7 +39,7 @@ class ModulePolicy
 
     }
 
-    public function update(User $user)
+    public function update(User $user, Module $module)
     {
         $action = $module->moduleActions->where('code', 'update')->first();
 
@@ -49,9 +49,9 @@ class ModulePolicy
 
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user, Module $module)
     {
-        $action = $module->moduleActions->where('code', 'destroy')->first();
+        $action = $module->moduleActions->where('code', 'delete')->first();
 
         if (! $action) return;
 
