@@ -20,21 +20,22 @@ class KeywordController extends Controller
 
     public function index()
     {
-        abort(403);
+        return Key::with('keywords')->get();
     }
 
     public function show(Key $key, Keyword $keyword)
     {
-        $this->authorize('show', $this->module);
-
-        return $keyword;
+        abort(404);
     }
 
-    public function store(KeywordRequest $request, Key $key)
+    public function store(KeywordRequest $request)
     {
+
         $this->authorize('create', $this->module);
 
-        $keyword = $key->keywords()->create(request()->toArray());
+        $key = Key::where('id', request('key'))->first();
+
+        $keyword = $key->keywords()->create($request->only('value'));
 
         return response()->json([
             'message' => 'Successfuly created key keyword.',
@@ -42,13 +43,11 @@ class KeywordController extends Controller
         ]);
     }
 
-    public function update(KeywordRequest $request, Key $key, Keyword $keyword)
+    public function update(KeywordRequest $request, Keyword $keyword)
     {
         $this->authorize('update', $this->module);
 
-        $keyword->fill(request()->toArray());
-
-        $keyword->save();
+        $keyword->update($request->only('value'));
 
         return response()->json([
             'message' => 'Successfully updated key keyword.',
@@ -56,7 +55,7 @@ class KeywordController extends Controller
         ]);
     }
 
-    public function destroy(Key $key, Keyword $keyword)
+    public function destroy(Keyword $keyword)
     {
         $this->authorize('destroy', $this->module);
 
