@@ -22,6 +22,6 @@ class Client extends Model
 
     public function positions()
     {
-        return $this->hasMany('App\ClientPosition', );
+        return $this->hasMany('App\ClientPosition');
     }
 }
