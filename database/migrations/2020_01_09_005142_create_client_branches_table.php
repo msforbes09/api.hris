@@ -18,8 +18,8 @@ class CreateClientBranchesTable extends Migration
             $table->string('code');
             $table->unsignedBigInteger('client_id');
             $table->string('name');
+            $table->softDeletes();
 
-            $table->unique(['code', 'client_id']);
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
         });
     }
