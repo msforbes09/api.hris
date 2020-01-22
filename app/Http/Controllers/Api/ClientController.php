@@ -15,7 +15,7 @@ class ClientController extends Controller
 
     public function __construct()
     {
-        $this->module = Module::where('code'. 'client');
+        $this->module = Module::where('code', 'client')->first();
     }
 
     public function index()

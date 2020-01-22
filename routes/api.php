@@ -38,7 +38,7 @@ Route::middleware('auth:api')->group(function() {
         'clients' => 'Api\ClientController',
         'clients.branches' => 'Api\ClientBranchController',
         'clients.positions' => 'Api\ClientPositionController',
-        'keyword' => 'Api\KeywordController',
+        'keywords' => 'Api\KeywordController',
         'applicants' => 'Api\ApplicantController',
         'applicants.families' => 'Api\ApplicantFamilyController',
         'applicants.educations' => 'Api\ApplicantEducationController',
