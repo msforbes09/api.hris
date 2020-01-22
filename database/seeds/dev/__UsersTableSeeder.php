@@ -28,6 +28,7 @@ class __UsersTableSeeder extends Seeder
         foreach ($this->users as $user) {
             DB::table('users')->insert([
                 'user_type_id' => 1,
+                'branch_id' => 1,
                 'name' => $user['name'],
                 'username' => $user['username'],
                 'email' => $user['email'],

@@ -10,6 +10,7 @@ class UsersTableSeeder extends Seeder
         // Default ADMIN ACCOUNT
         DB::table('users')->insert([
             'user_type_id' => 1,
+            'branch_id' => 1,
             'name' => 'SRI Admin',
             'username' => 'sriadmin',
             'email' => 'sriwebapp@gmail.com',
