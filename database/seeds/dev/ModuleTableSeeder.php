@@ -6,7 +6,7 @@ class ModuleTableSeeder extends Seeder
 {
     protected $modules = [
         ['code'=>'user', 'name' => 'User Module',
-            'actions' => ['view', 'create', 'show', 'update', 'delete']
+            'actions' => ['view', 'create', 'show', 'update',]
         ],
         ['code'=>'access', 'name' => 'Access Module',
             'actions' => ['view', 'show', 'update']
@@ -15,7 +15,7 @@ class ModuleTableSeeder extends Seeder
             'actions' => ['view', 'show', 'create', 'update', 'delete']
         ],
         ['code' => 'client', 'name' => 'Client Module',
-            'actions' => ['view', 'show', 'create', 'update', 'delete']
+            'actions' => ['view', 'show', 'create', 'update', 'delete', 'restore']
         ]
     ];
 
