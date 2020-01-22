@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->belongsTo('App\UserType');
     }
 
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token, $this->email));
