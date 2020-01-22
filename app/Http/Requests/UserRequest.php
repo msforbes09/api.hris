@@ -30,6 +30,7 @@ class UserRequest extends FormRequest
             'username' => 'required|unique:users,username,' . $userId . ',id',
             'email' => 'required|email|unique:users,email,' . $userId . ',id',
             'user_type_id' => 'required|exists:user_types,id',
+            'branch_id' => 'required|exists:branches,id',
             'active' => 'sometimes|boolean'
         ];
     }

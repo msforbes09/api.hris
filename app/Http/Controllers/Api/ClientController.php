@@ -64,10 +64,27 @@ class ClientController extends Controller
     {
         $this->authorize('delete', $this->module);
 
+        $client->branches()->delete();
+        $client->positions()->delete();
         $client->delete();
 
         return [
             'message' => 'Successfully deleted client.'
+        ];
+    }
+
+    public function restore($id)
+    {
+        $this->authorize('restore', $this->module);
+
+        $client = Client::withTrashed()->findOrFail($id);
+
+        $client->branches()->restore();
+        $client->positions()->restore();
+        $client->restore();
+
+        return [
+            'message' => 'Successfully restored deleted client.'
         ];
     }
 }

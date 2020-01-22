@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return User::with('userType')->get();
+        return User::with('branch')->with('userType')->get();
     }
 
     public function store(UserRequest $request, User $user)
@@ -49,6 +49,7 @@ class UserController extends Controller
     {
         $this->authorize('show', $this->module);
 
+        $user->branch;
         $user->userType->moduleActions;
 
         return $user;

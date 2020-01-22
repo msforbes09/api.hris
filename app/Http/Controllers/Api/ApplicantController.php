@@ -75,12 +75,12 @@ class ApplicantController extends Controller
             (levenshtein(?, `last_name`) + levenshtein(?, `first_name`) + levenshtein(?, `middle_name`)) as match_diff',
             [$data['last_name'], $data['first_name'], $data['middle_name']])
             ->orderBy('match_diff')
+            ->limit(4)
             ->get();
 
-        $exactMatch = Applicant::find($applicants->where('match_diff', 0)->first());
+        $exactMatch = $applicants->where('match_diff', 0)->first();
 
-        $otherMatches = $applicants->whereBetween('match_diff', [1, 3])
-            ->slice(0, 3);
+        $otherMatches = $applicants->where('id', '<>', $exactMatch ? $exactMatch->id : null);
 
         if($exactMatch != null || $otherMatches->count() > 0) {
             return response()->json([

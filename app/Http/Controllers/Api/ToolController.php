@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Key;
 use App\User;
+use App\Branch;
 use App\Module;
 use App\Company;
 use App\UserType;
@@ -15,7 +16,8 @@ class ToolController extends Controller
     public function userManagement()
     {
         return [
-            'user_types' => UserType::all()
+            'user_types' => UserType::all(),
+            'branches' => Branch::all()
         ];
     }
 
