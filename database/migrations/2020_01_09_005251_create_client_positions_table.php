@@ -20,7 +20,7 @@ class CreateClientPositionsTable extends Migration
             $table->string('name');
 
             $table->unique(['code', 'client_id']);
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
         });
     }
 
