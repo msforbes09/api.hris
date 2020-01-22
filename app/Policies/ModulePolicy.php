@@ -58,4 +58,14 @@ class ModulePolicy
         return $user->userType->moduleActions->where('id', $action->id)->first();
 
     }
+
+    public function restore(User $user, Module $module)
+    {
+        $action = $module->moduleActions->where('code', 'restore')->first();
+
+        if (! $action) return;
+
+        return $user->userType->moduleActions->where('id', $action->id)->first();
+
+    }
 }
