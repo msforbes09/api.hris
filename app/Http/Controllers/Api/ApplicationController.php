@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Branch;
 use App\Client;
 use App\Applicant;
 use App\Application;
@@ -27,11 +28,11 @@ class ApplicationController extends Controller
         return $application;
     }
 
-    public function store(ApplicationRequest $application, Applicant $applicant)
+    public function store(ApplicationRequest $request, Applicant $applicant, Application $application)
     {
-        $code = ['code' => $this->applicationCode(request(), $applicant)];
+        $code = ['code' => getCode(new Application(), [Branch::findOrFail($request->branch_id)])];
 
-        $application = $applicant->applications()->create(request()->merge($code)->toArray());
+        $application = $applicant->applications()->create($request->merge($code)->only($application->fillable));
 
         return response()->json([
             'message' => 'Successfully created application.',
@@ -41,9 +42,7 @@ class ApplicationController extends Controller
 
     public function update(ApplicationRequest $request, Applicant $applicant, Application $application)
     {
-        $application->fill(request()->toArray());
-
-        $application->save();
+        $application->update($request->only($applicaiton->fillable));
 
         return response()->json([
             'message' => 'Successfully updated application.',
@@ -58,15 +57,5 @@ class ApplicationController extends Controller
         return [
             'message' => 'Successfully deleted application.'
         ];
-    }
-
-    protected function applicationCode($request, $applicant)
-    {
-        $code = $applicant->code
-            . '-' . Client::findOrFail($request['client_id'])->code
-            . '-' . ClientBranch::findOrFail($request['client_branch_id'])->code
-            . '-' . ClientPosition::findOrFail($request['client_position_id'])->code;
-
-        return $code;
     }
 }
