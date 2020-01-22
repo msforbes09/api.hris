@@ -79,7 +79,8 @@ class ApplicantController extends Controller
 
         $exactMatch = Applicant::find($applicants->where('match_diff', 0)->first());
 
-        $otherMatches = $applicants->whereBetween('match_diff', [1, 3])
+
+        $otherMatches = $applicants->whereBetween('match_diff', [1, 10])
             ->slice(0, 3);
 
         if($exactMatch != null || $otherMatches->count() > 0) {
