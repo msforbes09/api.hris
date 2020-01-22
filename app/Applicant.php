@@ -22,12 +22,12 @@ class Applicant extends Model
         'tax_code',
         'citizenship',
         'religion',
-       'contact_no',
-       'email',
-       'sss',
-       'tin',
-       'philhealth',
-       'pagibig',
+        'contact_no',
+        'email',
+        'sss',
+        'tin',
+        'philhealth',
+        'pagibig',
     ];
 
     protected $dates = [
