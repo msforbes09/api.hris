@@ -1,6 +1,7 @@
 <?php
 
 use App\User;
+use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Log;
 
@@ -44,5 +45,28 @@ if(!function_exists('findUser()'))
         return User::where('username', $username)
             ->orWhere('email', $username)
             ->first();
+    }
+}
+
+if(!function_exists('getUniqueCode'))
+{
+    function getCode($model, $segments, $hasTimestamp = true)
+    {
+        $code = '';
+
+        foreach ($segments as $segment)
+        {
+            $code .= $segment->code;
+            if($segment != $segments[count($segments) - 1]) $code .= '-';
+        }
+
+        if($hasTimestamp) $code .= '-' . Carbon::now()->getTimestamp();
+
+        if($model->where('code', $code)->count() > 0)
+        {
+            return getCode($model, $segments, $hasTimestamp);
+        }
+
+        return $code;
     }
 }
