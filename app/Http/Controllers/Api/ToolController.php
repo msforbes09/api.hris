@@ -26,7 +26,7 @@ class ToolController extends Controller
         ];
     }
 
-    public function companyManagement()
+    public function clientManagement()
     {
         return [
             'companies' => Company::all()

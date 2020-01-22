@@ -22,7 +22,7 @@ class ClientController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return Client::with('company')->with('branches')->with('positions')->get();
+        return Client::with('company')/*->with('branches')->with('positions')*/->get();
     }
 
     public function store(ClientRequest $request, Client $client)
@@ -42,10 +42,8 @@ class ClientController extends Controller
         $this->authorize('show', $this->module);
 
         $client->company;
-
-        $client->branches;
-
-        $client->positions;
+        // $client->branches;
+        // $client->positions;
 
         return $client;
     }

@@ -49,7 +49,7 @@ class ModulePolicy
 
     }
 
-    public function destroy(User $user, Module $module)
+    public function delete(User $user, Module $module)
     {
         $action = $module->moduleActions->where('code', 'delete')->first();
 
