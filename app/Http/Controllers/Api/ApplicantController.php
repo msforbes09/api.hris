@@ -11,9 +11,30 @@ use App\Http\Requests\ApplicantRequest;
 
 class ApplicantController extends Controller
 {
-    public function index()
+    /*{
+      "sortBy": "null",
+      "descending": "false",
+      "page": "1",
+      "rowsPerPage": "5",
+      "rowsNumber": "10",
+      "search": "test"
+    }*/
+    public function index(Request $request)
     {
-        return Applicant::paginate(request('per_page') ?? 10);
+        $applicants = [];
+
+        if($request->search != null)
+        {
+            $applicants = Applicant::search(urldecode($request->search));
+        }
+        else
+        {
+            $applicants = Applicant::all();
+        }
+
+        return [
+            'applicants' => $applicants->paginate()
+        ];
     }
 
     public function show(Applicant $applicant)

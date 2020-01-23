@@ -33,6 +33,8 @@ class CreateApplicantsTable extends Migration
             $table->string('pagibig')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE applicants ADD FULLTEXT fulltext_index (first_name, middle_name, last_name)');
     }
 
     public function down()
