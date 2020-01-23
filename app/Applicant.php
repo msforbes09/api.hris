@@ -10,7 +10,7 @@ class Applicant extends Model
     use FullTextSearch;
 
     protected $fillable = [
-        'last_name',
+        'last_nae',
         'first_name',
         'middle_name',
         'nick_name',
