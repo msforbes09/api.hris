@@ -8,33 +8,30 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplicantRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicantController extends Controller
 {
-    /*{
-      "sortBy": "null",
-      "descending": "false",
-      "page": "1",
-      "rowsPerPage": "5",
-      "rowsNumber": "10",
-      "search": "test"
-    }*/
-    public function index(Request $request)
+    public function index(Request $request, Applicant $applicant)
     {
-        $applicants = [];
+        $applicants = null;
+        $page = $request->page ?? 1;
+        $rowsPerPage = $request->rowsPerPage ?? 5;
+        $descending = ($request->descending) ? 'DESC' : 'ASC';
+        $sortBy = $this->validateSortby($request->sortBy, $applicant->getFillable());
 
         if($request->search != null)
         {
-            $applicants = Applicant::search(urldecode($request->search));
+            $applicants = Applicant::search(urldecode($request->search))
+                ->orderBy($sortBy, $descending)
+                ->paginate($rowsPerPage);
         }
         else
         {
-            $applicants = Applicant::all();
+                $applicants = Applicant::orderBy($sortBy, $descending)->paginate($rowsPerPage);
         }
 
-        return [
-            'applicants' => $applicants->paginate()
-        ];
+        return $applicants;
     }
 
     public function show(Applicant $applicant)
@@ -77,6 +74,11 @@ class ApplicantController extends Controller
         return [
             'message' => 'Successfully deleted applicant.',
         ];
+    }
+
+    protected function validateSortby($sortBy, $valids)
+    {
+        return (in_array($sortBy, $valids)) ? $sortBy : 'id';
     }
 
     public function applicantCheck(Request $request)
