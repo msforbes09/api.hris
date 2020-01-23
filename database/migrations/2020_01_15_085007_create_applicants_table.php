@@ -10,27 +10,29 @@ class CreateApplicantsTable extends Migration
     {
         Schema::create('applicants', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('last_name')->nullable();
-            $table->string('first_name')->nullable();
-            $table->string('middle_name')->nullable();
-            $table->string('nick_name')->nullable();
+            $table->string('last_name', 60);
+            $table->string('first_name', 60);
+            $table->string('middle_name', 60)->nullable();
+            $table->string('nick_name', 60)->nullable();
             $table->string('current_address')->nullable();
             $table->string('permanent_address')->nullable();
-            $table->date('birth_date')->nullable();
+            $table->date('birth_date');
             $table->string('birth_place')->nullable();
-            $table->string('gender')->nullable();
-            $table->string('height')->nullable();
-            $table->string('weight')->nullable();
-            $table->string('civil_status')->nullable();
-            $table->string('tax_code')->nullable();
-            $table->string('citizenship')->nullable();
-            $table->string('religion')->nullable();
-            $table->string('contact_no')->nullable();
+            $table->string('gender', 20);
+            $table->string('height', 20)->nullable();
+            $table->string('weight', 20)->nullable();
+            $table->string('civil_status', 20)->nullable();
+            $table->string('tax_code', 20)->nullable();
+            $table->string('citizenship', 30)->nullable();
+            $table->string('religion', 60)->nullable();
+            $table->string('contact_no', 30)->nullable();
             $table->string('email')->nullable();
-            $table->string('sss')->nullable();
-            $table->string('tin')->nullable();
-            $table->string('philhealth')->nullable();
-            $table->string('pagibig')->nullable();
+            $table->string('crn', 25)->nullable();
+            $table->string('sss', 25)->nullable();
+            $table->string('tin', 25)->nullable();
+            $table->string('philhealth', 25)->nullable();
+            $table->string('pagibig', 25)->nullable();
+            $table->string('pagibig_tracking', 25)->nullable();
             $table->timestamps();
         });
 
