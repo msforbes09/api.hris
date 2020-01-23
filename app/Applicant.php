@@ -27,10 +27,12 @@ class Applicant extends Model
         'religion',
         'contact_no',
         'email',
+        'crn',
         'sss',
         'tin',
         'philhealth',
         'pagibig',
+        'pagibig_tracking',
     ];
 
     protected $dates = [
