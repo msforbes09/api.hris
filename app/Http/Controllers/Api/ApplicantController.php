@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Applicant;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -30,13 +31,7 @@ class ApplicantController extends Controller
 
     public function store(ApplicantRequest $request, Applicant $applicant)
     {
-        $uniqueCode = ['code' => Str::random(9)];
-
-        while (Applicant::where('code', $uniqueCode['code'])->count() > 0) {
-            $uniqueCode['code'] = Str::random(9);
-        }
-
-        $applicant = Applicant::create($request->merge($uniqueCode)->only($applicant->fillable));
+        $applicant = Applicant::create($request->only($applicant->fillable));
 
         return response()->json([
             'message' => 'Successfully created applicant.',

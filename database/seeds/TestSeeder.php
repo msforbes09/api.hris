@@ -18,5 +18,6 @@ class TestSeeder extends Seeder
         // $this->call(__CompaniesTableSeeder::class);
         $this->call(__ClientTableSeeder::class);
         $this->call(__KeywordsTableSeeder::class);
+        $this->call(__ApplicantTableSeeder::class);
     }
 }
