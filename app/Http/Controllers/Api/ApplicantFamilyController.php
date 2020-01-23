@@ -17,7 +17,7 @@ class ApplicantFamilyController extends Controller
 
     public function show()
     {
-        abort(403);
+        abort(404);
     }
 
     public function store(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
@@ -32,7 +32,7 @@ class ApplicantFamilyController extends Controller
 
     public function update(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
     {
-        $family->update($request()->only($family->fillable));
+        $family->update($request->only($family->fillable));
 
         return response()->json([
             'message' => 'Successfully updated record.',

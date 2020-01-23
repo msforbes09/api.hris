@@ -18,12 +18,12 @@ class CreateApplicantFamiliesTable extends Migration
             $table->unsignedBigInteger('applicant_id');
             $table->string('relationship');
             $table->string('name');
-            $table->string('address');
-            $table->string('occupation');
-            $table->date('birth_date');
+            $table->string('address')->nullable();
+            $table->string('occupation')->nullable();
+            $table->date('birth_date')->nullable();
             $table->boolean('living');
 
-            $table->foreign('applicant_id')->references('id')->on('applicants');
+            $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade');
         });
     }
 

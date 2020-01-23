@@ -5,11 +5,11 @@ use Illuminate\Database\Seeder;
 class UserTypesTableSeeder extends Seeder
 {
     protected $types = [
-        'sys_admin',
-        'admin',
-        'manager',
-        'evaluator',
-        'encoder',
+        'System Admin',
+        'Administrator',
+        'Manager',
+        'Evaluator',
+        'Encoder',
     ];
 
     public function run()
