@@ -14,24 +14,17 @@ class ApplicantController extends Controller
 {
     public function index(Request $request, Applicant $applicant)
     {
-        $applicants = null;
-        $page = $request->page ?? 1;
-        $rowsPerPage = $request->rowsPerPage ?? 5;
+        $rowsPerPage = (int) $request->rowsPerPage > 0 ? $request->rowsPerPage : 10;
         $descending = ($request->descending) ? 'DESC' : 'ASC';
         $sortBy = $this->validateSortby($request->sortBy, $applicant->getFillable());
 
-        if($request->search != null)
-        {
-            $applicants = Applicant::search(urldecode($request->search))
-                ->orderBy($sortBy, $descending)
-                ->paginate($rowsPerPage);
-        }
-        else
-        {
-                $applicants = Applicant::orderBy($sortBy, $descending)->paginate($rowsPerPage);
-        }
 
-        return $applicants;
+        return Applicant::where( function($q) use ($request) {
+                if ($request->search)
+                    $q->search(urldecode($request->search));
+            })
+            ->orderBy($sortBy, $descending)
+            ->paginate($rowsPerPage);
     }
 
     public function show(Applicant $applicant)
