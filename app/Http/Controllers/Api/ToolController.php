@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Key;
 use App\User;
 use App\Branch;
+use App\Client;
 use App\Module;
 use App\Company;
 use App\UserType;
@@ -32,6 +33,13 @@ class ToolController extends Controller
     {
         return [
             'companies' => Company::all()
+        ];
+    }
+    public function applicantManagement()
+    {
+        return [
+            'keys' => Key::with('keywords')->get(),
+            'clients' => Client::with('branches')->with('positions')->get()
         ];
     }
 }
