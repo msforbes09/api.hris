@@ -20,7 +20,7 @@ class ApplicantController extends Controller
     {
         $applicant->families;
 
-        $applicant->educations;
+        $applicant->education;
 
         $applicant->employments;
 

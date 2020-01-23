@@ -41,7 +41,7 @@ class Applicant extends Model
       return $this->hasMany('App\ApplicantFamily');
     }
 
-    public function educations()
+    public function education()
     {
       return $this->hasMany('App\ApplicantEducation');
     }
