@@ -16,9 +16,8 @@ class ApplicantFamilyRequest extends FormRequest
         return [
             'relationship' => 'required',
             'name' => 'required',
-            'occupation' => 'required',
-            'address' => 'required',
-            'birth_date' => 'required',
+            'birth_date' => 'date|nullable',
+            'living' => 'required|boolean',
         ];
     }
 }
