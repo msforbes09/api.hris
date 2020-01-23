@@ -17,7 +17,7 @@ class ApplicantEducationController extends Controller
 
     public function store(ApplicantEducationRequest $request, Applicant $applicant, ApplicantEducation $education)
     {
-        $education = $applicant->educations()->create($request->only($education->fillable));
+        $education = $applicant->education()->create($request->only($education->fillable));
 
         return response()->json([
             'message' => 'Successfully added to record.',
