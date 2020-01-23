@@ -24,7 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(auth()->user()->userType->name != 'sys_admin')
+        if(auth()->user()->userType->id != 1)
         {
             Auth::logout();
         }

@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Helpers\FullTextSearch;
 use Illuminate\Database\Eloquent\Model;
 
 class Applicant extends Model
 {
+    use FullTextSearch;
+
     protected $fillable = [
         'last_name',
         'first_name',
@@ -36,12 +39,18 @@ class Applicant extends Model
         'updated_at'
     ];
 
+    protected $searchable = [
+        'first_name',
+        'middle_name',
+        'last_name'
+    ];
+
     public function families()
     {
       return $this->hasMany('App\ApplicantFamily');
     }
 
-    public function educations()
+    public function education()
     {
       return $this->hasMany('App\ApplicantEducation');
     }

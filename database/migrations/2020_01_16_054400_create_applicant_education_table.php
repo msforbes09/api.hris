@@ -8,7 +8,7 @@ class CreateApplicantEducationTable extends Migration
 {
     public function up()
     {
-        Schema::create('applicant_educations', function (Blueprint $table) {
+        Schema::create('applicant_education', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('applicant_id');
             $table->string('level');
