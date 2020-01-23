@@ -62,6 +62,7 @@ class ApplicantController extends Controller
 
     public function destroy(Applicant $applicant)
     {
+        $applicant->applications()->delete();
         $applicant->employments()->delete();
         $applicant->education()->delete();
         $applicant->families()->delete();
