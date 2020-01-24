@@ -16,6 +16,8 @@ class ApplicantFamily extends Model
         'occupation',
         'birth_date',
         'living',
+        'contact_no',
+        'emergency_contact'
     ];
 
     protected $dates = [
