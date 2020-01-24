@@ -13,7 +13,12 @@ class KeywordsTableSeeder extends Seeder
         'height' => ['in', 'cm'],
         'weight' => ['lbs', 'kg'],
         'citizenship' => ['Filipino'],
-        'religion' => ['Roman Catholic']
+        'religion' => ['Roman Catholic'],
+        'application_status' => ['Pending', 'For Initial Interview/Exam', 'Failed Initial Interview/Exam', 'For Final Interview', 'Failed Final Interview', 'For Deployment', 'For Pooling'],
+        'interview_status' => ['Pending', 'Passed', 'Failed'],
+        'exam_status' => ['Pending', 'Passed', 'Failed', 'Needs Retake'],
+        'medical_status' => ['Pending', 'Completed'],
+        'requirement_status' => ['Pending', 'Completed']
     ];
 
     public function run()

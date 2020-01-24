@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateApplicantEmploymentsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('applicant_employments', function (Blueprint $table) {
@@ -24,15 +19,10 @@ class CreateApplicantEmploymentsTable extends Migration
             $table->decimal('salary');
             $table->string('leaving_reason');
 
-            $table->foreign('applicant_id')->references('id')->on('applicants');
+            $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('applicant_employments');

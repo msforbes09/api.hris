@@ -6,29 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateClientBranchesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('client_branches', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
+            $table->string('code', 10);
             $table->unsignedBigInteger('client_id');
-            $table->string('name');
+            $table->string('name', 100);
             $table->softDeletes();
 
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('client_branches');
