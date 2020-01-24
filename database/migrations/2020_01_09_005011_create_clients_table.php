@@ -6,18 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateClientsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
+            $table->string('code', 10);
             $table->unsignedBigInteger('company_id');
-            $table->string('name');
+            $table->string('name', 100);
             $table->softDeletes();
 
             $table->unique(['code', 'company_id']);
@@ -25,11 +20,6 @@ class CreateClientsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('clients');
