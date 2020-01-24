@@ -1,78 +1,121 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# HRIS API
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Backend API for HRIS web app
 
-## About Laravel
+## Getting Started
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. The project is built with the [Laravel Framework](https://laravel.com/docs/6.x/) so it's best to learn the basics of this framework before using this project.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
+* Composer >= 1.9.1  - For installing laravel and vendor packages
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Node JS >= 12.13.1 - For installing js libraries
 
-## Learning Laravel
+* Laravel Framework >= 6.9.x  - PHP framework used for this project
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* PHP >= 7.13.12 - Programming languaged used
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* Git - For cloning project repository to local environment
 
-## Laravel Sponsors
+* Insomnia - For testing project APIs
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+* XAMPP - Web server for hosting database and web applications
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+## Server Requirements
+The Laravel framework has a few system requirements. To learn more about the requirements, go to laravel's installation documentation for [Server Requirements](https://laravel.com/docs/6.x/installation#server-requirements).
 
-## Contributing
+## Installation
+Laravel utilizes Composer to manage its dependencies. So, before using Laravel, make sure you have Composer installed on your machine.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+More details for [Laravel Installation](https://laravel.com/docs/6.x/installation#installing-laravel).
 
-## Code of Conduct
+Once you have installed all the prerequisites, and have grasped the basics of the Laravel Framework, you may now start cloning the project to your local machine via git.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+git clone https://github.com/kenneth-nava-bot/hris.git
+cd hris
+```
 
-## Security Vulnerabilities
+Install npm and composer modules.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+npm install
+composer install
+```
 
-## License
+Create your .env file by duplicating the contents of ".env.example" file, located in the root folder of the project, then save it as ".env".
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+For the setup of the .env file, first you want to generate your application key.
+```
+php artisan key:generate
+```
+The command will generate an APP_KEY inside your ".env" file.
+
+Start your XAMPP server and create an empty database, then update the necessary database configuration in your ".env" file.
+
+```
+...
+
+DB_CONNECTION=
+DB_HOST=
+DB_PORT=
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+
+...
+```
+
+You can learn more about Laravel's database configuration in their [documentations](https://laravel.com/docs/6.x/database).
+
+This app also features sending of emails. So you need to setup the configuration for the email. For testing and development purposes, you can use [Mailtrap](https://mailtrap.io/).
+
+```
+...
+
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS=
+MAIL_FROM_NAME="${APP_NAME}"
+
+...
+```
+
+Other settings you need to configure in the ".env" file:
+
+```
+APP_URL= // This will be used as the API's base url
+APP_UI_URL= // The url for the web app that will consume the APIs, or simply the frontend of the web app.
+APP_DEFAULT_PASS= // Default password for seeded/default users
+LOG_SLACK_WEBHOOK_URL= // Web hook url for slack logging
+```
+
+Now you need to migrate the database, run the seeder for testing purposes, and then get a new Passport ID and SECRET. You can do all these commands using an artisan command.
+
+Make sure your XAMPP server is running.
+
+```
+php artisan run:dev
+```
+
+The terminal will display two Passport ID and Secret. You will the need the second one, which is the password grant credentials, and copy it to the following properties of the ".env" file.
+
+```
+PASSWORD_GRANT_ID=
+PASSWORD_GRANT_SECRET=
+```
+
+You can learn more about Laravel Passport in their [documentations](https://laravel.com/docs/6.x/passport).
+
+## Testing the APIs
+Start your XAMPP server, and then open Insomnia. Download the export file of the available APIs in the app via git.
+
+```
+git clone https://github.com/kenneth-nava-bot/hris_routes.git
+```
+
+Import the file in Insomnia and you will now be able to test the backend APIs.
