@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class ApplicantEmployment extends Model
+class ApplicantEmployment extends Model implements Auditing
 {
+    use \OwenIt\Auditing\Auditable;
+
     public $timestamps = false;
 
     protected $fillable = [
