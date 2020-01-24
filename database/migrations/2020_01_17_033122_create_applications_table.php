@@ -29,6 +29,8 @@ class CreateApplicationsTable extends Migration
             $table->string('requirement_remarks', 191)->nullable();
             $table->string('status');
             $table->timestamps();
+
+            $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade');
         });
     }
 

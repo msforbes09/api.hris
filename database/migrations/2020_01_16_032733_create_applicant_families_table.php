@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateApplicantFamiliesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('applicant_families', function (Blueprint $table) {
@@ -29,11 +24,6 @@ class CreateApplicantFamiliesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('applicant_families');

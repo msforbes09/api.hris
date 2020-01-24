@@ -17,7 +17,7 @@ class CreateApplicantEducationTable extends Migration
             $table->year('year_to');
             $table->string('details')->nullable();
 
-            $table->foreign('applicant_id')->references('id')->on('applicants');
+            $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade');
         });
     }
 
