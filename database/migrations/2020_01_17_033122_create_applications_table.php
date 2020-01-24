@@ -10,11 +10,24 @@ class CreateApplicationsTable extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->date('date');
             $table->string('code');
+            $table->unsignedBigInteger('branch_id');
             $table->unsignedBigInteger('applicant_id');
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('client_branch_id');
             $table->unsignedBigInteger('client_position_id');
+            $table->date('interview_date')->nullable();
+            $table->string('interview_stat');
+            $table->string('interview_remarks', 191)->nullable();
+            $table->date('exam_date')->nullable();
+            $table->string('exam_stat');
+            $table->string('exam_remarks', 191)->nullable();
+            $table->string('medical_stat');
+            $table->string('medical_remarks', 191)->nullable();
+            $table->string('requirement_stat');
+            $table->string('requirement_remarks', 191)->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }
