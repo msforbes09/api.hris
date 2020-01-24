@@ -42,7 +42,7 @@ class ApplicationController extends Controller
 
     public function update(ApplicationRequest $request, Applicant $applicant, Application $application)
     {
-        $application->update($request->only($applicaiton->fillable));
+        $application->update($request->only($application->fillable));
 
         return response()->json([
             'message' => 'Successfully updated application.',
