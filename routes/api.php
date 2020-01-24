@@ -32,7 +32,9 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/user-types/{userType}/accesses', 'Api\UserTypeController@updateAccess');
     Route::post('/remove-tokens', 'Api\Auth\TokenController@remove');
     Route::post('/applicant-check', 'Api\ApplicantController@applicantCheck');
-    Route::post('/clients/{client}/restore', 'Api\ClientController@restore');
+    Route::post('/clients/{id}/restore', 'Api\ClientController@restore');
+    Route::post('/client-branches/{id}/restore', 'Api\ClientBranchController@restore');
+    Route::post('/client-positions/{id}/restore', 'Api\ClientPositionController@restore');
 
     Route::apiResources(
     [
