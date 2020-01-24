@@ -39,7 +39,7 @@ class ApplicantRequest extends FormRequest
             'tax_code' => 'max:20',
             'citizenship' => 'max:20',
             'religion' => 'max:30',
-            'contact_no' => 'regex:/^[\d]*$/|min:7|max:20|nullable',
+            'contact_no' => 'regex:/^\d{11}$/|nullable',
             'email' => 'email|nullable',
             'crn' => 'regex:/^\d{4}-\d{7}-\d$/|nullable',
             'sss' => 'regex:/^\d{2}-\d{7}-\d$/|nullable',
