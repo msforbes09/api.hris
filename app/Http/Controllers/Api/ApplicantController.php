@@ -111,7 +111,7 @@ class ApplicantController extends Controller
     public function oldInfoSheetImport(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx'
+            'file' => 'required|mimes:xlsx|max:100'
         ]);
 
         try
