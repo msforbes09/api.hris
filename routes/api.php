@@ -35,6 +35,8 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/clients/{id}/restore', 'Api\ClientController@restore');
     Route::post('/client-branches/{id}/restore', 'Api\ClientBranchController@restore');
     Route::post('/client-positions/{id}/restore', 'Api\ClientPositionController@restore');
+    Route::post('/sms-send', 'Api\SmsController@send');
+    Route::get('/sms-balance', 'Api\SmsController@balance');
 
     Route::apiResources(
     [
