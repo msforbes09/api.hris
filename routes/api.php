@@ -49,7 +49,7 @@ Route::middleware('auth:api')->group(function() {
         'keywords' => 'Api\KeywordController',
         'applicants' => 'Api\ApplicantController',
         'applicants.families' => 'Api\ApplicantFamilyController',
-        'applicants.educations' => 'Api\ApplicantEducationController',
+        'applicants.education' => 'Api\ApplicantEducationController',
         'applicants.employments' => 'Api\ApplicantEmploymentController',
         'applicants.applications' => 'Api\ApplicationController',
         'applications' => 'Api\ApplicationController'
