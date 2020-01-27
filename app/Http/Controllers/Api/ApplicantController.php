@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Imports\OldMasterFileImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\ApplicantRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -103,6 +105,39 @@ class ApplicantController extends Controller
 
         return [
             'message' => 'Applicant record doesn\'t exist.'
+        ];
+    }
+
+    public function oldInfoSheetImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx'
+        ]);
+
+        try
+        {
+          Excel::import(new OldMasterFileImport(), $request->file('file'));
+        }
+        catch(\Maatwebsite\Excel\Validators\ValidationException $e)
+        {
+            $failures = $e->failures();
+            $errors = [];
+
+            foreach ($failures as $failure) {
+                $errors[$failure->attribute()] = [
+                    'row' => $failure->row(),
+                    'messages' => $failure->errors()
+                ];
+            }
+
+            return [
+                'message' => 'There are '. count($failures) .' failed imports.',
+                'errors' => $errors
+            ];
+        }
+
+        return [
+            'message' => 'Applicants successfuly imported.'
         ];
     }
 }
