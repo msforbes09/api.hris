@@ -66,4 +66,18 @@ class ClientPositionController extends Controller
             'message' => 'Successfully deleted client position.'
         ];
     }
+
+    public function restore($id)
+    {
+        $this->authorize('restore', $this->module);
+
+        $position = ClientPosition::withTrashed()->findOrFail($id);
+
+        $position->restore();
+
+        return [
+            'message' => 'Successfully restored deleted position.'
+        ];
+
+    }
 }

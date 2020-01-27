@@ -4,10 +4,11 @@ namespace App;
 
 use App\Helpers\FullTextSearch;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Applicant extends Model
+class Applicant extends Model implements Auditable
 {
-    use FullTextSearch;
+    use FullTextSearch, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'last_name',

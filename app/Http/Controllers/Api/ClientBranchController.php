@@ -66,4 +66,18 @@ class ClientBranchController extends Controller
             'message' => 'Successfuly deleted client branch.'
         ];
     }
+
+    public function restore($id)
+    {
+        $this->authorize('restore', $this->module);
+
+        $branch = ClientBranch::withTrashed()->findOrFail($id);
+
+        $branch->restore();
+
+        return [
+            'message' => 'Successfully restored deleted branch.'
+        ];
+
+    }
 }

@@ -4,14 +4,15 @@ namespace App;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Notifications\WelcomeNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'user_type_id', 'branch_id', 'name', 'username', 'email', 'password', 'active',
