@@ -52,7 +52,7 @@ class OldMasterFileImport implements OnEachRow, WithHeadingRow, WithMultipleShee
     public function onRow(Row $row)
     {
         $row = $row->toArray();
-        dd($row);
+
         $applicant =  Applicant::updateOrCreate([
             'last_name' => Str::title($row['last_name']),
             'first_name' =>  Str::title($row['first_name']),
