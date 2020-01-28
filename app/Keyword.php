@@ -11,5 +11,5 @@ class Keyword extends Model implements Auditable
 
     public $timestamps = false;
 
-    protected $fillable = ['value'];
+    protected $fillable = ['key_id', 'value'];
 }

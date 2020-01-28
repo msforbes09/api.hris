@@ -12,7 +12,7 @@ class ApplicantEducationController extends Controller
 {
     public function index(Applicant $applicant)
     {
-        return $applicant->educations;
+        return $applicant->education;
     }
 
     public function store(ApplicantEducationRequest $request, Applicant $applicant, ApplicantEducation $education)
