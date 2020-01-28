@@ -64,8 +64,6 @@ class ClientController extends Controller
     {
         $this->authorize('delete', $this->module);
 
-        $client->branches()->delete();
-        $client->positions()->delete();
         $client->delete();
 
         return [
@@ -79,8 +77,6 @@ class ClientController extends Controller
 
         $client = Client::withTrashed()->findOrFail($id);
 
-        $client->branches()->restore();
-        $client->positions()->restore();
         $client->restore();
 
         return [
