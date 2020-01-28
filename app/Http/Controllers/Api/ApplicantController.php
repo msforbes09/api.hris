@@ -153,6 +153,6 @@ class ApplicantController extends Controller
 
     public function template()
     {
-        return response()->download(storage_path('app/public/applicant_template.csv'));
+        return response()->download(storage_path('app/applicant_template.csv'));
     }
 }
