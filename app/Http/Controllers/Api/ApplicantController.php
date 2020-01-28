@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Applicant;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Exports\ApplicantExport;
+use App\Imports\ApplicantImport;
 use App\Http\Controllers\Controller;
-use App\Imports\OldMasterFileImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\ApplicantRequest;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\HeadingRowImport;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicantController extends Controller
@@ -108,36 +112,47 @@ class ApplicantController extends Controller
         ];
     }
 
-    public function oldInfoSheetImport(Request $request)
+    protected function validateHeadings($file)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx|max:100'
-        ]);
+        $headings = (new HeadingRowImport)->toArray($file)[0][0];
 
-        try
-        {
-          Excel::import(new OldMasterFileImport(), $request->file('file'));
-        }
-        catch(\Maatwebsite\Excel\Validators\ValidationException $e)
-        {
-            $failures = $e->failures();
-            $errors = [];
+        $requireds = [
+            'last_name', 'first_name', 'middle_name', 'current_address', 'permanent_address', 'birth_date', 'birth_place',
+            'gender', 'height', 'civil_status', 'contact_no', 'email', 'sss', 'tin', 'philhealth', 'pagibig',
+        ];
 
-            foreach ($failures as $failure) {
-                $errors[$failure->attribute()] = [
-                    'row' => $failure->row(),
-                    'messages' => $failure->errors()
-                ];
+        foreach ($requireds as $value) {
+            if (!in_array($value, $headings)) {
+                abort(403, $value .' heading is not found.');
             }
-
-            return [
-                'message' => 'There are '. count($failures) .' failed imports.',
-                'errors' => $errors
-            ];
         }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate(['file' => 'required|mimes:csv,txt|max:3000']);
+        $file = $request->file('file');
+
+        $this->validateHeadings($file);
+
+        $import = new ApplicantImport();
+        Excel::import($import, $file);
 
         return [
-            'message' => 'Applicants successfuly imported.'
+            'message' => 'Done importing '. count($import->success) . ' out of '. $import->total .' applicants.',
+            'total' => $import->total,
+            'success' => $import->success,
+            'failed' => $import->failed
         ];
+    }
+
+    public function export()
+    {
+        return Excel::download(new ApplicantExport(), 'applicants_' . Carbon::now() .'.csv');
+    }
+
+    public function template()
+    {
+        return response()->download(storage_path('app/public/applicant_template.csv'));
     }
 }

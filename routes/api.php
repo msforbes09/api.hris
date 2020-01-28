@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::post('/get-token', 'Api\Auth\TokenController@get')->name('getToken');
 Route::post('/forgot-password', 'Api\Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
+Route::get('/applicants/template', 'Api\ApplicantController@template');
+Route::get('/applicants/export', 'Api\ApplicantController@export');
 
 Route::middleware('auth:api')->group(function() {
     Route::prefix('tools')->group(function () {
@@ -35,7 +37,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/clients/{id}/restore', 'Api\ClientController@restore');
     Route::post('/client-branches/{id}/restore', 'Api\ClientBranchController@restore');
     Route::post('/client-positions/{id}/restore', 'Api\ClientPositionController@restore');
-    Route::post('/old-import', 'Api\ApplicantController@oldInfoSheetImport');
+    Route::post('/applicants/import', 'Api\ApplicantController@import');
 
     Route::get('/sms-balance', 'Api\SmsController@balance');
     Route::post('/sms-send', 'Api\SmsController@send');
