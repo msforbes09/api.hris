@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Applicant;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,16 +12,21 @@ class SmsController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-            'mobileno' => 'required',
+            'id' => 'required',
             'message' => 'required'
         ]);
 
-        /*if($request->mobileno == 'all')
-        {
-            // mobileno = Applicants::all()->contact
-        }*/
-
         $http = new Client();
+        $applicants = Applicant::find(explode(',', $request->id));
+
+        $contacts = $applicants->map(function($applicant) {
+            if(preg_match('/^\d{11}$/', $applicant->contact_no))
+            {
+                return '63' . substr($applicant->contact_no, 1);
+            }
+
+            abort(403, 'Applicant ['. $applicant->fullname() . '] has an invalid contact number.');
+        });
 
         $result = $http->get(config('app.sms_api') . 'api.aspx', [
             'query' => [
@@ -28,7 +34,7 @@ class SmsController extends Controller
                 'apipassword' => config('app.sms_password'),
                 'languagetype' => 1,
                 'senderid' => config('app.sms_sender_id'),
-                'mobileno' => $request->mobileno,
+                'mobileno' => implode(',', $contacts->toArray()),
                 'message' => $request->message
             ]
         ]);
@@ -57,7 +63,10 @@ class SmsController extends Controller
             abort(403, 'Sms Api insufficient credit balance');
         }
 
-        return json_decode($result->getBody());
+        return [
+            'message' => 'Successfully sent message.',
+            'recipients' => $contacts
+        ];
     }
 
     public function balance()

@@ -48,6 +48,11 @@ class Applicant extends Model implements Auditable
         'last_name'
     ];
 
+    public function fullname()
+    {
+        return $this->last_name .', '. $this->first_name .' '. $this->middle_name;
+    }
+
     public function families()
     {
       return $this->hasMany('App\ApplicantFamily');
