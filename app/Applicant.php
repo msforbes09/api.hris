@@ -48,7 +48,7 @@ class Applicant extends Model implements Auditable
         'last_name'
     ];
 
-    public function fullname()
+    public function getFullNameAttribute()
     {
         return $this->last_name .', '. $this->first_name .' '. $this->middle_name;
     }

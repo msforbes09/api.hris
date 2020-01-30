@@ -36,12 +36,5 @@ class AppServiceProvider extends ServiceProvider
                 $router->forAccessTokens();
             });
         Passport::tokensExpireIn(now()->addDays(1));
-
-        // SERVICES, REPOSITORIES, CONTRACTS BINDING
-        $this->app->bind('App\Contracts\IUser', 'App\Repositories\UserRepository');
-        $this->app->bind('App\Contracts\IUserType', 'App\Repositories\UserTypeRepository');
-        $this->app->bind('App\Contracts\IApiToken', 'App\Services\ApiTokenService');
-        $this->app->bind('App\Contracts\IModule', 'App\Repositories\ModuleRepository');
-        $this->app->bind('App\Contracts\IModuleAction', 'App\Repositories\ModuleActionRepository');
     }
 }
