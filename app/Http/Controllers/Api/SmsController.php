@@ -3,73 +3,75 @@
 namespace App\Http\Controllers\Api;
 
 use App\Applicant;
+use Carbon\Carbon;
+use App\Jobs\SendSms;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Psr\Http\Message\ResponseInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class SmsController extends Controller
 {
-    public function send(Request $request)
+    public function send()
     {
-        $request->validate([
-            'id' => 'required',
-            'message' => 'required'
+        request()->validate([
+            'contacts' => 'required',
+            'message' => 'required',
+            'schedule' => 'date|after:' . Carbon::now()
         ]);
 
-        $http = new Client();
-        $applicants = Applicant::find(explode(',', $request->id));
+        $applicants = Applicant::find(request('contacts'));
+        $balance = $this->getBalance();
 
-        $contacts = $applicants->map(function($applicant) {
-            if(preg_match('/^\d{11}$/', $applicant->contact_no))
+        /*if($balance < $applicants->count())
+        {
+            abort(400, 'Sorry, you do not have enough balance. Your remaining balance is: ' . $balance);
+        }*/
+
+        $invalidContacts= [];
+
+        foreach ($applicants as $applicant)
+        {
+            if(!preg_match('/63\d{10}/', $applicant->contact_no))
             {
-                return '63' . substr($applicant->contact_no, 1);
+                $invalidContacts[] = $applicant;
+                continue;
             }
 
-            abort(403, 'Applicant ['. $applicant->fullname() . '] has an invalid contact number.');
-        });
+            $sms = [
+                'contact' => $applicant->contact_no,
+                'message' => request('message')
 
-        $result = $http->get(config('app.sms_api') . 'api.aspx', [
-            'query' => [
-                'apiusername' => config('app.sms_username'),
-                'apipassword' => config('app.sms_password'),
-                'languagetype' => 1,
-                'senderid' => config('app.sms_sender_id'),
-                'mobileno' => implode(',', $contacts->toArray()),
-                'message' => $request->message
-            ]
-        ]);
+            ];
 
-        if($result->getbody() == '-100')
-        {
-            abort(403, 'Sms API invalid username or password.');
+            $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
+
+            SendSms::dispatch($sms)
+                ->delay(now()->addSeconds($delay));
         }
-        elseif($result->getBody() == '-200')
-        {
-            abort(403, 'Sms Api sender id is invalid.');
-        }
-        elseif($result->getBody() == '-300')
-        {
-            abort(403, 'Sms Api mobile number is invalid.');
-        }
-        elseif($result->getBody() == '-400')
-        {
-            abort(403, 'Sms Api language type is invalid.');
-        }
-        elseif($result->getBody() == '-500')
-        {
-            abort(403, 'Sms Api message has invalid characters.');
-        }
-        elseif($result->getBody() == '-600') {
-            abort(403, 'Sms Api insufficient credit balance');
+
+        if (count($invalidContacts) > 0) {
+            return [
+                'message' => count($invalidContacts) .' out of ' . $applicants->count() .' contact numbers are invalid.',
+                'invalidContacts' => $invalidContacts
+            ];
         }
 
         return [
-            'message' => 'Successfully sent message.',
-            'recipients' => $contacts
+            'message' => 'Successfully sent all sms'
         ];
     }
 
     public function balance()
+    {
+        $result = $this->getBalance();
+
+        return [
+            'sms_balance' => json_decode($result->getBody())
+        ];
+    }
+
+    protected function getBalance()
     {
         $http = new Client();
 
@@ -85,8 +87,6 @@ class SmsController extends Controller
             abort(403, 'Sms API invalid username or password.');
         }
 
-        return [
-            'sms_balance' => json_decode($result->getBody())
-        ];
+        return json_decode($result->getBody());
     }
 }
