@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Sms;
 use App\Applicant;
 use Carbon\Carbon;
+use App\SmsStatus;
 use App\Jobs\SendSms;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
@@ -12,12 +14,18 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SmsController extends Controller
 {
+    public function index()
+    {
+        return SmsStatus::with('sms')->paginate();
+    }
+
     public function send()
     {
         request()->validate([
-            'contacts' => 'required',
+            'title' => 'required',
             'message' => 'required',
-            'schedule' => 'date|after:' . Carbon::now()
+            'schedule' => 'date|after:' . Carbon::now(),
+            'contacts' => 'required'
         ]);
 
         $applicants = Applicant::find(request('contacts'));
@@ -30,6 +38,13 @@ class SmsController extends Controller
 
         $invalidContacts= [];
 
+        $sms = Sms::create([
+            'user_id' => auth()->user()->id,
+            'title' => request('title'),
+            'message' => request('message'),
+            'schedule' => request('schedule')
+        ]);
+
         foreach ($applicants as $applicant)
         {
             if(!preg_match('/63\d{10}/', $applicant->contact_no))
@@ -38,15 +53,13 @@ class SmsController extends Controller
                 continue;
             }
 
-            $sms = [
-                'contact' => $applicant->contact_no,
-                'message' => request('message')
-
-            ];
-
             $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
 
-            SendSms::dispatch($sms)
+            $sms->statuses()->create([
+                'applicant_id' => $applicant->id
+            ]);
+
+            SendSms::dispatch($sms, $applicant)
                 ->delay(now()->addSeconds($delay));
         }
 
