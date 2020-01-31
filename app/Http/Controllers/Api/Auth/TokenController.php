@@ -54,7 +54,9 @@ class TokenController extends Controller
     {
        removeTokens(auth()->user());
 
-        appLog('Logged_Out', auth()->user()->id);
+        Log::info(auth()->user()->username . ' - Logged Out', [
+            'data' => auth()->user()
+        ]);
 
        return response()->json([
             'message' => 'User successfully logged out.'
@@ -78,7 +80,9 @@ class TokenController extends Controller
                 ]
             ]);
 
-            appLog('Logged_In', auth()->user()->id);
+            Log::info(auth()->user()->username . ' - Logged In', [
+                'data' => auth()->user()
+            ]);
 
             return response()->json([
                 'message' => __('auth.received'),
