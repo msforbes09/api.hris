@@ -18,6 +18,7 @@ $factory->define(Applicant::class, function (Faker $faker) {
         'gender' => ['male', 'female'][rand(0, 1)],
         'height' => rand(60, 180) . 'cm',
         'weight' => rand(40, 80) . 'kg',
-        'email' => $faker->email
+        'email' => $faker->email,
+        'contact_no' => '639568030931'
     ];
 });
