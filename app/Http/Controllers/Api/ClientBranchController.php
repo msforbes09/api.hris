@@ -6,6 +6,7 @@ use App\Client;
 use App\Module;
 use App\ClientBranch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientBranchRequest;
 
@@ -31,6 +32,10 @@ class ClientBranchController extends Controller
 
         $branch = $client->branches()->create($request->only($branch->fillable));
 
+        Log::info(auth()->user()->username . ' - Client Branch Created', [
+            'data' => $branch
+        ]);
+
         return response()->json([
             'message' => 'Successfully created client branch.',
             'branch' => $branch
@@ -50,6 +55,10 @@ class ClientBranchController extends Controller
 
         $branch->update($request->only($branch->fillable));
 
+        Log::info(auth()->user()->username . ' - Client Branch Updated', [
+            'data' => $branch
+        ]);
+
         return response()->json([
             'message' => 'Successfuly updated client branch.',
             'branch' => $branch
@@ -61,6 +70,10 @@ class ClientBranchController extends Controller
         $this->authorize('delete', $this->module);
 
         $branch->delete();
+
+        Log::info(auth()->user()->username . ' - Client Branch Deleted', [
+            'data' => $branch
+        ]);
 
         return [
             'message' => 'Successfuly deleted client branch.'
@@ -74,6 +87,10 @@ class ClientBranchController extends Controller
         $branch = ClientBranch::withTrashed()->findOrFail($id);
 
         $branch->restore();
+
+        Log::info(auth()->user()->username . ' - Client Branch Restored', [
+            'data' => $branch
+        ]);
 
         return [
             'message' => 'Successfully restored deleted branch.'

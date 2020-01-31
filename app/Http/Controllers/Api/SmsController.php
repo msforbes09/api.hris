@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\SmsStatus;
 use App\Jobs\SendSms;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -63,6 +64,13 @@ class SmsController extends Controller
                 ->delay(now()->addSeconds($delay));
         }
 
+        Log::info(auth()->user()->username . ' - SMS Sent', [
+            'data' => [
+                'sms' => $sms,
+                'contacts' => request('contacts')
+            ]
+        ]);
+
         if (count($invalidContacts) > 0) {
             return [
                 'message' => count($invalidContacts) .' out of ' . $applicants->count() .' contact numbers are invalid.',
@@ -95,9 +103,15 @@ class SmsController extends Controller
             ]
         ]);
 
+        Log::info(auth()->user()->username . ' - Checked SMS Balance', [
+            'data' => [
+                'balance' => $result->getBody()
+            ]
+        ]);
+
         if($result->getbody() == '-100')
         {
-            abort(403, 'Sms API invalid username or password.');
+            abort(400, 'Sms API invalid username or password.');
         }
 
         return json_decode($result->getBody());

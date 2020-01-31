@@ -6,6 +6,7 @@ use App\Client;
 use App\Module;
 use App\ClientPosition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientPositionRequest;
 
@@ -31,6 +32,10 @@ class ClientPositionController extends Controller
 
         $position = $client->positions()->create($request->only($position->fillable));
 
+        Log::info(auth()->user()->username . ' - Client Position Created', [
+            'data' => $position
+        ]);
+
         return response()->json([
             'message' => 'Successfully created client position.',
             'position' => $position
@@ -50,6 +55,10 @@ class ClientPositionController extends Controller
 
         $position->update($request->only($position->fillable));
 
+        Log::info(auth()->user()->username . ' - Client Position Updated', [
+            'data' => $position
+        ]);
+
         return response()->json([
             'message' => 'Successfully updated client position.',
             'position' => $position
@@ -61,6 +70,10 @@ class ClientPositionController extends Controller
         $this->authorize('delete', $this->module);
 
         $position->delete();
+
+        Log::info(auth()->user()->username . ' - Client Position Deleted', [
+            'data' => $client
+        ]);
 
         return [
             'message' => 'Successfully deleted client position.'
@@ -74,6 +87,10 @@ class ClientPositionController extends Controller
         $position = ClientPosition::withTrashed()->findOrFail($id);
 
         $position->restore();
+
+        Log::info(auth()->user()->username . ' - Client Position Restored', [
+            'data' => $position
+        ]);
 
         return [
             'message' => 'Successfully restored deleted position.'

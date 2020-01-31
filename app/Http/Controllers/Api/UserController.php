@@ -37,7 +37,9 @@ class UserController extends Controller
 
         $user->sendWelcomeNotification($password);
 
-        appLog('Create_User', auth()->user()->id, $user);
+        Log::info(auth()->user()->username . ' - User Created', [
+            'data' => $user
+        ]);
 
         return response()->json([
             'message' => 'Successfully created user.',
@@ -61,7 +63,9 @@ class UserController extends Controller
 
         $user->update($request->only($user->fillable));
 
-        appLog('Updated_User', auth()->user()->id, $user);
+        Log::info(auth()->user()->username . ' - User Updated', [
+            'data' => $user
+        ]);
 
         return response()->json([
             'message' => 'Successfully updated user.',

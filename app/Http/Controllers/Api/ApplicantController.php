@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Exports\ApplicantExport;
 use App\Imports\ApplicantImport;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\ApplicantRequest;
@@ -50,6 +51,10 @@ class ApplicantController extends Controller
     {
         $applicant = Applicant::create($request->only($applicant->fillable));
 
+        Log::info(auth()->user()->username . ' - Applicant Created', [
+            'data' => $applicant
+        ]);
+
         return response()->json([
             'message' => 'Successfully created applicant.',
             'applicant' => $applicant
@@ -60,6 +65,10 @@ class ApplicantController extends Controller
     {
         $applicant->update($request->only($applicant->fillable));
 
+        Log::info(auth()->user()->username . ' - Applicant Updated', [
+            'data' => $applicant
+        ]);
+
         return response()->json([
             'message' => 'Successfully updated applicant.',
             'applicant' => $applicant
@@ -69,6 +78,10 @@ class ApplicantController extends Controller
     public function destroy(Applicant $applicant)
     {
         $applicant->delete();
+
+        Log::info(auth()->user()->username . ' - Applicant Deleted', [
+            'data' => $applicant
+        ]);
 
         return [
             'message' => 'Successfully deleted applicant.',

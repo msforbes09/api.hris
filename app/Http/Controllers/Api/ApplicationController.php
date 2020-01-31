@@ -9,6 +9,7 @@ use App\Application;
 use App\ClientBranch;
 use App\ClientPosition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplicationRequest;
 
@@ -34,6 +35,10 @@ class ApplicationController extends Controller
 
         $application = $applicant->applications()->create($request->merge($code)->only($application->fillable));
 
+        Log::info(auth()->user()->username . ' - Application Created', [
+            'data' => $application
+        ]);
+
         return response()->json([
             'message' => 'Successfully created application.',
             'application' => $application
@@ -44,6 +49,10 @@ class ApplicationController extends Controller
     {
         $application->update($request->only($application->fillable));
 
+        Log::info(auth()->user()->username . ' - Application Updated', [
+            'data' => $application
+        ]);
+
         return response()->json([
             'message' => 'Successfully updated application.',
             'application' => $application
@@ -53,6 +62,10 @@ class ApplicationController extends Controller
     public function destroy(Applicant $applicant, Application $application)
     {
         $application->delete();
+
+        Log::info(auth()->user()->username . ' - Application Deleted', [
+            'data' => $application
+        ]);
 
         return [
             'message' => 'Successfully deleted application.'

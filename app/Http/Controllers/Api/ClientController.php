@@ -6,6 +6,7 @@ use App\Client;
 use App\Module;
 use App\Company;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientRequest;
 
@@ -31,6 +32,10 @@ class ClientController extends Controller
 
         $client = Client::create($request->only($client->fillable));
 
+        Log::info(auth()->user()->username . ' - Client Created', [
+            'data' => $client
+        ]);
+
         return response()->json([
             'message' => 'Successfully created client.',
             'client' => $client
@@ -54,6 +59,10 @@ class ClientController extends Controller
 
         $client->update($request->only($client->fillable));
 
+        Log::info(auth()->user()->username . ' - Client Updated', [
+            'data' => $client
+        ]);
+
         return response()->json([
             'message' => 'Successfully updated client.',
             'client' => $client
@@ -65,6 +74,10 @@ class ClientController extends Controller
         $this->authorize('delete', $this->module);
 
         $client->delete();
+
+        Log::info(auth()->user()->username . ' - Client Deleted', [
+            'data' => $client
+        ]);
 
         return [
             'message' => 'Successfully deleted client.'
@@ -78,6 +91,10 @@ class ClientController extends Controller
         $client = Client::withTrashed()->findOrFail($id);
 
         $client->restore();
+
+        Log::info(auth()->user()->username . ' - Client Restored', [
+            'data' => $client
+        ]);
 
         return [
             'message' => 'Successfully restored deleted client.'
