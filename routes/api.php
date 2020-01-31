@@ -39,6 +39,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/client-positions/{id}/restore', 'Api\ClientPositionController@restore');
     Route::post('/applicants/import', 'Api\ApplicantController@import');
 
+    Route::get('/sms-statuses', 'Api\SmsController@index');
     Route::get('/sms-balance', 'Api\SmsController@balance');
     Route::post('/sms-send', 'Api\SmsController@send');
 
