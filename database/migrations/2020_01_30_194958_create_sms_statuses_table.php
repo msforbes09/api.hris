@@ -4,34 +4,26 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApplicantSmsTable extends Migration
+class CreateSmsStatusesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::create('applicant_sms', function (Blueprint $table) {
+        Schema::create('sms_statuses', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('applicant_id');
             $table->unsignedBigInteger('sms_id');
-            $table->unsignedBigInteger('message_id');
-            $table->timestamp('status');
-            $table->unsignedBigInteger('mt_id');
+            $table->unsignedBigInteger('mt_id')->nullable();
+            $table->string('status')->default('pending');
+            $table->string('description', 191)->nullable();
+            $table->timestamps();
 
             $table->foreign('applicant_id')->references('id')->on('applicants');
             $table->foreign('sms_id')->references('id')->on('sms');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::dropIfExists('applicant_sms');
+        Schema::dropIfExists('sms_statuses');
     }
 }
