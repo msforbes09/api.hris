@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Sms;
 use Exception;
+use App\Applicant;
 use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -18,10 +20,12 @@ class SendSms implements ShouldQueue
 
     public $tries = 1;
     protected $sms;
+    protected $applicant;
 
-    public function __construct($sms)
+    public function __construct(Sms $sms, Applicant $applicant)
     {
         $this->sms = $sms;
+        $this->applicant = $applicant;
     }
 
     public function handle()
@@ -34,17 +38,21 @@ class SendSms implements ShouldQueue
                 'apipassword' => config('app.sms_password'),
                 'languagetype' => 1,
                 'senderid' => config('app.sms_sender_id'),
-                'mobileno' => $this->sms['contact'],
-                'message' => $this->sms['message']
+                'mobileno' => $this->applicant->contact_no,
+                'message' => $this->sms->message
             ]
         ]);
 
-      $this->handleErrors($response);
+        $mtId = $this->handleResponseErrors($response);
+
+        $this->sms->statuses()->find($this->sms->id)->update([
+            'mt_id' => $mtId
+        ]);
     }
 
-    protected function handleErrors(ResponseInterface $reponse)
+    protected function handleResponseErrors(ResponseInterface $reponse)
     {
-         if($reponse->getbody() == '-100')
+        if($reponse->getbody() == '-100')
         {
             throw new Exception('Sms API invalid username or password.');
         }
@@ -67,10 +75,16 @@ class SendSms implements ShouldQueue
         elseif($reponse->getBody() == '-600') {
             throw new Exception('Sms Api insufficient credit balance');
         }
+
+        return $reponse->getBody();
     }
 
     public function failed(Exception $exception)
     {
+        $this->sms->statuses()->find($this->sms->id)->update([
+            'status' => $exception->getMessage()
+        ]);
+
         Log::error($exception->getMessage());
     }
 }
