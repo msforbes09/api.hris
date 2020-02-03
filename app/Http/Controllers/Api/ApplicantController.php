@@ -19,16 +19,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicantController extends Controller
 {
-    public function index(Request $request, Applicant $applicant)
+    public function index(Request $request)
     {
-        $rowsPerPage = (int) $request->rowsPerPage > 0 ? $request->rowsPerPage : 10;
-        $descending = ($request->descending) ? 'DESC' : 'ASC';
-        $sortBy = $this->validateSortby($request->sortBy, $applicant->getFillable());
+        $rowsPerPage = is_numeric(request('rowsPerPage')) ? request('rowsPerPage') : 10 ;
+        $descending = is_numeric(request('descending')) ? request('descending') == 1 ? 'ASC' : 'DESC' : 'DESC';
+        $sortBy = $this->validateSortby(request('sortBy'), Applicant::getModel()->getFillable());
 
-
-        return Applicant::where( function($q) use ($request) {
-                if ($request->search)
-                    $q->search(urldecode($request->search));
+        return Applicant::where( function($query) {
+                if (request('search'))
+                    $query->search(urldecode(request('search')));
             })
             ->orderBy($sortBy, $descending)
             ->paginate($rowsPerPage);
@@ -36,52 +35,38 @@ class ApplicantController extends Controller
 
     public function show(Applicant $applicant)
     {
-        $applicant->families;
-
-        $applicant->education;
-
-        $applicant->employments;
-
-        $applicant->applications;
-
-        return $applicant;
+        return $applicant->load(['families', 'education', 'employments', 'applications']);
     }
 
-    public function store(ApplicantRequest $request, Applicant $applicant)
+    public function store(ApplicantRequest $request)
     {
-        $applicant = Applicant::create($request->only($applicant->fillable));
+        $applicant = Applicant::create(request()->only(Applicant::getModel()->getFillable()));
 
-        Log::info(auth()->user()->username . ' - Applicant Created', [
-            'data' => $applicant
-        ]);
+        Log::info(auth()->user()->username . ' has createdn an Applicant.', ['data' => $applicant]);
 
-        return response()->json([
+        return [
             'message' => 'Successfully created applicant.',
             'applicant' => $applicant
-        ]);
+        ];
     }
 
     public function update(ApplicantRequest $request, Applicant $applicant)
     {
-        $applicant->update($request->only($applicant->fillable));
+        $applicant->update(request()->only($applicant->getFillable()));
 
-        Log::info(auth()->user()->username . ' - Applicant Updated', [
-            'data' => $applicant
-        ]);
+        Log::info(auth()->user()->username . ' has updated an Applicant.', ['data' => $applicant]);
 
-        return response()->json([
+        return [
             'message' => 'Successfully updated applicant.',
             'applicant' => $applicant
-        ]);
+        ];
     }
 
     public function destroy(Applicant $applicant)
     {
         $applicant->delete();
 
-        Log::info(auth()->user()->username . ' - Applicant Deleted', [
-            'data' => $applicant
-        ]);
+        Log::info(auth()->user()->username . ' has deleted an Applicant.', ['data' => $applicant]);
 
         return [
             'message' => 'Successfully deleted applicant.',
