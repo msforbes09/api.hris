@@ -16,7 +16,7 @@ class AuditController extends Controller
         $audits =  Audit::where(function(Builder $query) use ($user) {
             if ($user != null)
                 $query->where('user_id', $user->id);
-        });
+        })->latest();
 
         $results = $audits->get()->map(function ($audit) {
             $audit['old_values'] = json_decode($audit['old_values']);
