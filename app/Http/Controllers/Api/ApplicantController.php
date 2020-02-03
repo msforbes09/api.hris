@@ -84,7 +84,7 @@ class ApplicantController extends Controller
         ]);
 
         return [
-            'message' => 'Successfully deleted applicant.',.
+            'message' => 'Successfully deleted applicant.',
         ];
     }
 
