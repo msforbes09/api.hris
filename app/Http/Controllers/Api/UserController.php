@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\User;
 use App\Module;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -24,53 +25,52 @@ class UserController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return User::with('branch')->with('userType')->get();
+        return User::with('branch')
+            ->with('userType')
+            ->latest()
+            ->get();
     }
 
     public function store(UserRequest $request, User $user)
     {
         $this->authorize('create', $this->module);
 
-        $password = getRandomPassword();
+        $rawPassword = Carbon::now()->timestamp;
 
-        $user = User::create($request->merge(['password' => bcrypt($password)])->only($user->fillable));
+        $user = User::create(request()
+            ->merge(['password' => bcrypt($rawPassword)])
+            ->only($user->getFillable())
+        );
 
-        $user->sendWelcomeNotification($password);
+        $user->sendWelcomeNotification($rawPassword);
 
-        Log::info(auth()->user()->username . ' - User Created', [
-            'data' => $user
-        ]);
+        Log::info(auth()->user()->username . ' has created a User.', ['data' => $user]);
 
-        return response()->json([
+        return [
             'message' => 'Successfully created user.',
             'user' => $user
-        ]);
+        ];
     }
 
     public function show(User $user)
     {
         $this->authorize('show', $this->module);
 
-        $user->branch;
-        $user->userType->moduleActions;
-
-        return $user;
+        return $user->load(['branch', 'userType.moduleActions']);
     }
 
     public function update(UserRequest $request, User $user)
     {
         $this->authorize('update', $this->module);
 
-        $user->update($request->only($user->fillable));
+        $user->update(request()->only($user->getFillable()));
 
-        Log::info(auth()->user()->username . ' - User Updated', [
-            'data' => $user
-        ]);
+        Log::info(auth()->user()->username . ' has updated a User', ['data' => $user]);
 
-        return response()->json([
+        return [
             'message' => 'Successfully updated user.',
             'user' => $user
-        ]);
+        ];
     }
 
     public function destroy(User $user)

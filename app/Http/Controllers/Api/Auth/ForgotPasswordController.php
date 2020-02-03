@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
@@ -12,7 +13,7 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkResponse(Request $request, $response)
     {
-        appLog('Forgot_Password', findUser(request('email'))->id);
+        Log::info(request('email') . ' requested a password reset link.');
 
         return response()->json([
             'message' => 'Password reset email sent.'
