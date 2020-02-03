@@ -19,18 +19,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicantController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $rowsPerPage = is_numeric(request('rowsPerPage')) ? request('rowsPerPage') : 10 ;
-        $descending = is_numeric(request('descending')) ? request('descending') == 1 ? 'ASC' : 'DESC' : 'DESC';
-        $sortBy = $this->validateSortby(request('sortBy'), Applicant::getModel()->getFillable());
-
-        return Applicant::where( function($query) {
-                if (request('search'))
-                    $query->search(urldecode(request('search')));
-            })
-            ->orderBy($sortBy, $descending)
-            ->paginate($rowsPerPage);
+        return Applicant::sortedPagination();
     }
 
     public function show(Applicant $applicant)
@@ -40,9 +31,11 @@ class ApplicantController extends Controller
 
     public function store(ApplicantRequest $request)
     {
-        $applicant = Applicant::create(request()->only(Applicant::getModel()->getFillable()));
+        $requestData = request()->only(Applicant::getModel()->getFillable());
 
-        Log::info(auth()->user()->username . ' has createdn an Applicant.', ['data' => $applicant]);
+        $applicant = Applicant::create($requestData);
+
+        Log::info(auth()->user()->username . ' has created an Applicant.', ['data' => $applicant]);
 
         return [
             'message' => 'Successfully created applicant.',
@@ -52,7 +45,9 @@ class ApplicantController extends Controller
 
     public function update(ApplicantRequest $request, Applicant $applicant)
     {
-        $applicant->update(request()->only($applicant->getFillable()));
+        $requestData = request()->only($applicant->getFillable());
+
+        $applicant->update($requestData);
 
         Log::info(auth()->user()->username . ' has updated an Applicant.', ['data' => $applicant]);
 
@@ -73,35 +68,21 @@ class ApplicantController extends Controller
         ];
     }
 
-    protected function validateSortby($sortBy, $valids)
+    public function applicantCheck()
     {
-        return (in_array($sortBy, $valids)) ? $sortBy : 'id';
-    }
-
-    public function applicantCheck(Request $request)
-    {
-        $data = request()->validate([
+        request()->validate([
             'last_name' => 'required',
             'first_name' => 'required',
             'middle_name' => ''
         ]);
 
-        $applicants = Applicant::selectRaw('*,
-            (levenshtein(?, `last_name`) + levenshtein(?, `first_name`) + levenshtein(?, `middle_name`)) as match_diff',
-            [$data['last_name'], $data['first_name'], $data['middle_name']])
-            ->orderBy('match_diff')
-            ->limit(4)
-            ->get();
+        $results = Applicant::LevenshteinSearch();
 
-        $exactMatch = $applicants->where('match_diff', 0)->first();
-
-        $otherMatches = $applicants->where('id', '<>', $exactMatch ? $exactMatch->id : null);
-
-        if($exactMatch != null || $otherMatches->count() > 0) {
+        if($results['exactMatch'] != null || $results['otherMatches']->count() > 0) {
             return response()->json([
-                'message' => $exactMatch ? 'Applicant record found.' : 'Applicant record not found. Please check other matches.',
-                'exactMatch' => $exactMatch,
-                'otherMatches' => $otherMatches
+                'message' => $results['exactMatch'] ? 'Applicant record found.' : 'Applicant record not found. Please check other matches.',
+                'exactMatch' => $results['exactMatch'],
+                'otherMatches' => $results['otherMatches']
             ]);
         }
 
@@ -110,28 +91,12 @@ class ApplicantController extends Controller
         ];
     }
 
-    protected function validateHeadings($file)
+    public function import()
     {
-        $headings = (new HeadingRowImport)->toArray($file)[0][0];
+        request()->validate(['file' => 'required|mimes:csv,txt|max:3000']);
+        $file = request()->file('file');
 
-        $requireds = [
-            'last_name', 'first_name', 'middle_name', 'current_address', 'permanent_address', 'birth_date', 'birth_place',
-            'gender', 'height', 'civil_status', 'contact_no', 'email', 'sss', 'tin', 'philhealth', 'pagibig',
-        ];
-
-        foreach ($requireds as $value) {
-            if (!in_array($value, $headings)) {
-                abort(403, $value .' heading is not found.');
-            }
-        }
-    }
-
-    public function import(Request $request)
-    {
-        $request->validate(['file' => 'required|mimes:csv,txt|max:3000']);
-        $file = $request->file('file');
-
-        $this->validateHeadings($file);
+        $this->validateImportHeadings($file);
 
         $import = new ApplicantImport();
         Excel::import($import, $file);
@@ -152,5 +117,18 @@ class ApplicantController extends Controller
     public function template()
     {
         return response()->download(storage_path('app/applicant_template.csv'));
+    }
+
+    protected function validateImportHeadings($file)
+    {
+        $headings = (new HeadingRowImport)->toArray($file)[0][0];
+
+        $requireds = Arr::except(Applicant::getModel()->getFillable(), ['id', 'create_at', 'updated_at']);
+
+        foreach ($requireds as $value) {
+            if (!in_array($value, $headings)) {
+                abort(403, $value .' heading is not found.');
+            }
+        }
     }
 }
