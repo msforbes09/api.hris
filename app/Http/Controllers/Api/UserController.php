@@ -31,7 +31,7 @@ class UserController extends Controller
             ->get();
     }
 
-    public function store(UserRequest $request, User $user)
+    public function store(UserRequest $request)
     {
         $this->authorize('create', $this->module);
 
@@ -39,7 +39,7 @@ class UserController extends Controller
 
         $user = User::create(request()
             ->merge(['password' => bcrypt($rawPassword)])
-            ->only($user->getFillable())
+            ->only(User::getModel()->getFillable())
         );
 
         $user->sendWelcomeNotification($rawPassword);
