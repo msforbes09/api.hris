@@ -23,18 +23,16 @@ class ClientBranchController extends Controller
     {
         $this->authorize('view', $this->module);
 
-       return $client->branches;
+       return $client->branches()->get();
     }
 
     public function store(ClientBranchRequest $request, Client $client, ClientBranch $branch)
     {
         $this->authorize('create', $this->module);
 
-        $branch = $client->branches()->create($request->only($branch->fillable));
+        $branch = $client->branches()->create(request()->only($branch->getFillable()));
 
-        Log::info(auth()->user()->username . ' - Client Branch Created', [
-            'data' => $branch
-        ]);
+        Log::info(auth()->user()->username . ' has created a Client Branch.', ['data' => $branch]);
 
         return response()->json([
             'message' => 'Successfully created client branch.',
@@ -53,11 +51,9 @@ class ClientBranchController extends Controller
     {
         $this->authorize('update', $this->module);
 
-        $branch->update($request->only($branch->fillable));
+        $branch->update(request()->only($branch->getFillable()));
 
-        Log::info(auth()->user()->username . ' - Client Branch Updated', [
-            'data' => $branch
-        ]);
+        Log::info(auth()->user()->username . ' has updated a Client Branch.', ['data' => $branch]);
 
         return response()->json([
             'message' => 'Successfuly updated client branch.',
@@ -71,9 +67,7 @@ class ClientBranchController extends Controller
 
         $branch->delete();
 
-        Log::info(auth()->user()->username . ' - Client Branch Deleted', [
-            'data' => $branch
-        ]);
+        Log::info(auth()->user()->username . ' has deleted a Client Branch.', ['data' => $branch]);
 
         return [
             'message' => 'Successfuly deleted client branch.'
@@ -88,9 +82,7 @@ class ClientBranchController extends Controller
 
         $branch->restore();
 
-        Log::info(auth()->user()->username . ' - Client Branch Restored', [
-            'data' => $branch
-        ]);
+        Log::info(auth()->user()->username . ' has restored a Client Branch.', ['data' => $branch]);
 
         return [
             'message' => 'Successfully restored deleted branch.'
