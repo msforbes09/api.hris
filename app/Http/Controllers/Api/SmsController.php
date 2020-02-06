@@ -10,8 +10,6 @@ use App\Jobs\SendSms;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Psr\Http\Message\ResponseInterface;
-use Illuminate\Database\Eloquent\Collection;
 
 class SmsController extends Controller
 {
@@ -64,7 +62,7 @@ class SmsController extends Controller
                 ->delay(now()->addSeconds($delay));
         }
 
-        Log::info(auth()->user()->username . ' - SMS Sent', [
+        Log::info(auth()->user()->username . ' has sent an SMS.', [
             'data' => [
                 'sms' => $sms,
                 'contacts' => request('contacts')
@@ -103,7 +101,7 @@ class SmsController extends Controller
             ]
         ]);
 
-        Log::info(auth()->user()->username . ' - Checked SMS Balance', [
+        Log::info(auth()->user()->username . ' has checked the SMS Balance', [
             'data' => [
                 'balance' => $result->getBody()
             ]
