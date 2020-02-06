@@ -99,7 +99,8 @@ class Applicant extends Model implements Auditable
 
         $exactMatch = $results->where('match_diff', 0)->first();
 
-        $otherMatches = $results->where('id', '<>', $exactMatch ? $exactMatch->id : null);
+        $otherMatches = $results->where('id', '<>', $exactMatch ? $exactMatch->id : null)
+            ->where('match_diff', '<', 4);
 
         return [
             'exactMatch' => $exactMatch,
