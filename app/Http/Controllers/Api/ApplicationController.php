@@ -37,7 +37,7 @@ class ApplicationController extends Controller
             ->only(Application::getModel()->getFillable())
         );
 
-        Log::info(auth()->user()->username . ' - has created an Application.', ['data' => $application]);
+        Log::info(auth()->user()->username . ' has created an Application.', ['data' => $application]);
 
         return [
             'message' => 'Successfully created application.',
