@@ -55,6 +55,7 @@ Route::middleware('auth:api')->group(function() {
         'applicants.education' => 'Api\ApplicantEducationController',
         'applicants.employments' => 'Api\ApplicantEmploymentController',
         'applicants.applications' => 'Api\ApplicationController',
-        'applications' => 'Api\ApplicationController'
+        'applications' => 'Api\ApplicationController',
+        'templates' => 'Api\SmsTemplateController'
     ]);
 });
