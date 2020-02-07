@@ -43,6 +43,10 @@ class Applicant extends Model implements Auditable
         'updated_at'
     ];
 
+    protected $casts = [
+        'birth_date' => 'date:Y-m-d',
+    ];
+
     protected $searchable = [
         'first_name',
         'middle_name',
