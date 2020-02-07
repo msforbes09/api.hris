@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Sms;
+use App\Module;
 use App\Applicant;
 use Carbon\Carbon;
 use App\SmsStatus;
@@ -13,13 +14,24 @@ use App\Http\Controllers\Controller;
 
 class SmsController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'sms')->first();
+    }
+
     public function index()
     {
+        $this->authorize('view', $this->module);
+
         return SmsStatus::with('sms')->paginate();
     }
 
     public function send()
     {
+        $this->authorize('send', $this->module);
+
         request()->validate([
             'title' => 'required',
             'message' => 'required',
@@ -28,7 +40,7 @@ class SmsController extends Controller
         ]);
 
         $applicants = Applicant::find(request('contacts'));
-        $balance = $this->getBalance();
+        $balance = $this->requestSmsBalance();
 
         /*if($balance < $applicants->count())
         {
@@ -54,24 +66,32 @@ class SmsController extends Controller
 
             $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
 
+            $sms['message'] = $this->parseSmsMessage($sms['message'], $applicant);
+
             $sms->statuses()->create([
                 'applicant_id' => $applicant->id
             ]);
 
             SendSms::dispatch($sms, $applicant)
                 ->delay(now()->addSeconds($delay));
+
+            Log::info(auth()->user()->username . ' has sent an SMS.', [
+                'data' => [
+                    'sms' => $sms,
+                ]
+            ]);
         }
 
-        Log::info(auth()->user()->username . ' has sent an SMS.', [
-            'data' => [
-                'sms' => $sms,
-                'contacts' => request('contacts')
-            ]
-        ]);
-
         if (count($invalidContacts) > 0) {
+            $warning = count($invalidContacts) .' out of ' . $applicants->count() .' contact numbers are invalid.';
+
+            Log::warning($warning, [
+                'contacts' => request('contacts'),
+                'invalid' => $invalidContacts
+            ]);
+
             return [
-                'message' => count($invalidContacts) .' out of ' . $applicants->count() .' contact numbers are invalid.',
+                'message' => $warning,
                 'invalidContacts' => $invalidContacts
             ];
         }
@@ -83,14 +103,20 @@ class SmsController extends Controller
 
     public function balance()
     {
-        $result = $this->getBalance();
+        $balance = $this->requestSmsBalance();
+
+        Log::info(auth()->user()->username . ' has checked the SMS Balance', [
+            'data' => [
+                'balance' => $balance
+            ]
+        ]);
 
         return [
-            'sms_balance' => json_decode($result->getBody())
+            'sms_balance' => $balance
         ];
     }
 
-    protected function getBalance()
+    protected function requestSmsBalance()
     {
         $http = new Client();
 
@@ -101,17 +127,23 @@ class SmsController extends Controller
             ]
         ]);
 
-        Log::info(auth()->user()->username . ' has checked the SMS Balance', [
-            'data' => [
-                'balance' => $result->getBody()
-            ]
-        ]);
-
         if($result->getbody() == '-100')
         {
             abort(400, 'Sms API invalid username or password.');
         }
 
         return json_decode($result->getBody());
+    }
+
+    protected function parseSmsMessage($message, $applicant)
+    {
+        $parsedSms = $message;
+
+        foreach ($applicant->getAttributes() as $key => $value)
+        {
+            $parsedSms = str_replace('~'.$key.'~', $value, $parsedSms);
+        }
+
+        return $parsedSms;
     }
 }
