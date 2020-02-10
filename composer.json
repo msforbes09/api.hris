@@ -64,6 +64,12 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "run-dev": [
+            "@composer dumpautoload",
+            "@php artisan migrate:fresh",
+            "@php artisan db:seed --class=TestSeeder",
+            "@php artisan passport:install --force"
         ]
     }
 }
