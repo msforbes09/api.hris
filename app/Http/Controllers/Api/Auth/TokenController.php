@@ -68,7 +68,7 @@ class TokenController extends Controller
         return response()->json([
             'message' => __('auth.incorrect'),
             'errors' => [
-                'username' => [__('auth.failed', ['field' => 'username'])]
+                'password' => [__('auth.failed', ['field' => 'password'])]
             ]
         ], 422);
     }
