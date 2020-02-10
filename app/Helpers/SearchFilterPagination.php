@@ -25,7 +25,7 @@ class SearchFilterPagination
         $this->filters = $this->getFilters();
     }
 
-    public static function paginate($query)
+    public static function get($query)
     {
         $instance = new self($query);
 

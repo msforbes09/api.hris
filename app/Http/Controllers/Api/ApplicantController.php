@@ -22,7 +22,7 @@ class ApplicantController extends Controller
 {
     public function index()
     {
-        return SearchFilterPagination::paginate(Applicant::query());
+        return SearchFilterPagination::get(Applicant::query());
     }
 
     public function show(Applicant $applicant)
