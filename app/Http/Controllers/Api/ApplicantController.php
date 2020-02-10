@@ -15,13 +15,14 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\ApplicantRequest;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\HeadingRowImport;
+use App\Helpers\SearchFilterPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicantController extends Controller
 {
     public function index()
     {
-        return Applicant::sortedPagination();
+        return SearchFilterPagination::paginate(Applicant::query());
     }
 
     public function show(Applicant $applicant)

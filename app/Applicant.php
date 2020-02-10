@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helpers\FullTextSearch;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -76,20 +77,6 @@ class Applicant extends Model implements Auditable
     public function applications()
     {
       return $this->hasMany('App\Application');
-    }
-
-    public function scopeSortedPagination($query)
-    {
-        $rowsPerPage = is_numeric(request('rowsPerPage')) ? request('rowsPerPage') : 10 ;
-        $sort = is_numeric(request('sort')) ? request('sort') == 1 ? 'ASC' : 'DESC' : 'DESC';
-        $sortBy = in_array(request('sortBy'), $this->getFillable()) ? request('sortBy') : 'id';
-
-        return $query->where(function ($subQuery) {
-            if (request('search'))
-                $subQuery->search(urldecode(request('search')));
-            })
-            ->orderBy($sortBy, $sort)
-            ->paginate($rowsPerPage);
     }
 
     public function scopeLevenshteinSearch($query)
