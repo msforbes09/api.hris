@@ -66,7 +66,7 @@ class SmsController extends Controller
 
             $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
 
-            $sms['message'] = $this->parseSmsMessage($sms['message'], $applicant);
+            $parsedMessage = $this->parseSmsMessage($sms['message'], $applicant);
 
             $sms->statuses()->create([
                 'applicant_id' => $applicant->id
@@ -77,7 +77,9 @@ class SmsController extends Controller
 
             Log::info(auth()->user()->username . ' has sent an SMS.', [
                 'data' => [
+                    'recipient' => $applicant->only(['id', 'last_name', 'first_name', 'middle_name', 'contact_no']),
                     'sms' => $sms,
+                    'parsedMessage' => $parsedMessage
                 ]
             ]);
         }
