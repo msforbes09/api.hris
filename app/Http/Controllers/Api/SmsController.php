@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\SmsStatus;
 use App\Jobs\SendSms;
 use GuzzleHttp\Client;
+use App\Http\Requests\SmsRequest;
+use App\Helpers\OneWaySmsProvider;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
@@ -28,61 +30,29 @@ class SmsController extends Controller
         return SmsStatus::with('sms')->paginate();
     }
 
-    public function send()
+    public function send(SmsRequest $request)
     {
         $this->authorize('send', $this->module);
 
-        request()->validate([
-            'title' => 'required',
-            'message' => 'required',
-            'schedule' => 'date|after:' . Carbon::now(),
-            'contacts' => 'required'
-        ]);
+        $sms = new OneWaySmsProvider();
 
-        $applicants = Applicant::find(request('contacts'));
-        $balance = $this->requestSmsBalance();
+        $balance = $sms->balance();
 
         /*if($balance < $applicants->count())
         {
             abort(400, 'Sorry, you do not have enough balance. Your remaining balance is: ' . $balance);
         }*/
 
-        $invalidContacts= [];
+        $applicants = Applicant::find(request('contacts'));
 
-        $sms = Sms::create([
+        $sms->createSms([
             'user_id' => auth()->user()->id,
             'title' => request('title'),
             'message' => request('message'),
             'schedule' => request('schedule')
         ]);
 
-        foreach ($applicants as $applicant)
-        {
-            if(!preg_match('/63\d{10}/', $applicant->contact_no))
-            {
-                $invalidContacts[] = $applicant;
-                continue;
-            }
-
-            $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
-
-            $parsedMessage = $this->parseSmsMessage($sms['message'], $applicant);
-
-            $sms->statuses()->create([
-                'applicant_id' => $applicant->id
-            ]);
-
-            SendSms::dispatch($sms, $applicant)
-                ->delay(now()->addSeconds($delay));
-
-            Log::info(auth()->user()->username . ' has sent an SMS.', [
-                'data' => [
-                    'recipient' => $applicant->only(['id', 'last_name', 'first_name', 'middle_name', 'contact_no']),
-                    'sms' => $sms,
-                    'parsedMessage' => $parsedMessage
-                ]
-            ]);
-        }
+        $invalidContacts = $sms->toApplicants($applicants);
 
         if (count($invalidContacts) > 0) {
             $warning = count($invalidContacts) .' out of ' . $applicants->count() .' contact numbers are invalid.';
