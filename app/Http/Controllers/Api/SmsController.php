@@ -3,119 +3,91 @@
 namespace App\Http\Controllers\Api;
 
 use App\Sms;
-use App\Module;
-use App\Applicant;
 use Carbon\Carbon;
-use App\SmsStatus;
+use App\Applicant;
 use App\Jobs\SendSms;
 use GuzzleHttp\Client;
 use App\Http\Requests\SmsRequest;
-use App\Helpers\OneWaySmsProvider;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Helpers\SearchFilterPagination;
 
 class SmsController extends Controller
 {
-    protected $module;
-
-    public function __construct()
-    {
-        $this->module = Module::where('code', 'sms')->first();
-    }
-
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $query = Sms::query()->withCount('recipients');
 
-        return SmsStatus::with('sms')->paginate();
+        return SearchFilterPagination::get($query);
     }
 
     public function send(SmsRequest $request)
     {
-        $this->authorize('send', $this->module);
+        $sms = Sms::create(request()
+            ->merge(['user_id' => auth()->user()->id])
+            ->only(Sms::getModel()->getFillable())
+        );
 
-        $sms = new OneWaySmsProvider();
-
-        $balance = $sms->balance();
-
-        /*if($balance < $applicants->count())
-        {
-            abort(400, 'Sorry, you do not have enough balance. Your remaining balance is: ' . $balance);
-        }*/
-
-        $applicants = Applicant::find(request('contacts'));
-
-        $sms->createSms([
-            'user_id' => auth()->user()->id,
-            'title' => request('title'),
-            'message' => request('message'),
-            'schedule' => request('schedule')
-        ]);
-
-        $invalidContacts = $sms->toApplicants($applicants);
-
-        if (count($invalidContacts) > 0) {
-            $warning = count($invalidContacts) .' out of ' . $applicants->count() .' contact numbers are invalid.';
-
-            Log::warning($warning, [
-                'contacts' => request('contacts'),
-                'invalid' => $invalidContacts
-            ]);
-
+        $contacts = Applicant::find(request('contacts'))->map(function ($applicant) use ($sms) {
             return [
-                'message' => $warning,
-                'invalidContacts' => $invalidContacts
+                'applicant_id' => $applicant->id,
+                'sms_id' => $sms->id,
+                'status' => 'Pending'
             ];
-        }
+        })->toArray();
+
+        $sms->recipients()->createMany($contacts);
+
+        $sms->recipients()->each(function ($recipient) {
+            if (request()->has('schedule')) {
+                $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
+                SendSms::dispatch($recipient)->delay($delay);
+            } else {
+                SendSms::dispatch($recipient);
+            }
+        });
 
         return [
-            'message' => 'Successfully sent all sms'
+            'message' => 'Sms sent to applicants.'
         ];
     }
 
-    public function balance()
-    {
-        $balance = $this->requestSmsBalance();
-
-        Log::info(auth()->user()->username . ' has checked the SMS Balance', [
-            'data' => [
-                'balance' => $balance
-            ]
-        ]);
-
-        return [
-            'sms_balance' => $balance
-        ];
-    }
-
-    protected function requestSmsBalance()
+    public function server()
     {
         $http = new Client();
 
-        $result = $http->get(config('app.sms_api') . 'bulkcredit.aspx', [
+        $response = $http->get(config('app.sms_api') . '/serverstatus.php', [
             'query' => [
-                'apiusername' => config('app.sms_username'),
-                'apipassword' => config('app.sms_password')
+                'apicode' => config('app.sms_code')
             ]
         ]);
 
-        if($result->getbody() == '-100')
-        {
-            abort(400, 'Sms API invalid username or password.');
-        }
-
-        return json_decode($result->getBody());
+        return $response->getBody();
     }
 
-    protected function parseSmsMessage($message, $applicant)
+    public function info()
     {
-        $parsedSms = $message;
+        $http = new Client();
 
-        foreach ($applicant->getAttributes() as $key => $value)
-        {
-            $parsedSms = str_replace('~'.$key.'~', $value, $parsedSms);
-        }
+        $response = $http->get(config('app.sms_api') . '/apicode_info.php', [
+            'query' => [
+                'apicode' => config('app.sms_code')
+            ]
+        ]);
 
-        return $parsedSms;
+        return $response->getBody();
+    }
+
+    public function pending()
+    {
+        $http = new Client();
+
+        $response = $http->get(config('app.sms_api') . '/display_outgoing.php', [
+            'query' => [
+                'apicode' => config('app.sms_code'),
+                'sortby' => "desc"
+            ]
+        ]);
+
+        return $response->getBody();
     }
 }

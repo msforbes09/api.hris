@@ -2,14 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Sms;
-use Exception;
-use App\Applicant;
-use App\Helpers\SmsGateway;
+use App\SmsRecipient;
+use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
-use App\Helpers\OneWaySmsProvider;
 use Illuminate\Support\Facades\Log;
-use Psr\Http\Message\ResponseInterface;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,19 +16,30 @@ class SendSms implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
-    private $gateway;
-    private $applicant;
+    private $recipient;
 
-    public function __construct(SmsGateway $gateway, Applicant $applicant)
+    public function __construct(SmsRecipient $recipient)
     {
-        $this->gateway = $gateway;
-        $this->applicant = $applicant;
+        $this->recipient = $recipient;
     }
 
     public function handle()
     {
-        $this->gateway->sms->statuses()->find($this->gateway->sms->id)->update([
-            'mt_id' => $this->gateway->send($this->applicant)
+        $http = new Client();
+
+        $params = [
+            '1' => $this->recipient->contact,
+            '2' => $this->recipient->sms->parsedSms($this->recipient->applicant),
+            '3' => config('app.sms_code')
+        ];
+
+        $response = $http->post(config('app.sms_api') . '/api.php', [
+            'form_params' => $params
+        ]);
+
+        Log::info('Sms sent to ' . $this->recipient->full_name, [
+            'statusCode' => json_decode($response->getBody()),
+            'params' => $params
         ]);
     }
 }
