@@ -40,6 +40,7 @@ Route::middleware('auth:api')->group(function() {
     Route::post('/applicants/import', 'Api\ApplicantController@import');
 
     Route::get('/sms', 'Api\SmsController@index');
+    Route::get('/sms/{sms}', 'Api\SmsController@recipients');
     Route::post('/sms-send', 'Api\SmsController@send');
     Route::get('/sms-server', 'Api\SmsController@server');
     Route::get('/sms-info', 'Api\SmsController@info');

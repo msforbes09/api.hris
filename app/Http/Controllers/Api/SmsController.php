@@ -6,6 +6,7 @@ use App\Sms;
 use Carbon\Carbon;
 use App\Applicant;
 use App\Jobs\SendSms;
+use App\SmsRecipient;
 use GuzzleHttp\Client;
 use App\Http\Requests\SmsRequest;
 use App\Http\Controllers\Controller;
@@ -20,6 +21,11 @@ class SmsController extends Controller
         return SearchFilterPagination::get($query);
     }
 
+    public function recipients(Sms $sms)
+    {
+        return SearchFilterPagination::get($sms->recipients()->getQuery());
+    }
+
     public function send(SmsRequest $request)
     {
         $sms = Sms::create(request()
@@ -28,12 +34,21 @@ class SmsController extends Controller
         );
 
         $contacts = Applicant::find(request('contacts'))->map(function ($applicant) use ($sms) {
+            if ($applicant->contact_no === null || empty($applicant->contact_no)) {
+                abort(400, $applicant->full_name . ' has no valid contact number.');
+            }
+
             return [
                 'applicant_id' => $applicant->id,
                 'sms_id' => $sms->id,
-                'status' => 'Sent to SMS API provider'
+                'status' => 'Sending to SMS Provider...'
             ];
         })->toArray();
+
+        if (count($contacts) === 0)
+        {
+            abort(400, 'Cannot find contact number of selected applicants.');
+        }
 
         $sms->recipients()->createMany($contacts);
 
@@ -47,7 +62,7 @@ class SmsController extends Controller
         });
 
         return [
-            'message' => 'Sms sent to applicants.'
+            'message' => 'SMS are now now being processed...'
         ];
     }
 
