@@ -49,7 +49,7 @@ class SearchFilterPagination
 
     protected function getSortBy()
     {
-        return in_array(request('sortBy'), $this->query->getModel()->getFillable()) ? request('sort_by') : 'id';
+        return in_array(request('sort_by'), $this->query->getModel()->getFillable()) ? request('sort_by') : 'id';
     }
 
     protected function getSorting()
