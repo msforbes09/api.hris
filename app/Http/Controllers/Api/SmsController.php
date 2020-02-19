@@ -55,9 +55,9 @@ class SmsController extends Controller
     {
         $http = new Client();
 
-        $response = $http->get(config('app.sms_api') . '/serverstatus.php', [
+        $response = $http->get(config('services.itextmo.sms_api') . '/serverstatus.php', [
             'query' => [
-                'apicode' => config('app.sms_code')
+                'apicode' => config('services.itextmo.sms_code')
             ]
         ]);
 
@@ -68,9 +68,9 @@ class SmsController extends Controller
     {
         $http = new Client();
 
-        $response = $http->get(config('app.sms_api') . '/apicode_info.php', [
+        $response = $http->get(config('services.itextmo.sms_api') . '/apicode_info.php', [
             'query' => [
-                'apicode' => config('app.sms_code')
+                'apicode' => config('services.itextmo.sms_code')
             ]
         ]);
 
@@ -81,9 +81,9 @@ class SmsController extends Controller
     {
         $http = new Client();
 
-        $response = $http->get(config('app.sms_api') . '/display_outgoing.php', [
+        $response = $http->get(config('services.itextmo.sms_api') . '/display_outgoing.php', [
             'query' => [
-                'apicode' => config('app.sms_code'),
+                'apicode' => config('services.itextmo.sms_code'),
                 'sortby' => "desc"
             ]
         ]);

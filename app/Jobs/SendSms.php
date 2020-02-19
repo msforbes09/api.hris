@@ -30,10 +30,10 @@ class SendSms implements ShouldQueue
         $params = [
             '1' => $this->recipient->contact,
             '2' => $this->recipient->sms->parsedSms($this->recipient->applicant),
-            '3' => config('app.sms_code')
+            '3' => config('services.itextmo.sms_code')
         ];
 
-        $response = $http->post(config('app.sms_api') . '/api.php', [
+        $response = $http->post(config('services.itextmo.sms_api') . '/api.php', [
             'form_params' => $params
         ]);
 

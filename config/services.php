@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'itextmo' => [
+        'sms_sender_id' => env('SMS_SENDER_ID', null),
+        'sms_api' => env('SMS_API', null),
+        'sms_code' => env('SMS_CODE', null),
+    ]
+
 ];
