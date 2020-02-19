@@ -61,8 +61,6 @@ return [
     'default_pass' => env('APP_DEFAULT_PASS', 'password'),
 
     'sms_sender_id' => env('SMS_SENDER_ID', null),
-    'sms_username' => env('SMS_USERNAME', null),
-    'sms_password' => env('SMS_PASSWORD', null),
     'sms_api' => env('SMS_API', null),
     'sms_code' => env('SMS_CODE', null),
 
