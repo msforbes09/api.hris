@@ -31,7 +31,7 @@ class SmsController extends Controller
             return [
                 'applicant_id' => $applicant->id,
                 'sms_id' => $sms->id,
-                'status' => 'Pending'
+                'status' => 'Sent to SMS API provider'
             ];
         })->toArray();
 
