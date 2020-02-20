@@ -6,6 +6,7 @@ use App\Client;
 use App\Module;
 use App\ClientPosition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientPositionRequest;
 
@@ -22,14 +23,16 @@ class ClientPositionController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return $client->positions;
+        return $client->positions()->get();
     }
 
     public function store(ClientPositionRequest $request, Client $client, ClientPosition $position)
     {
         $this->authorize('create', $this->module);
 
-        $position = $client->positions()->create($request->only($position->fillable));
+        $position = $client->positions()->create(request()->only($position->getFillable()));
+
+        Log::info(auth()->user()->username . ' has created a Client Position.', ['data' => $position]);
 
         return response()->json([
             'message' => 'Successfully created client position.',
@@ -48,7 +51,9 @@ class ClientPositionController extends Controller
     {
         $this->authorize('update', $this->module);
 
-        $position->update($request->only($position->fillable));
+        $position->update($request->only($position->getFillable()));
+
+        Log::info(auth()->user()->username . ' has created a Client Position.', ['data' => $position]);
 
         return response()->json([
             'message' => 'Successfully updated client position.',
@@ -62,6 +67,8 @@ class ClientPositionController extends Controller
 
         $position->delete();
 
+        Log::info(auth()->user()->username . ' has deleted a Client Position.', ['data' => $client]);
+
         return [
             'message' => 'Successfully deleted client position.'
         ];
@@ -74,6 +81,8 @@ class ClientPositionController extends Controller
         $position = ClientPosition::withTrashed()->findOrFail($id);
 
         $position->restore();
+
+        Log::info(auth()->user()->username . ' has restored a Client Position.', ['data' => $position]);
 
         return [
             'message' => 'Successfully restored deleted position.'

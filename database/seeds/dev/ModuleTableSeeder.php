@@ -16,6 +16,18 @@ class ModuleTableSeeder extends Seeder
         ],
         ['code' => 'client', 'name' => 'Client Module',
             'actions' => ['view', 'show', 'create', 'update', 'delete', 'restore']
+        ],
+        ['code' => 'applicant', 'name' => 'Applicant Module',
+            'actions' => ['view', 'show', 'create', 'update', 'delete']
+        ],
+        ['code' => 'sms', 'name' => 'SMS Module',
+            'actions' => ['view', 'send']
+        ],
+        ['code' => 'sms_template', 'name' => 'SMS Template Module',
+            'actions' => ['view', 'show', 'create', 'update', 'delete']
+        ],
+        ['code' => 'audit', 'name' => 'Audit Module',
+            'actions' => ['view', 'show']
         ]
     ];
 

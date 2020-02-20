@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -28,7 +29,7 @@ class ResetPasswordController extends Controller
             $this->credentials($request), function ($user, $password) {
                 $this->resetPassword($user, $password);
 
-                removeTokens($user);
+                $user->removeTokens();
             }
         );
 
@@ -39,7 +40,7 @@ class ResetPasswordController extends Controller
 
      public function sendResetResponse(Request $request, $response)
     {
-        appLog('Reset_Password', findUser(request('email'))->id);
+        Log::info(request('email') . ' have reset his/her password successfully.');
 
         return response()->json([
             'message' => 'Password reset successfully.'

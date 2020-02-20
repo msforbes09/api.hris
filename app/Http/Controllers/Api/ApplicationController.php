@@ -9,18 +9,15 @@ use App\Application;
 use App\ClientBranch;
 use App\ClientPosition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplicationRequest;
 
 class ApplicationController extends Controller
 {
-    public function index(Applicant $applicant = NULL)
+    public function index(Applicant $applicant)
     {
-        if($applicant) {
-            return $applicant->applications;
-        }
-
-        return Application::paginate(request('per_page') ?? 10);
+        return $applicant->applications()->latest()->get();
     }
 
     public function show(Application $application)
@@ -28,31 +25,43 @@ class ApplicationController extends Controller
         return $application;
     }
 
-    public function store(ApplicationRequest $request, Applicant $applicant, Application $application)
+    public function store(ApplicationRequest $request, Applicant $applicant)
     {
-        $code = ['code' => getCode(new Application(), [Branch::findOrFail($request->branch_id)])];
+        $code = [
+            'code' => Application::getModel()->generateCode(request('branch_id')),
+            'applicant_id' => $applicant->id
+        ];
 
-        $application = $applicant->applications()->create($request->merge($code)->only($application->fillable));
+        $application = Application::create(request()
+            ->merge($code)
+            ->only(Application::getModel()->getFillable())
+        );
 
-        return response()->json([
+        Log::info(auth()->user()->username . ' has created an Application.', ['data' => $application]);
+
+        return [
             'message' => 'Successfully created application.',
             'application' => $application
-        ]);
+        ];
     }
 
     public function update(ApplicationRequest $request, Applicant $applicant, Application $application)
     {
-        $application->update($request->only($application->fillable));
+        $application->update(request()->only($application->getFillable()));
 
-        return response()->json([
+        Log::info(auth()->user()->username . ' has updated an Application.', ['data' => $application]);
+
+        return [
             'message' => 'Successfully updated application.',
             'application' => $application
-        ]);
+        ];
     }
 
     public function destroy(Applicant $applicant, Application $application)
     {
         $application->delete();
+
+        Log::info(auth()->user()->username . ' has deleted an Application.', ['data' => $application]);
 
         return [
             'message' => 'Successfully deleted application.'

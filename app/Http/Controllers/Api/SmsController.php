@@ -2,91 +2,107 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Sms;
+use Carbon\Carbon;
 use App\Applicant;
+use App\Jobs\SendSms;
+use App\SmsRecipient;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
+use App\Http\Requests\SmsRequest;
 use App\Http\Controllers\Controller;
+use App\Helpers\SearchFilterPagination;
 
 class SmsController extends Controller
 {
-    public function send(Request $request)
+    public function index()
     {
-        $request->validate([
-            'id' => 'required',
-            'message' => 'required'
-        ]);
+        $query = Sms::query()->withCount('recipients');
 
-        $http = new Client();
-        $applicants = Applicant::find(explode(',', $request->id));
+        return SearchFilterPagination::get($query);
+    }
 
-        $contacts = $applicants->map(function($applicant) {
-            if(preg_match('/^\d{11}$/', $applicant->contact_no))
-            {
-                return '63' . substr($applicant->contact_no, 1);
+    public function recipients(Sms $sms)
+    {
+        return SearchFilterPagination::get($sms->recipients()->getQuery());
+    }
+
+    public function send(SmsRequest $request)
+    {
+        $sms = Sms::create(request()
+            ->merge(['user_id' => auth()->user()->id])
+            ->only(Sms::getModel()->getFillable())
+        );
+
+        $contacts = Applicant::find(request('contacts'))->map(function ($applicant) use ($sms) {
+            if ($applicant->contact_no === null || empty($applicant->contact_no)) {
+                abort(400, $applicant->full_name . ' has no valid contact number.');
             }
 
-            abort(403, 'Applicant ['. $applicant->fullname() . '] has an invalid contact number.');
+            return [
+                'applicant_id' => $applicant->id,
+                'sms_id' => $sms->id,
+                'status' => 'Sending to SMS Provider...'
+            ];
+        })->toArray();
+
+        if (count($contacts) === 0)
+        {
+            abort(400, 'Cannot find contact number of selected applicants.');
+        }
+
+        $sms->recipients()->createMany($contacts);
+
+        $sms->recipients()->each(function ($recipient) {
+            if (request()->has('schedule')) {
+                $delay = Carbon::now()->diffInSeconds(Carbon::parse(request('schedule')));
+                SendSms::dispatch($recipient)->delay($delay);
+            } else {
+                SendSms::dispatch($recipient);
+            }
         });
 
-        $result = $http->get(config('app.sms_api') . 'api.aspx', [
-            'query' => [
-                'apiusername' => config('app.sms_username'),
-                'apipassword' => config('app.sms_password'),
-                'languagetype' => 1,
-                'senderid' => config('app.sms_sender_id'),
-                'mobileno' => implode(',', $contacts->toArray()),
-                'message' => $request->message
-            ]
-        ]);
-
-        if($result->getbody() == '-100')
-        {
-            abort(403, 'Sms API invalid username or password.');
-        }
-        elseif($result->getBody() == '-200')
-        {
-            abort(403, 'Sms Api sender id is invalid.');
-        }
-        elseif($result->getBody() == '-300')
-        {
-            abort(403, 'Sms Api mobile number is invalid.');
-        }
-        elseif($result->getBody() == '-400')
-        {
-            abort(403, 'Sms Api language type is invalid.');
-        }
-        elseif($result->getBody() == '-500')
-        {
-            abort(403, 'Sms Api message has invalid characters.');
-        }
-        elseif($result->getBody() == '-600') {
-            abort(403, 'Sms Api insufficient credit balance');
-        }
-
         return [
-            'message' => 'Successfully sent message.',
-            'recipients' => $contacts
+            'message' => 'SMS are now now being processed...'
         ];
     }
 
-    public function balance()
+    public function server()
     {
         $http = new Client();
 
-        $result = $http->get(config('app.sms_api') . 'bulkcredit.aspx', [
+        $response = $http->get(config('services.itextmo.sms_api') . '/serverstatus.php', [
             'query' => [
-                'apiusername' => config('app.sms_username'),
-                'apipassword' => config('app.sms_password')
+                'apicode' => config('services.itextmo.sms_code')
             ]
         ]);
 
-        if($result->getbody() == '-100')
-        {
-            abort(403, 'Sms API invalid username or password.');
-        }
+        return $response->getBody();
+    }
 
-        return [
-            'sms_balance' => json_decode($result->getBody())
-        ];
+    public function info()
+    {
+        $http = new Client();
+
+        $response = $http->get(config('services.itextmo.sms_api') . '/apicode_info.php', [
+            'query' => [
+                'apicode' => config('services.itextmo.sms_code')
+            ]
+        ]);
+
+        return $response->getBody();
+    }
+
+    public function pending()
+    {
+        $http = new Client();
+
+        $response = $http->get(config('services.itextmo.sms_api') . '/display_outgoing.php', [
+            'query' => [
+                'apicode' => config('services.itextmo.sms_code'),
+                'sortby' => "desc"
+            ]
+        ]);
+
+        return $response->getBody();
     }
 }

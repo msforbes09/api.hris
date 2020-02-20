@@ -68,4 +68,13 @@ class ModulePolicy
         return $user->userType->moduleActions->where('id', $action->id)->first();
 
     }
+
+    public function send(User $user, Module $module)
+    {
+        $action = $module->moduleActions->where('code', 'send')->first();
+
+        if (! $action) return;
+
+        return $user->userType->moduleActions->where('id', $action->id)->first();
+    }
 }

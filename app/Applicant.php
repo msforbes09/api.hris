@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Helpers\FullTextSearch;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -42,6 +44,10 @@ class Applicant extends Model implements Auditable
         'updated_at'
     ];
 
+    protected $casts = [
+        'birth_date' => 'date:Y-m-d',
+    ];
+
     protected $searchable = [
         'first_name',
         'middle_name',
@@ -71,5 +77,25 @@ class Applicant extends Model implements Auditable
     public function applications()
     {
       return $this->hasMany('App\Application');
+    }
+
+    public function scopeLevenshteinSearch($query)
+    {
+        $results = $query->selectRaw('*,
+            (levenshtein(?, `last_name`) + levenshtein(?, `first_name`) + levenshtein(?, `middle_name`)) as match_diff',
+            [request('last_name'), request('first_name'), request('middle_name')])
+            ->orderBy('match_diff')
+            ->limit(4)
+            ->get();
+
+        $exactMatch = $results->where('match_diff', 0)->first();
+
+        $otherMatches = $results->where('id', '<>', $exactMatch ? $exactMatch->id : null)
+            ->where('match_diff', '<', 4);
+
+        return [
+            'exactMatch' => $exactMatch,
+            'otherMatches' => $otherMatches
+        ];
     }
 }
