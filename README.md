@@ -99,7 +99,9 @@ Now you need to migrate the database, run the seeder for testing purposes, and t
 Make sure your XAMPP server is running.
 
 ```
-php artisan run:dev
+npm install // Check for new packages used
+composer install // Check for new packages used
+composer run-dev
 ```
 
 The terminal will display two Passport ID and Secret. You will the need the second one, which is the password grant credentials, and copy it to the following properties of the ".env" file.
