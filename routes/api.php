@@ -18,6 +18,9 @@ Route::post('/reset-password', 'Api\Auth\ResetPasswordController@reset');
 Route::get('/applicants/template', 'Api\ApplicantController@template');
 Route::get('/applicants/export', 'Api\ApplicantController@export');
 
+Route::get('/webhook', 'Api\FbWebhookController@index');
+Route::post('/webhook', 'Api\FbWebhookController@event');
+
 Route::middleware('auth:api')->group(function() {
     Route::prefix('tools')->group(function () {
         Route::get('user-management', 'Api\ToolController@userManagement');

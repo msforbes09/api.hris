@@ -88,10 +88,10 @@ MAIL_FROM_NAME="${APP_NAME}"
 Other settings you need to configure in the ".env" file:
 
 ```
-APP_URL= // This will be used as the API's base url
-APP_UI_URL= // The url for the web app that will consume the APIs, or simply the frontend of the web app.
-APP_DEFAULT_PASS= // Default password for seeded/default users
-LOG_SLACK_WEBHOOK_URL= // Web hook url for slack logging
+APP_URL=  <!-- This will be used as the API's base url -->
+APP_UI_URL= <!-- The url for the web app that will consume the APIs, or simply the frontend of the web app. -->
+APP_DEFAULT_PASS= <!-- Default password for seeded/default users -->
+LOG_SLACK_WEBHOOK_URL= <!-- Web hook url for slack logging -->
 ```
 
 Now you need to migrate the database, run the seeder for testing purposes, and then get a new Passport ID and SECRET. You can do all these commands using an artisan command.
@@ -99,7 +99,9 @@ Now you need to migrate the database, run the seeder for testing purposes, and t
 Make sure your XAMPP server is running.
 
 ```
-php artisan run:dev
+npm install <!-- Include missing packages used in project -->
+composer install <!-- Include missing packages used in project -->
+composer run-dev
 ```
 
 The terminal will display two Passport ID and Secret. You will the need the second one, which is the password grant credentials, and copy it to the following properties of the ".env" file.
