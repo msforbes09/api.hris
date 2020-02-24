@@ -14,8 +14,8 @@ class ApplicantEducationRequest extends FormRequest
     public function rules()
     {
         return [
-            'level' => 'required',
-            'school' => 'required',
+            'level' => 'required|max:30',
+            'school' => 'required|max:30',
             'year_from' => 'required|digits:4',
             'year_to' => 'required|digits:4',
         ];

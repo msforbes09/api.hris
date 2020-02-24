@@ -15,8 +15,8 @@ class SmsRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'message' => 'required',
+            'title' => 'required|max:50',
+            'message' => 'required|max:160',
             'schedule' => 'date|after:' . Carbon::now(),
             'contacts' => 'required'
         ];

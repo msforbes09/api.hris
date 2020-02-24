@@ -16,8 +16,8 @@ class SmsTemplateRequest extends FormRequest
         $templateId = $this->template ? $this->template->id : '';
 
         return [
-            'name' => 'required|unique:sms_templates,name,'. $templateId . ',id',
-            'message' => 'required'
+            'name' => 'required|max:30|unique:sms_templates,name,'. $templateId . ',id',
+            'message' => 'required|max:160'
         ];
     }
 }
