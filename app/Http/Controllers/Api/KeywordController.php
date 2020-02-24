@@ -60,7 +60,7 @@ class KeywordController extends Controller
 
     public function destroy(Keyword $keyword)
     {
-        $this->authorize('destroy', $this->module);
+        $this->authorize('delete', $this->module);
 
         $keyword->delete();
 
