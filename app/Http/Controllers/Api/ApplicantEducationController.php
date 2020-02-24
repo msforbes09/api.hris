@@ -13,7 +13,7 @@ class ApplicantEducationController extends Controller
 {
     public function index(Applicant $applicant)
     {
-        return $applicant->education;
+        return $applicant->education()->orderBy('id', 'desc')->get();
     }
 
     public function store(ApplicantEducationRequest $request, Applicant $applicant, ApplicantEducation $education)

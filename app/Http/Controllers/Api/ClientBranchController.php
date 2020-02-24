@@ -23,7 +23,7 @@ class ClientBranchController extends Controller
     {
         $this->authorize('view', $this->module);
 
-       return $client->branches()->get();
+       return $client->branches()->orderBy('id', 'desc')->get();
     }
 
     public function store(ClientBranchRequest $request, Client $client, ClientBranch $branch)

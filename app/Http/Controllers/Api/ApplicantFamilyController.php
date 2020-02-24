@@ -13,7 +13,7 @@ class ApplicantFamilyController extends Controller
 {
     public function index(Applicant $applicant)
     {
-        return $applicant->families;
+        return $applicant->families()->orderBy('id', 'desc')->get();
     }
 
     public function show()

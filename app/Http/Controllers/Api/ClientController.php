@@ -23,7 +23,7 @@ class ClientController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return Client::with('company')->get();
+        return Client::with('company')->orderBy('id', 'desc')->get();
     }
 
     public function store(ClientRequest $request)

@@ -22,7 +22,9 @@ class KeywordController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return Key::with('keywords')->get();
+        return Key::with(['keywords' => function($query) {
+            return $query->orderBy('value', 'asc');
+        }])->orderBy('name', 'asc')->get();
     }
 
     public function show(Key $key, Keyword $keyword)

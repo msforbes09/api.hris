@@ -25,10 +25,7 @@ class UserController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return User::with('branch')
-            ->with('userType')
-            ->latest()
-            ->get();
+        return User::with(['branch', 'userType'])->orderBy('id', 'desc')->get();
     }
 
     public function store(UserRequest $request)

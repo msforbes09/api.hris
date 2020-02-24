@@ -13,7 +13,7 @@ class ApplicantEmploymentController extends Controller
 {
     public function index(Applicant $applicant)
     {
-        return $applicant->employments;
+        return $applicant->employments()->orderBy('id', 'desc')->get();
     }
 
     public function store(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)

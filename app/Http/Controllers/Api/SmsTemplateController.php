@@ -13,7 +13,7 @@ class SmsTemplateController extends Controller
 {
     public function index()
     {
-        return SmsTemplate::all();
+        return SmsTemplate::orderBy('id', 'desc')->get();
     }
 
     public function store(SmsTemplateRequest $request)

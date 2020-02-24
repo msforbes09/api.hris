@@ -23,7 +23,7 @@ class ClientPositionController extends Controller
     {
         $this->authorize('view', $this->module);
 
-        return $client->positions()->get();
+        return $client->positions()->orderBy('id','desc')->get();
     }
 
     public function store(ClientPositionRequest $request, Client $client, ClientPosition $position)
