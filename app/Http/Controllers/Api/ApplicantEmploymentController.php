@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Module;
 use App\Applicant;
 use App\ApplicantEmployment;
 use Illuminate\Http\Request;
@@ -11,13 +12,24 @@ use App\Http\Requests\ApplicantEmploymentRequest;
 
 class ApplicantEmploymentController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'applicant')->first();
+    }
+
     public function index(Applicant $applicant)
     {
+        $this->authorize('allows', [$this->module, 'view']);
+
         return $applicant->employments()->orderBy('id', 'desc')->get();
     }
 
     public function store(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)
     {
+        $this->authorize('allows', [$this->module, 'store']);
+
         $employment = $applicant->employments()->create($request->only($employment->fillable));
 
         Log::info(auth()->user()->username . ' - Applicant Employment Created', [
@@ -32,6 +44,8 @@ class ApplicantEmploymentController extends Controller
 
     public function update(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)
     {
+        $this->authorize('allows', [$this->module, 'update']);
+
         $employment->update($request->only($employment->fillable));
 
         Log::info(auth()->user()->username . ' - Applicant Employment Updated', [
@@ -46,6 +60,8 @@ class ApplicantEmploymentController extends Controller
 
     public function destroy(Applicant $applicant, ApplicantEmployment $employment)
     {
+        $this->authorize('allows', [$this->module, 'delete']);
+
         $employment->delete();
 
         Log::info(auth()->user()->username . ' - Applicant Employment Deleted', [

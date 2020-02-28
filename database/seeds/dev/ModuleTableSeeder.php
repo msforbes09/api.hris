@@ -27,7 +27,7 @@ class ModuleTableSeeder extends Seeder
             'actions' => ['view', 'show', 'create', 'update', 'delete']
         ],
         ['code' => 'audit', 'name' => 'Audit Module',
-            'actions' => ['view', 'show']
+            'actions' => ['view']
         ]
     ];
 

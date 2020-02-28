@@ -33,6 +33,11 @@ class User extends Authenticatable implements Auditable
         return $this->belongsTo('App\UserType');
     }
 
+    public function allowedModuleActions()
+    {
+        return $this->userType->moduleActions;
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);

@@ -21,14 +21,14 @@ class ClientController extends Controller
 
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
         return Client::with('company')->orderBy('id', 'desc')->get();
     }
 
     public function store(ClientRequest $request)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $client = Client::create(request()->only(Client::getModel()->getFillable()));
 
@@ -42,14 +42,14 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         return $client->load(['company']);
     }
 
     public function update(ClientRequest $request, Company $company, Client $client)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $client->update(request()->only($client->fillable));
 
@@ -63,7 +63,7 @@ class ClientController extends Controller
 
     public function destroy(Client $client)
     {
-        $this->authorize('delete', $this->module);
+        $this->authorize('allows', [$this->module, 'delete']);
 
         $client->delete();
 
@@ -76,7 +76,7 @@ class ClientController extends Controller
 
     public function restore($id)
     {
-        $this->authorize('restore', $this->module);
+        $this->authorize('allows', [$this->module, 'restore']);
 
         $client = Client::withTrashed()->findOrFail($id);
 

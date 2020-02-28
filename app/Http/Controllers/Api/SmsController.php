@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Sms;
-use Carbon\Carbon;
+use App\Module;
 use App\Applicant;
+use Carbon\Carbon;
 use App\Jobs\SendSms;
 use App\SmsRecipient;
 use GuzzleHttp\Client;
@@ -14,8 +15,17 @@ use App\Helpers\SearchFilterPagination;
 
 class SmsController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'sms')->first();
+    }
+
     public function index()
     {
+        $this->authorize('allows', [$this->module, 'view']);
+
         $query = Sms::query()->withCount('recipients');
 
         return SearchFilterPagination::get($query);
@@ -23,11 +33,15 @@ class SmsController extends Controller
 
     public function recipients(Sms $sms)
     {
+        $this->authorize('allows', [$this->module, 'view']);
+
         return SearchFilterPagination::get($sms->recipients()->getQuery());
     }
 
     public function send(SmsRequest $request)
     {
+        $this->authorize('allows', [$this->module, 'send']);
+
         $sms = Sms::create(request()
             ->merge(['user_id' => auth()->user()->id])
             ->only(Sms::getModel()->getFillable())
@@ -62,7 +76,7 @@ class SmsController extends Controller
         });
 
         return [
-            'message' => 'SMS are now now being processed...'
+            'message' => 'SMS are now being sent...'
         ];
     }
 

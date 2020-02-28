@@ -21,14 +21,14 @@ class ClientBranchController extends Controller
 
     public function index(Client $client)
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
        return $client->branches()->orderBy('id', 'desc')->get();
     }
 
     public function store(ClientBranchRequest $request, Client $client, ClientBranch $branch)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $branch = $client->branches()->create(request()->only($branch->getFillable()));
 
@@ -42,14 +42,14 @@ class ClientBranchController extends Controller
 
     public function show(Client $client, ClientBranch $branch)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         return $branch;
     }
 
     public function update(ClientBranchRequest $request, Client $client, ClientBranch $branch)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $branch->update(request()->only($branch->getFillable()));
 
@@ -63,7 +63,7 @@ class ClientBranchController extends Controller
 
     public function destroy(Client $client, ClientBranch $branch)
     {
-        $this->authorize('delete', $this->module);
+        $this->authorize('allows', [$this->module, 'delete']);
 
         $branch->delete();
 
@@ -76,7 +76,7 @@ class ClientBranchController extends Controller
 
     public function restore($id)
     {
-        $this->authorize('restore', $this->module);
+        $this->authorize('allows', [$this->module, 'restore']);
 
         $branch = ClientBranch::withTrashed()->findOrFail($id);
 

@@ -19,14 +19,14 @@ class UserTypeController extends Controller
 
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
        return UserType::with('moduleActions')->get();
     }
 
     public function show(UserType $userType)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         $userType->moduleActions;
 
@@ -35,7 +35,7 @@ class UserTypeController extends Controller
 
     public function updateAccess(UserType $userType)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $actions = ModuleAction::whereIn('id', request('accesses'))->get();
 

@@ -23,14 +23,14 @@ class UserController extends Controller
 
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
         return User::with(['branch', 'userType'])->orderBy('id', 'desc')->get();
     }
 
     public function store(UserRequest $request)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $rawPassword = Carbon::now()->timestamp;
 
@@ -51,14 +51,14 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         return $user->load(['branch', 'userType.moduleActions']);
     }
 
     public function update(UserRequest $request, User $user)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $user->update(request()->only($user->getFillable()));
 
