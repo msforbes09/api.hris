@@ -8,6 +8,7 @@ use App\ClientBranch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Helpers\SearchFilterPagination;
 use App\Http\Requests\ClientBranchRequest;
 
 class ClientBranchController extends Controller
@@ -23,7 +24,10 @@ class ClientBranchController extends Controller
     {
         $this->authorize('allows', [$this->module, 'view']);
 
-       return $client->branches()->orderBy('id', 'desc')->get();
+        if(request()->has('trashed'))
+            return SearchFilterPagination::get( $client->branches()->onlyTrashed());
+
+       return SearchFilterPagination::get( $client->branches());
     }
 
     public function store(ClientBranchRequest $request, Client $client, ClientBranch $branch)

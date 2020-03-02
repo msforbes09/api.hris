@@ -8,6 +8,7 @@ use App\ClientPosition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Helpers\SearchFilterPagination;
 use App\Http\Requests\ClientPositionRequest;
 
 class ClientPositionController extends Controller
@@ -23,7 +24,10 @@ class ClientPositionController extends Controller
     {
         $this->authorize('allows', [$this->module, 'view']);
 
-        return $client->positions()->orderBy('id','desc')->get();
+        if(request()->has('trashed'))
+            return SearchFilterPagination::get($client->positions()->onlyTrashed());
+
+        return SearchFilterPagination::get($client->positions());
     }
 
     public function store(ClientPositionRequest $request, Client $client, ClientPosition $position)

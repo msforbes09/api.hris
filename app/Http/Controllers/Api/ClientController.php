@@ -9,6 +9,7 @@ use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientRequest;
+use App\Helpers\SearchFilterPagination;
 
 class ClientController extends Controller
 {
@@ -23,7 +24,10 @@ class ClientController extends Controller
     {
         $this->authorize('allows', [$this->module, 'view']);
 
-        return Client::with('company')->orderBy('id', 'desc')->get();
+        if(request()->has('trashed'))
+            return SearchFilterPagination::get(Client::onlyTrashed()->with('company'));
+
+        return SearchFilterPagination::get(Client::with('company'));
     }
 
     public function store(ClientRequest $request)
