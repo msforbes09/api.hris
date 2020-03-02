@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-
-use App\Applicant;
+use App\Module;
 use App\SmsTemplate;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -46,27 +45,27 @@ class SmsTemplateController extends Controller
         return $template;
     }
 
-    public function update(SmsTemplateRequest $request, SmsTemplate $template)
+    public function update(SmsTemplateRequest $request, SmsTemplate $sms_template)
     {
         $this->authorize('allows', [$this->module, 'update']);
 
-        $template->fill(request()->only($template->getFillable()))->save();
+        $sms_template->fill(request()->only($sms_template->getFillable()))->save();
 
-        Log::info(auth()->user()->username . ' has updated an Sms Template.', ['data' => $template]);
+        Log::info(auth()->user()->username . ' has updated an Sms Template.', ['data' => $sms_template]);
 
         return [
             'message' => 'Successfully updated template.',
-            'data' => $template
+            'data' => $sms_template
         ];
     }
 
-    public function destroy(SmsTemplate $template)
+    public function destroy(SmsTemplate $sms_template)
     {
         $this->authorize('allows', [$this->module, 'delete']);
 
-        $template->delete();
+        $sms_template->delete();
 
-        Log::info(auth()->user()->username . ' has deleted an Sms Template.', ['data' => $template]);
+        Log::info(auth()->user()->username . ' has deleted an Sms Template.', ['data' => $sms_template]);
 
         return [
             'message' =>'Successfully deleted template.',

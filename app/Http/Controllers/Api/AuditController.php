@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\User;
 use App\Audit;
+use App\Module;
 use App\Http\Controllers\Controller;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
