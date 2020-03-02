@@ -18,7 +18,11 @@ class UniqueColumns implements Rule
 
     public function passes($attribute, $value)
     {
-        $query = $this->model::withTrashed();
+        $query = $this->model;
+
+        if($this->model->getAttribute('deleted_at'))
+            $query->withTrashed();
+
 
         foreach ($this->columns as $column) {
             $query = $query->where($column['name'], $column['value']);
