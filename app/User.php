@@ -16,16 +16,27 @@ class User extends Authenticatable implements Auditable
     use HasApiTokens, Notifiable, \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
-        'user_type_id', 'branch_id', 'name', 'username', 'email', 'password', 'active',
+        'user_type_id',
+        'branch_id', 'name',
+        'username',
+        'email',
+        'password',
+        'active',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 
     public function isActive()
     {
-        return (bool) $this->active;
+        return (bool)$this->active;
     }
 
     public function userType()
@@ -36,11 +47,6 @@ class User extends Authenticatable implements Auditable
     public function allowedModuleActions()
     {
         return $this->userType->moduleActions;
-    }
-
-    public function branch()
-    {
-        return $this->belongsTo(Branch::class);
     }
 
     public function sendPasswordResetNotification($token)
