@@ -33,7 +33,7 @@ class ApplicantFamilyController extends Controller
 
     public function store(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
     {
-        $this->authorize('allows', [$this->module, 'store']);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $family = $applicant->families()->create($request->only($family->fillable));
 

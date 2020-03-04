@@ -28,7 +28,7 @@ class ApplicantEmploymentController extends Controller
 
     public function store(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)
     {
-        $this->authorize('allows', [$this->module, 'store']);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $employment = $applicant->employments()->create($request->only($employment->fillable));
 
