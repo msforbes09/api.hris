@@ -5,12 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use App\Module;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
