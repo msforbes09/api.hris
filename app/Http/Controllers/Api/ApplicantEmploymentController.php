@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Module;
 use App\Applicant;
+use App\ApplicantEducation;
 use App\ApplicantEmployment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -24,6 +25,13 @@ class ApplicantEmploymentController extends Controller
         $this->authorize('allows', [$this->module, 'view']);
 
         return $applicant->employments()->orderBy('id', 'desc')->get();
+    }
+
+    public function show(Applicant $applicant, ApplicantEmployment $employment)
+    {
+        $this->authorize('allows', [$this->module, 'show']);
+
+        return $employment;
     }
 
     public function store(ApplicantEmploymentRequest $request, Applicant $applicant, ApplicantEmployment $employment)

@@ -26,9 +26,11 @@ class ApplicantFamilyController extends Controller
         return $applicant->families()->orderBy('id', 'desc')->get();
     }
 
-    public function show()
+    public function show(Applicant $applicant, ApplicantFamily $family)
     {
-        abort(404);
+        $this->authorize('allows', [$this->module, 'show']);
+
+        return $family;
     }
 
     public function store(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)

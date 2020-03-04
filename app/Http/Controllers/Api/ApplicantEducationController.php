@@ -12,6 +12,8 @@ use App\Http\Requests\ApplicantEducationRequest;
 
 class ApplicantEducationController extends Controller
 {
+    private $module;
+
     public function __construct()
     {
         $this->module = Module::where('code', 'applicant')->first();
@@ -22,6 +24,13 @@ class ApplicantEducationController extends Controller
         $this->authorize('allows', [$this->module, 'view']);
 
         return $applicant->education()->orderBy('id', 'desc')->get();
+    }
+
+    public function show(Applicant $applicant, ApplicantEducation $education)
+    {
+        $this->authorize('allows', [$this->module, 'show']);
+
+        return $education;
     }
 
     public function store(ApplicantEducationRequest $request, Applicant $applicant, ApplicantEducation $education)
