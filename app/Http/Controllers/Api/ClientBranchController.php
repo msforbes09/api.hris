@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Client;
 use App\Module;
 use App\ClientBranch;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Helpers\SearchFilterPagination;
@@ -24,10 +23,13 @@ class ClientBranchController extends Controller
     {
         $this->authorize('allows', [$this->module, 'view']);
 
-        if(request()->has('trashed'))
-            return SearchFilterPagination::get( $client->branches()->onlyTrashed());
+        if (request()->has('trashed'))
+            return SearchFilterPagination::get($client
+                ->branches()
+                ->onlyTrashed()
+            );
 
-       return SearchFilterPagination::get( $client->branches());
+        return SearchFilterPagination::get($client->branches());
     }
 
     public function store(ClientBranchRequest $request, Client $client, ClientBranch $branch)

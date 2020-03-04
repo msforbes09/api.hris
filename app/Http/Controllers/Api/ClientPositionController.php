@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Client;
 use App\Module;
 use App\ClientPosition;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Helpers\SearchFilterPagination;
@@ -24,8 +23,11 @@ class ClientPositionController extends Controller
     {
         $this->authorize('allows', [$this->module, 'view']);
 
-        if(request()->has('trashed'))
-            return SearchFilterPagination::get($client->positions()->onlyTrashed());
+        if (request()->has('trashed'))
+            return SearchFilterPagination::get($client
+                ->positions()
+                ->onlyTrashed()
+            );
 
         return SearchFilterPagination::get($client->positions());
     }

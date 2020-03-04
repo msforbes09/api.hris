@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Client;
 use App\Module;
 use App\Company;
-use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientRequest;
@@ -24,8 +23,10 @@ class ClientController extends Controller
     {
         $this->authorize('allows', [$this->module, 'view']);
 
-        if(request()->has('trashed'))
-            return SearchFilterPagination::get(Client::onlyTrashed()->with('company'));
+        if (request()->has('trashed'))
+            return SearchFilterPagination::get(Client::onlyTrashed()
+                ->with('company')
+            );
 
         return SearchFilterPagination::get(Client::with('company'));
     }
