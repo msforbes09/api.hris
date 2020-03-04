@@ -30,10 +30,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'itextmo' => [
+    'netplay' => [
         'sms_sender_id' => env('SMS_SENDER_ID', null),
         'sms_api' => env('SMS_API', null),
-        'sms_code' => env('SMS_CODE', null),
+        'sms_username' => env('SMS_USERNAME', null),
+        'sms_password' => env('SMS_PASSWORD', null),
     ]
 
 ];
