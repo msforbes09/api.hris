@@ -20,7 +20,8 @@ class ClientBranchRequest extends FormRequest
                 $this->branch ?? new ClientBranch, [
                     ['name' => 'code', 'value' => request('code')],
                     ['name' => 'client_id', 'value' => $this->client->id]
-                ]
+                ],
+                true
             )],
             'name' => 'required|max:100'
         ];

@@ -20,7 +20,8 @@ class ClientPositionRequest extends FormRequest
                 $this->position ?? new ClientPosition, [
                     ['name' => 'code', 'value' => request('code')],
                     ['name' => 'client_id', 'value' => $this->client->id]
-                ]
+                ],
+                true
             )],
             'name' => 'required|max:100'
         ];
