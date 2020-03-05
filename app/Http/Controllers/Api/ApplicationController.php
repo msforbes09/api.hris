@@ -30,7 +30,7 @@ class ApplicationController extends Controller
         return $applicant->applications()->latest()->get();
     }
 
-    public function show(Application $application)
+    public function show(Applicant $applicant, Application $application)
     {
         $this->authorize('allows', [$this->module , 'show']);
 
