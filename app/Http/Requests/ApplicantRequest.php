@@ -14,14 +14,14 @@ class ApplicantRequest extends FormRequest
     public function rules()
     {
         return [
-            'last_name' => 'required|max:50',
-            'first_name' => 'required|max:50',
-            'middle_name' => 'max:50',
-            'nick_name' => 'max:50',
-            'current_address' => 'max:191',
-            'permanent_address' => 'max:191',
+            'last_name' => 'required|max:30',
+            'first_name' => 'required|max:30',
+            'middle_name' => 'max:30',
+            'nick_name' => 'max:30',
+            'current_address' => 'max:100',
+            'permanent_address' => 'max:100',
             'birth_date' => 'required|date',
-            'birth_place' => 'max:191',
+            'birth_place' => 'max:100',
             'gender' => 'required|max:10',
             'height' => 'max:20',
             'weight' => 'max:20',

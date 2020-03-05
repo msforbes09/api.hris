@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Client;
 use App\Module;
 use App\Company;
-use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientRequest;
+use App\Helpers\SearchFilterPagination;
 
 class ClientController extends Controller
 {
@@ -21,14 +21,19 @@ class ClientController extends Controller
 
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
-        return Client::with('company')->get();
+        if (request()->has('trashed'))
+            return SearchFilterPagination::get(Client::onlyTrashed()
+                ->with('company')
+            );
+
+        return SearchFilterPagination::get(Client::with('company'));
     }
 
     public function store(ClientRequest $request)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $client = Client::create(request()->only(Client::getModel()->getFillable()));
 
@@ -42,14 +47,14 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         return $client->load(['company']);
     }
 
     public function update(ClientRequest $request, Company $company, Client $client)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $client->update(request()->only($client->fillable));
 
@@ -63,7 +68,7 @@ class ClientController extends Controller
 
     public function destroy(Client $client)
     {
-        $this->authorize('delete', $this->module);
+        $this->authorize('allows', [$this->module, 'delete']);
 
         $client->delete();
 
@@ -76,7 +81,7 @@ class ClientController extends Controller
 
     public function restore($id)
     {
-        $this->authorize('restore', $this->module);
+        $this->authorize('allows', [$this->module, 'restore']);
 
         $client = Client::withTrashed()->findOrFail($id);
 

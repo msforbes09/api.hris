@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Sms;
-use Carbon\Carbon;
+use App\Module;
 use App\Applicant;
+use Carbon\Carbon;
 use App\Jobs\SendSms;
 use App\SmsRecipient;
 use GuzzleHttp\Client;
@@ -14,8 +15,17 @@ use App\Helpers\SearchFilterPagination;
 
 class SmsController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'sms')->first();
+    }
+
     public function index()
     {
+        $this->authorize('allows', [$this->module, 'view']);
+
         $query = Sms::query()->withCount('recipients');
 
         return SearchFilterPagination::get($query);
@@ -23,30 +33,34 @@ class SmsController extends Controller
 
     public function recipients(Sms $sms)
     {
+        $this->authorize('allows', [$this->module, 'view']);
+
         return SearchFilterPagination::get($sms->recipients()->getQuery());
     }
 
     public function send(SmsRequest $request)
     {
+        $this->authorize('allows', [$this->module, 'send']);
+
         $sms = Sms::create(request()
             ->merge(['user_id' => auth()->user()->id])
             ->only(Sms::getModel()->getFillable())
         );
 
-        $contacts = Applicant::find(request('contacts'))->map(function ($applicant) use ($sms) {
-            if ($applicant->contact_no === null || empty($applicant->contact_no)) {
-                abort(400, $applicant->full_name . ' has no valid contact number.');
-            }
+        $contacts = Applicant::find($request->get('contacts'))
+            ->map(function ($applicant) use ($sms) {
+                if ($applicant->contact_no === null || empty($applicant->contact_no)) {
+                    abort(400, $applicant->full_name . ' has no valid contact number.');
+                }
 
-            return [
-                'applicant_id' => $applicant->id,
-                'sms_id' => $sms->id,
-                'status' => 'Sending to SMS Provider...'
-            ];
-        })->toArray();
+                return [
+                    'applicant_id' => $applicant->id,
+                    'sms_id' => $sms->id,
+                    'status' => 'Sending to SMS Provider...'
+                ];
+            })->toArray();
 
-        if (count($contacts) === 0)
-        {
+        if (count($contacts) === 0) {
             abort(400, 'Cannot find contact number of selected applicants.');
         }
 
@@ -62,47 +76,7 @@ class SmsController extends Controller
         });
 
         return [
-            'message' => 'SMS are now now being processed...'
+            'message' => 'Message are now being sent to recipients...'
         ];
-    }
-
-    public function server()
-    {
-        $http = new Client();
-
-        $response = $http->get(config('services.itextmo.sms_api') . '/serverstatus.php', [
-            'query' => [
-                'apicode' => config('services.itextmo.sms_code')
-            ]
-        ]);
-
-        return $response->getBody();
-    }
-
-    public function info()
-    {
-        $http = new Client();
-
-        $response = $http->get(config('services.itextmo.sms_api') . '/apicode_info.php', [
-            'query' => [
-                'apicode' => config('services.itextmo.sms_code')
-            ]
-        ]);
-
-        return $response->getBody();
-    }
-
-    public function pending()
-    {
-        $http = new Client();
-
-        $response = $http->get(config('services.itextmo.sms_api') . '/display_outgoing.php', [
-            'query' => [
-                'apicode' => config('services.itextmo.sms_code'),
-                'sortby' => "desc"
-            ]
-        ]);
-
-        return $response->getBody();
     }
 }

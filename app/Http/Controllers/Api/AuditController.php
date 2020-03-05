@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\User;
 use App\Audit;
+use App\Module;
 use App\Http\Controllers\Controller;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,8 +12,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class AuditController extends Controller
 {
-    public function userAudits(User $user = null)
+    protected $module;
+
+    public function __construct()
     {
+        $this->module = Module::where('code', 'audit')->first();
+    }
+
+    public function index(User $user = null)
+    {
+        $this->authorize('allows', [$this->module, 'view']);
+
         $audits =  Audit::where(function(Builder $query) use ($user) {
             if ($user != null)
                 $query->where('user_id', $user->id);

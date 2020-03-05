@@ -2,18 +2,25 @@
 
 namespace App\Rules;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Rule;
 
 class UniqueColumns implements Rule
 {
+    protected $id;
     protected $model;
-    protected $colums;
+    protected $columns;
+    protected $hasTrash;
 
-    public function __construct($model = NULL, $columns = [])
+    public function __construct(Model $model = null, $columns = [], $hasTrash = false)
     {
-        $this->model = $model;
+        $this->id = $model ? $model->id : 0;
         $this->columns = $columns;
+        $this->model = $hasTrash
+            ? $model->withTrashed()
+            : $model;
     }
+
     public function passes($attribute, $value)
     {
         $query = $this->model;
@@ -22,10 +29,12 @@ class UniqueColumns implements Rule
             $query = $query->where($column['name'], $column['value']);
         }
 
-        $query->where('id', '!=', $this->model->id ?? '');
-
-        return $query->count() === 0;
+        return $query
+            ->get()
+            ->except($this->id)
+            ->count() === 0;
     }
+
     public function message()
     {
         return 'The :attribute is already taken.';

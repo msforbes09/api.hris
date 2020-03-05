@@ -13,11 +13,11 @@ class SmsTemplateRequest extends FormRequest
 
     public function rules()
     {
-        $templateId = $this->template ? $this->template->id : '';
+        $templateId = $this->sms_template ? $this->sms_template->id : '';
 
         return [
-            'name' => 'required|unique:sms_templates,name,'. $templateId . ',id',
-            'message' => 'required'
+            'name' => 'required|max:30|unique:sms_templates,name,'. $templateId . ',id',
+            'message' => 'required|max:160'
         ];
     }
 }

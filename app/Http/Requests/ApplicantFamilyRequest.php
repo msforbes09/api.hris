@@ -15,9 +15,9 @@ class ApplicantFamilyRequest extends FormRequest
     {
         return [
             'relationship' => 'required|max:20',
-            'name' => 'required|max:191',
-            'address' => 'max:191',
-            'occupation' => 'max:50',
+            'name' => 'required|max:30',
+            'address' => 'max:100',
+            'occupation' => 'max:30',
             'birth_date' => 'date|nullable',
             'living' => 'sometimes|boolean',
             'contact_no' => 'sometimes|regex:/^\d{11}$/',

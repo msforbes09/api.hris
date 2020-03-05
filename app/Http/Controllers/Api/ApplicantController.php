@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Module;
 use App\Applicant;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -20,18 +21,31 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicantController extends Controller
 {
+    protected $module;
+
+    public function __construct()
+    {
+        $this->module = Module::where('code', 'applicant')->first();
+    }
+
     public function index()
     {
+        $this->authorize('allows', [$this->module, 'view']);
+
         return SearchFilterPagination::get(Applicant::query());
     }
 
     public function show(Applicant $applicant)
     {
+        $this->authorize('allows', [$this->module, 'show']);
+
         return $applicant->load(['families', 'education', 'employments', 'applications']);
     }
 
     public function store(ApplicantRequest $request)
     {
+        $this->authorize('allows', [$this->module, 'create']);
+
         $requestData = request()->only(Applicant::getModel()->getFillable());
 
         $applicant = Applicant::create($requestData);
@@ -46,6 +60,8 @@ class ApplicantController extends Controller
 
     public function update(ApplicantRequest $request, Applicant $applicant)
     {
+        $this->authorize('allows', [$this->module, 'update']);
+
         $requestData = request()->only($applicant->getFillable());
 
         $applicant->update($requestData);
@@ -60,6 +76,8 @@ class ApplicantController extends Controller
 
     public function destroy(Applicant $applicant)
     {
+        $this->authorize('allows', [$this->module, 'delete']);
+
         $applicant->delete();
 
         Log::info(auth()->user()->username . ' has deleted an Applicant.', ['data' => $applicant]);

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Client;
 use App\Module;
 use App\ClientPosition;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Helpers\SearchFilterPagination;
 use App\Http\Requests\ClientPositionRequest;
 
 class ClientPositionController extends Controller
@@ -21,14 +21,20 @@ class ClientPositionController extends Controller
 
     public function index(Client $client)
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
-        return $client->positions()->get();
+        if (request()->has('trashed'))
+            return SearchFilterPagination::get($client
+                ->positions()
+                ->onlyTrashed()
+            );
+
+        return SearchFilterPagination::get($client->positions());
     }
 
     public function store(ClientPositionRequest $request, Client $client, ClientPosition $position)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $position = $client->positions()->create(request()->only($position->getFillable()));
 
@@ -42,14 +48,14 @@ class ClientPositionController extends Controller
 
     public function show(Client $client, ClientPosition $position)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         return $position;
     }
 
     public function update(ClientPositionRequest $request, Client $client, ClientPosition $position)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $position->update($request->only($position->getFillable()));
 
@@ -63,7 +69,7 @@ class ClientPositionController extends Controller
 
     public function destroy(Client $client, ClientPosition $position)
     {
-        $this->authorize('delete', $this->module);
+        $this->authorize('allows', [$this->module, 'delete']);
 
         $position->delete();
 
@@ -76,7 +82,7 @@ class ClientPositionController extends Controller
 
     public function restore($id)
     {
-        $this->authorize('restore', $this->module);
+        $this->authorize('allows', [$this->module, 'restore']);
 
         $position = ClientPosition::withTrashed()->findOrFail($id);
 

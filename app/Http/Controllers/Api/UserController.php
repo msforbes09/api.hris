@@ -5,12 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use App\Module;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -23,17 +20,14 @@ class UserController extends Controller
 
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
-        return User::with('branch')
-            ->with('userType')
-            ->latest()
-            ->get();
+        return User::with(['branch', 'userType'])->orderBy('id', 'desc')->get();
     }
 
     public function store(UserRequest $request)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $rawPassword = Carbon::now()->timestamp;
 
@@ -54,14 +48,14 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $this->authorize('show', $this->module);
+        $this->authorize('allows', [$this->module, 'show']);
 
         return $user->load(['branch', 'userType.moduleActions']);
     }
 
     public function update(UserRequest $request, User $user)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $user->update(request()->only($user->getFillable()));
 

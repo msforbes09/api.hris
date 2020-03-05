@@ -21,7 +21,8 @@ class ClientRequest extends FormRequest
                 $this->client ?? new Client, [
                     ['name' => 'code', 'value' => request('code')],
                     ['name' => 'company_id', 'value' => request('company_id')]
-                ]
+                ],
+                true
             )],
             'name' => 'required|max:100'
         ];

@@ -20,9 +20,11 @@ class KeywordController extends Controller
 
     public function index()
     {
-        $this->authorize('view', $this->module);
+        $this->authorize('allows', [$this->module, 'view']);
 
-        return Key::with('keywords')->get();
+        return Key::with(['keywords' => function($query) {
+            return $query->orderBy('value', 'asc');
+        }])->orderBy('name', 'asc')->get();
     }
 
     public function show(Key $key, Keyword $keyword)
@@ -32,7 +34,7 @@ class KeywordController extends Controller
 
     public function store(KeywordRequest $request)
     {
-        $this->authorize('create', $this->module);
+        $this->authorize('allows', [$this->module, 'create']);
 
         $key = Key::where('id', request('key'))->first();
 
@@ -46,7 +48,7 @@ class KeywordController extends Controller
 
     public function update(KeywordRequest $request, Keyword $keyword)
     {
-        $this->authorize('update', $this->module);
+        $this->authorize('allows', [$this->module, 'update']);
 
         $keyword->update($request->only('value'));
 
@@ -58,7 +60,7 @@ class KeywordController extends Controller
 
     public function destroy(Keyword $keyword)
     {
-        $this->authorize('destroy', $this->module);
+        $this->authorize('allows', [$this->module, 'delete']);
 
         $keyword->delete();
 

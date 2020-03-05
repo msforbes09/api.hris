@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Module;
 use App\Applicant;
 use App\ApplicantFamily;
 use Illuminate\Http\Request;
@@ -11,18 +12,31 @@ use App\Http\Requests\ApplicantFamilyRequest;
 
 class ApplicantFamilyController extends Controller
 {
-    public function index(Applicant $applicant)
+    protected $module;
+
+    public function __construct()
     {
-        return $applicant->families;
+        $this->module = Module::where('code', 'applicant')->first();
     }
 
-    public function show()
+    public function index(Applicant $applicant)
     {
-        abort(404);
+        $this->authorize('allows', [$this->module, 'view']);
+
+        return $applicant->families()->orderBy('id', 'desc')->get();
+    }
+
+    public function show(Applicant $applicant, ApplicantFamily $family)
+    {
+        $this->authorize('allows', [$this->module, 'show']);
+
+        return $family;
     }
 
     public function store(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
     {
+        $this->authorize('allows', [$this->module, 'create']);
+
         $family = $applicant->families()->create($request->only($family->fillable));
 
         Log::info(auth()->user()->username . ' - Applicant Family Created', [
@@ -37,6 +51,8 @@ class ApplicantFamilyController extends Controller
 
     public function update(ApplicantFamilyRequest $request, Applicant $applicant, ApplicantFamily $family)
     {
+        $this->authorize('allows', [$this->module, 'update']);
+
         $family->update($request->only($family->fillable));
 
         Log::info(auth()->user()->username . ' - Applicant Family Updated', [
@@ -51,6 +67,8 @@ class ApplicantFamilyController extends Controller
 
     public function destroy(Applicant $applicant, ApplicantFamily $family)
     {
+        $this->authorize('allows', [$this->module, 'delete']);
+
         $family->delete();
 
         Log::info(auth()->user()->username . ' - Applicant Family Deleted', [

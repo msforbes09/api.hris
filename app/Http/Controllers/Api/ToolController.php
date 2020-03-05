@@ -9,6 +9,7 @@ use App\Client;
 use App\Module;
 use App\Company;
 use App\UserType;
+use App\SmsTemplate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -40,6 +41,13 @@ class ToolController extends Controller
         return [
             'keys' => Key::with('keywords')->get(),
             'clients' => Client::with('branches')->with('positions')->get()
+        ];
+    }
+
+    public function smsManagement()
+    {
+        return [
+            'sms_templates' => SmsTemplate::all()
         ];
     }
 }
