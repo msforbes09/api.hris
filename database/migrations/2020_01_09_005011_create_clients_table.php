@@ -10,7 +10,7 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code', 10);
+            $table->string('code', 50);
             $table->unsignedBigInteger('company_id');
             $table->string('name', 100);
             $table->softDeletes();

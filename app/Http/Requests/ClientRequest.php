@@ -17,7 +17,7 @@ class ClientRequest extends FormRequest
     {
         return [
             'company_id' => 'required|exists:companies,id',
-            'code' => ['required', 'max:10', new UniqueColumns(
+            'code' => ['required', 'max:50', new UniqueColumns(
                 $this->client ?? new Client, [
                     ['name' => 'code', 'value' => request('code')],
                     ['name' => 'company_id', 'value' => request('company_id')]

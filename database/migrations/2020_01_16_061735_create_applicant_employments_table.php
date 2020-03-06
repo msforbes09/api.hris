@@ -13,8 +13,8 @@ class CreateApplicantEmploymentsTable extends Migration
             $table->unsignedBigInteger('applicant_id');
             $table->string('company');
             $table->string('address');
-            $table->year('date_from');
-            $table->year('date_to');
+            $table->date('date_from');
+            $table->date('date_to');
             $table->string('position');
             $table->decimal('salary');
             $table->string('leaving_reason');

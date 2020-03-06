@@ -16,7 +16,7 @@ class ClientBranchRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => ['required', 'max:10', new UniqueColumns(
+            'code' => ['required', 'max:50', new UniqueColumns(
                 $this->branch ?? new ClientBranch, [
                     ['name' => 'code', 'value' => request('code')],
                     ['name' => 'client_id', 'value' => $this->client->id]

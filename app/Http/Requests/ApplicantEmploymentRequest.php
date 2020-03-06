@@ -14,11 +14,11 @@ class ApplicantEmploymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'company' => 'required|max:30',
+            'company' => 'required|max:100',
             'address' => 'required|max:100',
-            'date_from' => 'required|digits:4',
-            'date_to' => 'required|digits:4',
-            'position' => 'required|max:30',
+            'date_from' => 'required|date',
+            'date_to' => 'required|date',
+            'position' => 'required|max:100',
             'salary' => 'required|numeric',
             'leaving_reason' => 'required',
         ];

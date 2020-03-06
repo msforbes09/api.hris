@@ -13,7 +13,7 @@ class CreateSmsRecipientsTable extends Migration
             $table->unsignedBigInteger('applicant_id');
             $table->unsignedBigInteger('sms_id');
             $table->string('status')->default('pending');
-            $table->string('mid', 30)->nullable();
+            $table->string('mid', 100)->nullable();
             $table->timestamps();
 
             $table->foreign('applicant_id')->references('id')->on('applicants');
