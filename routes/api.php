@@ -10,8 +10,8 @@
 |
 */
 Route::middleware('auth:api')->group(function() {
-    require_once 'api\authenticated.php';
-    require_once 'api\resources.php';
+    require_once __DIR__ . '/api/authenticated.php';
+    require_once __DIR__ . '/api/resources.php';
 });
 
 // Authentication Routes
