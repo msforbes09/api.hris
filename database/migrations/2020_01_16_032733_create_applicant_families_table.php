@@ -11,10 +11,10 @@ class CreateApplicantFamiliesTable extends Migration
         Schema::create('applicant_families', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('applicant_id');
-            $table->string('relationship', 20);
+            $table->string('relationship', 50);
             $table->string('name');
             $table->string('address')->nullable();
-            $table->string('occupation', 60)->nullable();
+            $table->string('occupation', 100)->nullable();
             $table->date('birth_date')->nullable();
             $table->boolean('living');
             $table->string('contact_no', 30)->nullable();

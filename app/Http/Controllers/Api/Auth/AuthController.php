@@ -103,6 +103,7 @@ class AuthController extends Controller
         $usernameType = $this->getUsernameType($request->get('username'));
 
         return [
+
             $usernameType => $request->get('username'),
             'password' => $request->get('password')
         ];
@@ -157,11 +158,7 @@ class AuthController extends Controller
     {
         $user = request()->user();
 
-        if (count($user->tokens) > 0) {
-            $user->tokens->each(function (\Laravel\Passport\Token $token) {
-                $token->delete();
-            });
-        }
+        $user->removeTokens();
 
         return $this->removeTokensResponse($user);
     }

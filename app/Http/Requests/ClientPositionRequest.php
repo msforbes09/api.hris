@@ -16,7 +16,7 @@ class ClientPositionRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => ['required', 'max:10', new UniqueColumns(
+            'code' => ['required', 'max:50', new UniqueColumns(
                 $this->position ?? new ClientPosition, [
                     ['name' => 'code', 'value' => request('code')],
                     ['name' => 'client_id', 'value' => $this->client->id]

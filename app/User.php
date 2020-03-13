@@ -44,6 +44,15 @@ class User extends Authenticatable implements Auditable
         return $this->belongsTo('App\UserType');
     }
 
+    public function removeTokens()
+    {
+        if (count($this->tokens) > 0) {
+            $this->tokens->each(function (\Laravel\Passport\Token $token) {
+                $token->delete();
+            });
+        }
+    }
+
     public function allowedModuleActions()
     {
         return $this->userType->moduleActions;

@@ -14,10 +14,10 @@ class ApplicantFamilyRequest extends FormRequest
     public function rules()
     {
         return [
-            'relationship' => 'required|max:20',
-            'name' => 'required|max:30',
+            'relationship' => 'required|max:50',
+            'name' => 'required|max:100',
             'address' => 'max:100',
-            'occupation' => 'max:30',
+            'occupation' => 'max:100',
             'birth_date' => 'date|nullable',
             'living' => 'sometimes|boolean',
             'contact_no' => 'sometimes|regex:/^\d{11}$/',
